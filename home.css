@@ -1520,7 +1520,19 @@ html:not(.js) .tag { position: static; display: inline-block; opacity: 1; }
 
 .fristcard .title,
 .fristcard .say { color: #fff; }
-.fristcard .title { max-width: 15ch; }
+
+/* Breiter als die 15ch der übrigen Karten: seit der Absatz weg ist, trägt die Karte nur noch die
+   Überschrift, und bei 15ch zerfiel der Satz in fünf schmale Zeilen.
+
+   **Für alle, die hier einen Hervorhebungseffekt einbauen wollen — am 2026-08-24 durchprobiert und
+   samt und sonders verworfen:** zwei Schriftgewichte (der dünne Schnitt verliert auf dem Orange zu
+   viel Kontrast), Einfärben in Dunkelblau, Burgund, Tannengrün, Schwarz und Violett (auf gesättigtem
+   Orange werden dunkle Töne trüb), in Türkis, Blau, Pink, Limette und Creme (hell wirkt neon),
+   ein Unterstrich in `--signal` (Rot verschwindet auf dem orangeroten Verlauf auch als Linie),
+   ein weißer Unterstrich, und Fettdruck mit Versalien (braucht mehr Breite, also springt entweder
+   das Layout oder es klaffen Lücken). Die Karte trägt Weiß, und sonst nichts. */
+.fristcard .title { max-width: 24ch; }
+
 .fristcard .say { font-weight: 600; max-width: 34ch; opacity: .95; }
 
 /* --- Kalender mit zwei Terminen ------------------------------------------- */
