@@ -8,7 +8,9 @@ const PX = 5;                                  /* Pixel je Millimeter */
 const FONT = '"Helvetica Neue", Helvetica, Arial, sans-serif';
 
 function day(offset) {
-  const d = new Date(); d.setHours(9, 0, 0, 0); d.setDate(d.getDate() + offset);
+  /* Fester Stichtag: derselbe Tag, an dem die App-Bildschirme dieser Seite aufgenommen sind —
+     sonst liefen Briefe und iPhone mit jedem Tag weiter auseinander. */
+  const d = new Date(2026, 8, 23, 9); d.setDate(d.getDate() + offset);
   return d;
 }
 const dmy = d => String(d.getDate()).padStart(2, "0") + "." + String(d.getMonth() + 1).padStart(2, "0") + "." + d.getFullYear();

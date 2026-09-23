@@ -7,7 +7,7 @@
 <meta name="description" content="PostSafe ordnet deine Briefpost: Du fotografierst den Brief, PostSafe liest ihn, legt ihn in den passenden Ordner und erinnert an Fristen. Die Briefe bleiben in deiner eigenen iCloud.">
 <meta name="theme-color" content="#F1F1EF" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#070707" media="(prefers-color-scheme: dark)">
-<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="icon" href="favicon.svg?v=2" type="image/svg+xml">
 <link rel="canonical" href="https://postsafe.eu/">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="de_DE">
@@ -15,7 +15,7 @@
 <meta property="og:url" content="https://postsafe.eu/">
 <meta property="og:title" content="PostSafe — Deine Post kennt ihren Platz">
 <meta property="og:description" content="Du fotografierst den Brief. PostSafe liest ihn, legt ihn in den passenden Ordner und erinnert an Fristen. Die Briefe bleiben in deiner eigenen iCloud.">
-<meta property="og:image" content="https://postsafe.eu/og.png?v=10">
+<meta property="og:image" content="https://postsafe.eu/og.png?v=11">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="PostSafe — Deine Post kennt ihren Platz.">
@@ -367,7 +367,9 @@ LETTERS.slice(0, 7).forEach((L, i) => { const f = drawLetter(L); const l = st.ad
 });
 items.forEach(l => st.bendSheet(l.geo, l.w, l.h, l.fold[0], l.fold[1], l.curl));
 /* Wer im Kapitel „Ein Foto“ gescannt wird, und in welchen Ordner er fliegt */
-const dd = n => { const d = new Date(); d.setDate(d.getDate() + n); return d.toLocaleDateString("de-DE", { day: "numeric", month: "long" }); };
+/* Stichtag der App-Aufnahmen (siehe js/letters.js) — alle Daten dieser Seite gehen von ihm aus */
+const STICHTAG = () => new Date(2026, 8, 23, 9);
+const dd = n => { const d = STICHTAG(); d.setDate(d.getDate() + n); return d.toLocaleDateString("de-DE", { day: "numeric", month: "long" }); };
 const FLY = [
   { i: 0, to: "wohnen", facts: [["Absender", "Stadtwerke", "sender"], ["Betrag", "84,20 €", "amount"], ["Frist", dd(7), "due"], ["Ordner", "Wohnen"]] },
   { i: 1, to: "behoerde", facts: [["Absender", "Finanzamt", "sender"], ["Betrag", "1.284,00 €", "amount"], ["Frist", dd(5), "due"], ["Ordner", "Behörde"]] },
@@ -409,7 +411,7 @@ const caps = $$("[data-cap]"), cardsEl = $("[data-cards]");
 const cardEl = { wohnen: $('[data-card="wohnen"]'), behoerde: $('[data-card="behoerde"]') };
 const tick = $("[data-tick]"); for (let i = 0; i < 22; i++) tick.appendChild(document.createElement("i"));
 const ticks = [...tick.children];
-const due = new Date(); due.setDate(due.getDate() + 7);
+const due = STICHTAG(); due.setDate(due.getDate() + 7);
 const d21 = new Date(due); d21.setDate(d21.getDate() - 21); const d7 = new Date(due); d7.setDate(d7.getDate() - 7);
 const fmt = d => d.toLocaleDateString("de-DE", { day: "numeric", month: "short" });
 $("[data-t0]").textContent = fmt(d21); $("[data-t1]").textContent = fmt(d7) + " · Erinnerung"; $("[data-t2]").textContent = fmt(due) + " · Frist";
