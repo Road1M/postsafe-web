@@ -9,125 +9,130 @@
 <meta name="theme-color" content="#070707" media="(prefers-color-scheme: dark)">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="canonical" href="https://postsafe.eu/web.html">
-<link rel="stylesheet" href="style.css?v=10">
-<link rel="stylesheet" href="home.css?v=11">
+<link rel="stylesheet" href="seite.css?v=11">
+<style>
+.dev-fixed{position:fixed; z-index:30; left:0; top:0; pointer-events:none; will-change:transform}
+.hero{min-height:100svh; display:flex; align-items:center}
+.hero .wrap{width:100%}
+.hero__txt{max-width:min(46vw,580px); padding-top:70px}
+.hero h1{font-size:clamp(46px,5.8vw,88px)}
+
+/* Das Codefeld: ein echtes Eingabefeld über vier sichtbaren Kästchen */
+.pair{margin-top:36px; padding:26px; border-radius:32px; background:var(--card); box-shadow:var(--shadow); max-width:480px}
+.pair__label{display:block; font-family:var(--mono); font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-3); margin-bottom:14px}
+.code{position:relative; display:grid; grid-template-columns:repeat(4,1fr); gap:10px}
+.code b{height:84px; border-radius:18px; background:var(--card-2); box-shadow:inset 0 0 0 1.5px var(--line); display:grid; place-items:center; font-size:48px; font-weight:600; letter-spacing:-.02em; font-variant-numeric:tabular-nums; color:var(--ink); transition:box-shadow .2s, transform .3s var(--ease)}
+.code b:empty::after{content:""; width:14px; height:3px; border-radius:2px; background:var(--line)}
+.code b.cur{box-shadow:inset 0 0 0 2px var(--ink)}
+.code b.cur:empty::after{width:2.5px; height:44px; background:var(--ink); animation:blink 1s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+.code b.pop{transform:scale(1.06)}
+.code input{position:absolute; inset:0; width:100%; height:100%; opacity:0; font-size:16px; border:0; background:transparent; color:transparent; caret-color:transparent; cursor:text}
+.pair__go{margin-top:14px; width:100%; height:58px; border:0; border-radius:999px; background:var(--ink); color:var(--paper); font:inherit; font-size:17px; font-weight:600; cursor:pointer; transition:opacity .2s}
+.pair__hinweis{min-height:1.5em; margin:12px 4px 0; font-size:15px; color:var(--ink-2)}
+.soon{margin:18px 4px 0; font-size:14px; color:var(--ink-3); max-width:46ch}
+.soon b{color:var(--ink-2)}
+
+/* Drei Schritte */
+#schritte .tx h2{font-size:clamp(36px,4vw,62px)}
+.steps{list-style:none; padding:0; margin:34px 0 0; display:grid; gap:4px; max-width:500px}
+.steps li{display:grid; grid-template-columns:44px 1fr; gap:14px; padding:16px 18px; border-radius:22px; transition:background .4s, opacity .4s; opacity:.38}
+.steps li.on{opacity:1; background:var(--card); box-shadow:var(--shadow)}
+.steps li i{width:36px; height:36px; border-radius:50%; background:var(--ink); color:var(--paper); display:grid; place-items:center; font-style:normal; font-weight:700; font-size:16px}
+.steps li b{display:block; font-size:18px; letter-spacing:-.01em}
+.steps li span{display:block; font-size:15px; color:var(--ink-2); margin-top:2px}
+.conds{display:flex; flex-wrap:wrap; gap:10px; margin-top:26px}
+.conds span{display:inline-flex; align-items:center; gap:8px; font-size:14px; color:var(--ink-2); padding:9px 14px; border-radius:999px; border:1px solid var(--line)}
+
+/* Danach */
+.after{padding-block:14vh 8vh; position:relative; z-index:31}
+.after h2{font-size:clamp(40px,5vw,78px)}
+.after > .wrap > p{font-size:clamp(18px,1.6vw,22px); color:var(--ink-2); margin:18px 0 0; max-width:40ch}
+.after__row{margin-top:48px}
+.origin{display:flex; gap:12px; align-items:flex-start; margin-top:18px; font-size:15px; color:var(--ink-2); max-width:62ch}
+.origin svg{flex:none; margin-top:3px}
+.facts{display:grid; grid-template-columns:repeat(3,1fr); border-top:1px solid var(--line); margin-top:72px}
+.facts p{margin:0; padding:22px 26px 0 0; font-size:15px; color:var(--ink-2)}
+.facts b{display:block; color:var(--ink); font-size:16px; margin-bottom:6px}
+@media (max-width:820px), (max-aspect-ratio:9/10){
+  .hero{align-items:flex-start}
+  .hero__txt{max-width:none; padding-top:100px; padding-bottom:40px}
+  .hero h1{font-size:clamp(40px,10vw,64px)}
+  .code b{height:70px; font-size:38px}
+  .steps{margin-top:16px}
+  .steps li{padding:10px 12px}
+  .steps li:not(.on){display:none}
+  .conds{display:none}
+  .facts{grid-template-columns:1fr; row-gap:22px}
+}
+</style>
 </head>
 <body>
 
-<a class="skip" href="#inhalt">Zum Inhalt springen</a>
-
-<header class="site-head">
-  <div class="site-head__in">
-    <a class="brand" href="index.html">
-      <svg class="brand__mark" width="24" height="22.4" viewBox="207 183 650 608" aria-hidden="true" focusable="false"><linearGradient id="psz-kopf" gradientUnits="userSpaceOnUse" x1="354.7" y1="266.1" x2="669.3" y2="629.9"><stop offset="0" stop-color="#ff8b1f"/><stop offset="1" stop-color="#ff2d3e"/></linearGradient><g transform="translate(532 570) scale(1.3) translate(-512 -512)" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M298 646 L298 301.2 Q298 280 313 265 Q328 250 349.2 250 L588 250 Q616 250 635.8 269.8 L706.2 340.2 Q726 360 726 388 L726 470" stroke="url(#psz-kopf)" stroke-width="72"/><path d="M410 476 L610 476" stroke="#ff4935" stroke-width="40"/><path d="M406 360 L522 360" stroke="url(#psz-kopf)" stroke-width="44"/></g></svg>
+<header class="nav">
+  <div class="nav__in">
+    <a class="brand" href="index.html" aria-label="PostSafe, Startseite">
+      <svg width="30" height="30" viewBox="0 0 1024 1024" aria-hidden="true" focusable="false"><defs><linearGradient id="lkb" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff8b21"/><stop offset="1" stop-color="#ff473b"/></linearGradient><linearGradient id="lkg" gradientUnits="userSpaceOnUse" x1="354.7" y1="266.1" x2="669.3" y2="629.9"><stop offset="0" stop-color="#ff8b1f"/><stop offset="1" stop-color="#ff2d3e"/></linearGradient></defs><g fill="none" stroke="url(#lkb)" stroke-width="34" stroke-linecap="round"><path d="M149 299 V207 A58 58 0 0 1 207 149 H299"/><path d="M725 149 H817 A58 58 0 0 1 875 207 V299"/><path d="M875 725 V817 A58 58 0 0 1 817 875 H725"/><path d="M299 875 H207 A58 58 0 0 1 149 817 V725"/></g><g transform="translate(97.82 132.53) scale(.78)"><g transform="translate(532 570) scale(1.3) translate(-512 -512)" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M298 646 L298 314.9 Q298 288 317 269 Q336 250 362.9 250 L588 250 Q616 250 635.8 269.8 L706.2 340.2 Q726 360 726 388 L726 470" stroke="url(#lkg)" stroke-width="72"/><path d="M410 476 L610 476" stroke="#ff4935" stroke-width="40"/><path d="M406 360 L522 360" stroke="url(#lkg)" stroke-width="44"/></g></g></svg>
       PostSafe
     </a>
-    <a class="head-web ps-chip is-here" href="web.html" aria-current="page">
-      <svg width="15" height="15" viewBox="0 0 15 15" aria-hidden="true"><path d="M1.2 1.2h4.4v4.4H1.2zM9.4 1.2h4.4v4.4H9.4zM1.2 9.4h4.4v4.4H1.2z" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M9.4 9.4h2v2h-2zM11.8 11.8h2v2h-2z" fill="currentColor"/></svg>
-      <span class="head-web__long">PostSafe </span>Web
-    </a>
-    <nav class="site-nav" aria-label="Rechtliches">
-      <a href="datenschutz.html">Datenschutz</a>
-      <a href="agb.html">Nutzungsbedingungen</a>
-      <a href="impressum.html">Impressum</a>
-    </nav>
-    <a class="head-back" href="#recht">Rechtliches</a>
+    <a class="lk" href="https://postsafe.eu/datenschutz.html">Datenschutz</a>
+    <a class="lk" href="https://postsafe.eu/agb.html">Nutzungsbedingungen</a>
+    <a class="lk" href="https://postsafe.eu/impressum.html">Impressum</a>
+    <button class="theme" type="button" id="theme" aria-label="Hell oder dunkel"><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="7.2" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M10 2.8a7.2 7.2 0 0 1 0 14.4z" fill="currentColor"/></svg></button>
+    <a class="chip" href="web.html" aria-current="page"><svg width="14" height="14" viewBox="0 0 15 15" aria-hidden="true"><path d="M1.2 1.2h4.4v4.4H1.2zM9.4 1.2h4.4v4.4H9.4zM1.2 9.4h4.4v4.4H1.2z" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M9.4 9.4h2v2h-2zM11.8 11.8h2v2h-2z" fill="currentColor"/></svg>Web</a>
   </div>
 </header>
 
-<main id="inhalt" class="webp">
-  <div class="shell">
+<main id="inhalt">
+  <section class="hero" id="hero">
+    <div class="wrap"><div class="hero__txt">
+      <p class="eyebrow">PostSafe Web</p>
+      <h1 class="display">Deine Briefe <b>am großen Bildschirm.</b></h1>
+      <p class="lede">Verbinde die App mit dem Browser. Danach liest du deine Post am Rechner, durchsuchst sie und exportierst, was du brauchst.</p>
 
-    <div class="webp__top">
-      <p class="webp__eyebrow">PostSafe Web</p>
-      <h1 class="display"><span class="lt">Deine Briefe</span> am großen Bildschirm.</h1>
-      <p class="say">
-        Verbinde die App mit dem Browser. Danach liest du deine Post am Rechner,
-        durchsuchst sie und exportierst, was du brauchst.
-      </p>
-    </div>
-
-    <section class="pair" aria-labelledby="pair-t">
-      <form class="pair__enter" id="verbinden" novalidate>
+      <form class="pair" id="verbinden" novalidate>
         <label class="pair__label" for="code">Code aus der App</label>
-        <input class="pair__input" id="code" name="code" type="text" inputmode="numeric"
-               pattern="[0-9]{4}" maxlength="4" autocomplete="off" spellcheck="false"
-               aria-describedby="pair-hinweis" placeholder="0000">
-        <button class="ps-pill ps-pill--block pair__go" type="submit">Verbinden</button>
+        <div class="code" data-cells>
+          <b></b><b></b><b></b><b></b>
+          <input id="code" name="code" type="text" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" autocomplete="off" spellcheck="false" aria-describedby="pair-hinweis">
+        </div>
+        <button class="pair__go" type="submit">Verbinden</button>
         <p class="pair__hinweis" id="pair-hinweis" role="status"></p>
       </form>
+      <p class="soon"><b>Noch nicht nutzbar:</b> PostSafe ist noch nicht im App Store. Sobald die App da ist, funktioniert das Feld oben.</p>
+    </div></div>
+  </section>
 
-      <div class="pair__how">
-        <h2 class="title" id="pair-t">In drei Schritten verbunden.</h2>
-        <ol class="steps">
-          <li><b>PostSafe auf dem iPhone öffnen.</b><span>In den Einstellungen „PostSafe Web“ antippen.</span></li>
-          <li><b>Den vierstelligen Code hier eintippen.</b><span>Er steht groß auf dem iPhone.</span></li>
-          <li><b>Am iPhone auf „Verbinden“ tippen.</b><span>Du entscheidest, welcher Browser dein Archiv zu sehen bekommt.</span></li>
-        </ol>
-        <p class="pair__note">
-          Computer und iPhone müssen im selben WLAN sein, und der Bildschirm am iPhone muss offen
-          bleiben. Danach kommt alles direkt vom iPhone — deshalb steht oben im Browser gleich eine
-          Zahl statt postsafe.eu.
-        </p>
-        <p class="pair__note">
-          <b>Noch nicht nutzbar:</b> PostSafe ist noch nicht im App Store. Sobald die App da ist,
-          funktioniert das Feld oben.
-        </p>
+  <section class="chap" id="schritte" style="height:300vh">
+    <div class="pin"><div class="wrap"><div class="tx">
+      <p class="eyebrow">So geht's</p>
+      <h2 class="display">In drei Schritten <b>verbunden.</b></h2>
+      <ol class="steps">
+        <li class="on" data-step><i>1</i><div><b>PostSafe auf dem iPhone öffnen.</b><span>In den Einstellungen „PostSafe Web“ antippen.</span></div></li>
+        <li data-step><i>2</i><div><b>Den vierstelligen Code hier eintippen.</b><span>Er steht groß auf dem iPhone.</span></div></li>
+        <li data-step><i>3</i><div><b>Am iPhone auf „Verbinden“ tippen.</b><span>Du entscheidest, welcher Browser dein Archiv zu sehen bekommt.</span></div></li>
+      </ol>
+      <div class="conds">
+        <span><svg width="16" height="12" viewBox="0 0 17 12" aria-hidden="true"><path d="M8.5 11.6 5.9 8.9a3.7 3.7 0 0 1 5.2 0zM3.4 6.4a7.3 7.3 0 0 1 10.2 0l1.6-1.6a9.6 9.6 0 0 0-13.4 0zM.1 3.1a12 12 0 0 1 16.8 0" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>Gleiches WLAN</span>
+        <span><svg width="10" height="15" viewBox="0 0 10 15" aria-hidden="true"><rect x=".8" y=".8" width="8.4" height="13.4" rx="2" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>Bildschirm am iPhone bleibt an</span>
       </div>
-    </section>
+    </div></div></div>
+  </section>
 
-    <section class="webp__preview" aria-labelledby="prev-t">
-      <h2 class="title" id="prev-t">Was dich danach erwartet.</h2>
-      <p class="say">Dieselbe Ablage wie im iPhone — nur mit Platz.</p>
-
-      <div class="win" role="img" aria-label="Entwurf der Weboberfläche: links die Ordner, rechts die Briefe, oben eine Suche und ein Knopf zum Exportieren.">
-        <div class="win__bar" aria-hidden="true"><i></i><i></i><i></i><span>postsafe.eu/web</span></div>
-        <div class="win__body">
-          <div class="win__side">
-            <div class="folder">
-              <span class="sw"><canvas class="mo" data-pal="0" data-seed="3.4" aria-hidden="true"></canvas><svg class="folder__ic" width="18" height="15" viewBox="0 0 18 15" aria-hidden="true"><path d="M1 3.2A1.7 1.7 0 0 1 2.7 1.5h3.4l1.6 2h7.6A1.7 1.7 0 0 1 17 5.2v7.1a1.7 1.7 0 0 1-1.7 1.7H2.7A1.7 1.7 0 0 1 1 12.3z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg></span>
-              <span class="folder__name">Wohnen</span><span class="folder__n is-on">2</span>
-            </div>
-            <div class="folder">
-              <span class="sw"><canvas class="mo" data-pal="1" data-seed="7.1" aria-hidden="true"></canvas><svg class="folder__ic" width="18" height="15" viewBox="0 0 18 15" aria-hidden="true"><path d="M1 3.2A1.7 1.7 0 0 1 2.7 1.5h3.4l1.6 2h7.6A1.7 1.7 0 0 1 17 5.2v7.1a1.7 1.7 0 0 1-1.7 1.7H2.7A1.7 1.7 0 0 1 1 12.3z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg></span>
-              <span class="folder__name">Beh&ouml;rden</span><span class="folder__n is-on">1</span>
-            </div>
-            <div class="folder">
-              <span class="sw"><canvas class="mo" data-pal="2" data-seed="11.8" aria-hidden="true"></canvas><svg class="folder__ic" width="18" height="15" viewBox="0 0 18 15" aria-hidden="true"><path d="M1 3.2A1.7 1.7 0 0 1 2.7 1.5h3.4l1.6 2h7.6A1.7 1.7 0 0 1 17 5.2v7.1a1.7 1.7 0 0 1-1.7 1.7H2.7A1.7 1.7 0 0 1 1 12.3z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg></span>
-              <span class="folder__name">Versicherungen</span><span class="folder__n is-on">2</span>
-            </div>
-            <div class="folder">
-              <span class="sw"><canvas class="mo" data-pal="3" data-seed="16.2" aria-hidden="true"></canvas><svg class="folder__ic" width="18" height="15" viewBox="0 0 18 15" aria-hidden="true"><path d="M1 3.2A1.7 1.7 0 0 1 2.7 1.5h3.4l1.6 2h7.6A1.7 1.7 0 0 1 17 5.2v7.1a1.7 1.7 0 0 1-1.7 1.7H2.7A1.7 1.7 0 0 1 1 12.3z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg></span>
-              <span class="folder__name">Finanzen</span><span class="folder__n is-on">1</span>
-            </div>
-          </div>
-          <div class="win__main">
-            <div class="win__head">
-              <p class="win__search" aria-hidden="true">
-                <svg width="15" height="15" viewBox="0 0 17 17"><circle cx="7.2" cy="7.2" r="5.2" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M11.2 11.2 15 15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-                Suchen
-              </p>
-              <span class="ps-pill win__export">Exportieren</span>
-            </div>
-            <div class="win__rows">
-              <div class="wrow"><b>Stadtwerke</b><span>Rechnung · 248,50 €</span><em>14.07.</em></div>
-              <div class="wrow"><b>Finanzamt</b><span>Bescheid</span><em class="ps-sig">Frist 14. Aug.</em></div>
-              <div class="wrow"><b>Krankenkasse</b><span>Schreiben</span><em>02.07.</em></div>
-              <div class="wrow"><b>Vermieter</b><span>Nebenkostenabrechnung · 1.020,00 €</span><em>28.06.</em></div>
-              <div class="wrow"><b>Versicherung</b><span>Rechnung · 412,00 €</span><em>19.06.</em></div>
-            </div>
-          </div>
-        </div>
+  <section class="after">
+    <div class="wrap">
+      <p class="eyebrow">Danach</p>
+      <h2 class="display">Dieselbe Ablage — <b>nur mit Platz.</b></h2>
+      <p>So sieht dein Archiv im Browser aus. Es kommt direkt von deinem iPhone.</p>
+      <div class="after__row"><div data-browser></div></div>
+      <p class="origin"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.8" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M8 7v4.2M8 4.6v.1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>Klick dich durch: Ordner, Briefe und Suche funktionieren wie im echten PostSafe Web. Zum Scrollen im Fenster einmal hineinklicken. Computer und iPhone müssen dafür im selben WLAN sein.</p>
+      <div class="facts">
+        <p><b>Nur lesen und exportieren</b>Am Rechner siehst du deine Briefe und lädst sie herunter. Gescannt wird weiter mit dem iPhone.</p>
+        <p><b>Die Verbindung gilt für diesen Browser</b>Sie lässt sich in der App jederzeit wieder trennen.</p>
+        <p><b>Auch hier bleibt die Ablage bei dir</b>Der Browser zeigt, was in deiner iCloud liegt. Auf unserem Server bleibt nichts liegen.</p>
       </div>
-    </section>
-
-    <section class="webp__facts">
-      <p><b>Nur lesen und exportieren</b>Am Rechner siehst du deine Briefe und lädst sie herunter. Gescannt wird weiter mit dem iPhone.</p>
-      <p><b>Die Verbindung gilt für diesen Browser</b>Sie lässt sich in der App jederzeit wieder trennen.</p>
-      <p><b>Auch hier bleibt die Ablage bei dir</b>Der Browser zeigt, was in deiner iCloud liegt. Auf unserem Server bleibt nichts liegen.</p>
-    </section>
-
-  </div>
+    </div>
+  </section>
 </main>
 
 <footer class="site-foot" id="recht">
@@ -135,16 +140,16 @@
   <div class="site-foot__in">
     <div>
       <p class="site-foot__brand">
-        <svg class="brand__mark" width="22" height="20.6" viewBox="207 183 650 608" aria-hidden="true" focusable="false"><linearGradient id="psz-fuss" gradientUnits="userSpaceOnUse" x1="354.7" y1="266.1" x2="669.3" y2="629.9"><stop offset="0" stop-color="#ff8b1f"/><stop offset="1" stop-color="#ff2d3e"/></linearGradient><g transform="translate(532 570) scale(1.3) translate(-512 -512)" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M298 646 L298 301.2 Q298 280 313 265 Q328 250 349.2 250 L588 250 Q616 250 635.8 269.8 L706.2 340.2 Q726 360 726 388 L726 470" stroke="url(#psz-fuss)" stroke-width="72"/><path d="M410 476 L610 476" stroke="#ff4935" stroke-width="40"/><path d="M406 360 L522 360" stroke="url(#psz-fuss)" stroke-width="44"/></g></svg>
+        <svg width="30" height="30" viewBox="0 0 1024 1024" aria-hidden="true" focusable="false"><defs><linearGradient id="lfb" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff8b21"/><stop offset="1" stop-color="#ff473b"/></linearGradient><linearGradient id="lfg" gradientUnits="userSpaceOnUse" x1="354.7" y1="266.1" x2="669.3" y2="629.9"><stop offset="0" stop-color="#ff8b1f"/><stop offset="1" stop-color="#ff2d3e"/></linearGradient></defs><g fill="none" stroke="url(#lfb)" stroke-width="34" stroke-linecap="round"><path d="M149 299 V207 A58 58 0 0 1 207 149 H299"/><path d="M725 149 H817 A58 58 0 0 1 875 207 V299"/><path d="M875 725 V817 A58 58 0 0 1 817 875 H725"/><path d="M299 875 H207 A58 58 0 0 1 149 817 V725"/></g><g transform="translate(97.82 132.53) scale(.78)"><g transform="translate(532 570) scale(1.3) translate(-512 -512)" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M298 646 L298 314.9 Q298 288 317 269 Q336 250 362.9 250 L588 250 Q616 250 635.8 269.8 L706.2 340.2 Q726 360 726 388 L726 470" stroke="url(#lfg)" stroke-width="72"/><path d="M410 476 L610 476" stroke="#ff4935" stroke-width="40"/><path d="M406 360 L522 360" stroke="url(#lfg)" stroke-width="44"/></g></g></svg>
         PostSafe
       </p>
       <p class="site-foot__note">Post ordnen, ohne dass jemand mitliest.</p>
     </div>
     <nav class="foot-links" aria-label="Rechtliches und Kontakt">
-      <a href="web.html">PostSafe Web</a>
-      <a href="datenschutz.html">Datenschutz</a>
-      <a href="agb.html">Nutzungsbedingungen</a>
-      <a href="impressum.html">Impressum</a>
+      <a href="index.html">Startseite</a>
+      <a href="https://postsafe.eu/datenschutz.html">Datenschutz</a>
+      <a href="https://postsafe.eu/agb.html">Nutzungsbedingungen</a>
+      <a href="https://postsafe.eu/impressum.html">Impressum</a>
       <a href="mailto:kontakt@postsafe.eu">kontakt@postsafe.eu</a>
     </nav>
     <p class="site-foot__legal">© 2026 Josef Werner</p>
@@ -152,7 +157,88 @@
   </div>
 </footer>
 
-<script src="moire.js?v=10" defer></script>
-<script src="web.js?v=1" defer></script>
+<div class="dev-fixed" id="device" aria-label="PostSafe auf dem iPhone" role="img"></div>
+
+<!-- Die Logik der echten Seite, unverändert: vier Ziffern werden zu einer Adresse im WLAN. -->
+<script src="web.js?v=2"></script>
+<script type="module">
+import { mountDevice } from "./js/screens.js";
+import { mountBrowser } from "./js/browser.js";
+import { smoothScroll } from "./js/smooth.js";
+smoothScroll({ skip: e => !!e.target.closest?.(".browser__view.live") });
+/* Die Animationen folgen einem geglätteten Scrollwert — auch Trackpad, Tasten und Scrollbalken wirken so weich */
+let ys = scrollY;
+const smoothY = () => { const d = scrollY - ys; ys = Math.abs(d) < .3 ? scrollY : ys + d * .18; return ys; };
+
+const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
+const clamp = (v, a, b) => v < a ? a : v > b ? b : v, lerp = (a, b, t) => a + (b - a) * t;
+const T0 = performance.now();
+const Q = new URLSearchParams(location.search);
+
+const root = document.documentElement;
+const isDark = () => root.getAttribute("data-theme") === "dark" || (!root.hasAttribute("data-theme") && matchMedia("(prefers-color-scheme: dark)").matches);
+$("#theme").addEventListener("click", () => { const n = isDark() ? "light" : "dark"; root.setAttribute("data-theme", n); applyTheme(); });
+
+const devEl = $("#device"), screen = mountDevice(devEl);
+screen.preload(["web", "einst"]);
+let browser = null;
+mountBrowser($("[data-browser]"), { height: 680 }).then(b => { browser = b; applyTheme(); });
+function applyTheme() { const d = isDark(); screen.setTheme("hell");   /* das iPhone zeigt die App immer hell */ if (browser) browser.setDark(d); }
+applyTheme(); matchMedia("(prefers-color-scheme: dark)").addEventListener("change", applyTheme);
+
+/* Vier Kästchen, die zeigen, was im echten Feld steht */
+const input = $("#code"), cells = $$("[data-cells] b");
+let focused = false, lastLen = 0;
+function paintCells() {
+  const v = input.value; cells.forEach((c, i) => { c.textContent = v[i] || ""; c.classList.toggle("cur", focused && i === Math.min(v.length, 3)); });
+  if (v.length > lastLen && cells[v.length - 1]) { const c = cells[v.length - 1]; c.classList.add("pop"); setTimeout(() => c.classList.remove("pop"), 160); }
+  lastLen = v.length;
+}
+input.addEventListener("input", () => requestAnimationFrame(paintCells));
+input.addEventListener("focus", () => { focused = true; paintCells(); });
+input.addEventListener("blur", () => { focused = false; paintCells(); });
+paintCells();
+
+/* Wo es in der App steht — in Pixeln der Aufnahme (Punkte × 3) */
+const RING = { row: { x: 52, y: 1846, w: 1102, h: 152, r: 40 }, code: { x: 50, y: 620, w: 1106, h: 440, r: 90 }, step3: { x: 50, y: 2268, w: 1106, h: 210, r: 40 } };
+
+let vw, vh, mobile, secs = {}, dev = {};
+function measure() {
+  vw = innerWidth; vh = innerHeight; mobile = vw <= 820 || vw / vh < .9;
+  for (const id of ["hero", "schritte"]) { const el = document.getElementById(id); secs[id] = { top: el.getBoundingClientRect().top + scrollY, h: el.offsetHeight, range: Math.max(1, el.offsetHeight - vh) }; }
+  if (mobile) { dev.h = vh * .46; dev.w = dev.h * 1350 / 2760; dev.x = (vw - dev.w) / 2; dev.y = vh - dev.h - 18; }
+  else { dev.h = Math.min(vh * .82, 780); dev.w = dev.h * 1350 / 2760; dev.x = Math.min(vw * .72, vw - dev.w * .5 - 60) - dev.w / 2; dev.y = (vh - dev.h) / 2 + 12; }
+  devEl.style.width = dev.w + "px";
+}
+let lastStep = -1;
+const steps = $$("[data-step]");
+function tick(now) {
+  const y = smoothY(), ps = clamp((y - secs.schritte.top) / secs.schritte.range, 0, 1);
+  const inSteps = y > secs.schritte.top - vh * .5;
+  const step = !inSteps ? -1 : ps < .33 ? 0 : ps < .66 ? 1 : 2;
+  if (step !== lastStep) { steps.forEach((s, i) => s.classList.toggle("on", i === Math.max(0, step))); lastStep = step; }
+  const pulse = reduce ? 1 : .6 + .4 * Math.sin(now / 320);
+  let a = "web", ring = null;
+  if (step === 0) { a = "einst"; ring = { ...RING.row, k: pulse }; }
+  else if (step === 1 || (!inSteps && focused)) ring = { ...RING.code, k: pulse };
+  else if (step === 2) ring = { ...RING.step3, k: pulse };
+  screen.set({ a, ring }); screen.draw(now);
+  /* Auf dem Handy liegt das iPhone erst bei den Schritten im Bild; am Ende geht es mit der Seite nach oben */
+  let dy = mobile ? (1 - clamp((y - (secs.schritte.top - vh * .6)) / (vh * .6), 0, 1)) * (vh - dev.y + 20) : 0;
+  /* Nachgleiten beim Scrollen und Auftritt beim Laden — bewegt wird das Gerät, verändert nie */
+  dy += lerp(24, -24, clamp(y / (secs.schritte.top + secs.schritte.h), 0, 1));
+  const intro = reduce ? 1 : clamp((now - T0 - 250) / 1300, 0, 1), ie = 1 - Math.pow(1 - intro, 4);
+  dy += (1 - ie) * vh * .35;
+  const leave = secs.schritte.top + secs.schritte.h - vh; if (y > leave) dy -= (y - leave);
+  devEl.style.opacity = ie.toFixed(3);
+  devEl.style.transform = `translate3d(${dev.x.toFixed(1)}px, ${(dev.y + dy).toFixed(1)}px, 0)`;
+}
+function frame(now) { tick(now); requestAnimationFrame(frame); }
+let rt; addEventListener("resize", () => { clearTimeout(rt); rt = setTimeout(measure, 150); });
+addEventListener("load", () => { measure(); const at = Q.get("at"); if (at) { const [id, p] = at.split(":"); scrollTo(0, id === "after" ? document.querySelector(".after").offsetTop - 40 : secs[id].top + (+p) * secs[id].range); } });
+measure(); requestAnimationFrame(frame);
+</script>
+
 </body>
 </html>

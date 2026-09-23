@@ -20,403 +20,282 @@
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="PostSafe — Deine Post kennt ihren Platz.">
 <meta name="twitter:card" content="summary_large_image">
-<link rel="stylesheet" href="style.css?v=10">
-<link rel="stylesheet" href="home.css?v=10">
+<link rel="stylesheet" href="seite.css?v=11">
+<style>
+/* Hero */
+.hero{min-height:100svh; display:flex; align-items:center; position:relative}
+.hero .wrap{width:100%}
+.hero__txt{max-width:min(46vw,600px); padding-top:40px}
+.hero h1{font-size:clamp(46px,6.2vw,96px)}
+.rot{display:grid; margin-top:.04em}
+.rot > span{grid-area:1/1; font-weight:700; letter-spacing:-.05em}
+.rot > span:not(.on){visibility:hidden}
+.rot .w{display:inline-block; white-space:nowrap}
+.rot .c{display:inline-block; transition:opacity .5s var(--ease), transform .7s var(--ease), filter .6s var(--ease)}
+.rot .out .c{opacity:0; transform:translateY(-.25em); filter:blur(8px)}
+.rot .pre .c{opacity:0; transform:translateY(.35em); filter:blur(10px); transition:none}
+.cta{display:flex; flex-wrap:wrap; align-items:flex-end; gap:22px 28px; margin-top:34px}
+.btn-q{height:48px}
+.hint{position:absolute; left:var(--gut); bottom:28px; font-family:var(--mono); font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:var(--ink-3); display:flex; align-items:center; gap:12px}
+.hint i{width:34px; height:1px; background:var(--ink-3); transform-origin:left; animation:drip 2.4s var(--ease) infinite}
+@keyframes drip{0%{transform:scaleX(0)}50%{transform:scaleX(1)}100%{transform:scaleX(1);opacity:0}}
+
+/* Das iPhone: fest auf der rechten Seite, Apples Bild unverändert */
+.dev-fixed{position:fixed; z-index:30; left:0; top:0; pointer-events:none; will-change:transform}
+
+/* Kapitel 1: vom Stapel in den Ordner */
+#story .caps{position:relative; height:100%}
+#story .cap{position:absolute; left:0; top:13vh; max-width:560px; transition:opacity .6s var(--ease), transform .8s var(--ease), filter .6s}
+#story .cap:not(.on){opacity:0; transform:translateY(22px); filter:blur(6px); pointer-events:none}
+#story .cap h2{font-size:clamp(36px,4.2vw,64px)}
+.cards{position:absolute; left:0; bottom:9vh; display:flex; gap:14px; transition:opacity .6s var(--ease), transform .8s var(--ease)}
+.cards:not(.on){opacity:0; transform:translateY(24px)}
+.cards figure{position:relative; margin:0; width:clamp(170px,15vw,230px)}
+.cards img{display:block; width:100%; height:auto; filter:drop-shadow(0 14px 22px rgba(0,0,0,.14))}
+.cards b{position:absolute; left:-8px; top:-10px; min-width:34px; height:28px; padding:0 9px; border-radius:14px; background:var(--ink); color:var(--paper); font-size:14px; display:grid; place-items:center; opacity:0; transform:scale(.4); transition:opacity .25s, transform .5s var(--ease)}
+.cards b.on{opacity:1; transform:none}
+.scanframe{position:fixed; z-index:31; left:0; top:0; width:100vw; height:100vh; pointer-events:none; overflow:visible}
+.scanframe .br{fill:none; stroke:url(#scang); stroke-width:6; stroke-linecap:round; stroke-linejoin:round}
+.scanframe .hl{fill:rgba(255,106,40,.14); stroke:#FF6A28; stroke-width:2}
+.scanframe .hl.due{fill:rgba(255,59,24,.14); stroke:#FF3B18}
+.scanframe .ln{stroke:#FF6A28; stroke-width:1.5; stroke-dasharray:3 4; fill:none}
+.chips{position:fixed; z-index:32; left:0; top:0; pointer-events:none}
+.fact{position:absolute; left:0; top:0; display:flex; flex-direction:column; gap:1px; padding:9px 16px 10px; border-radius:16px; background:var(--card); box-shadow:0 1px 2px rgba(0,0,0,.06), 0 12px 30px rgba(0,0,0,.14); white-space:nowrap; will-change:transform, opacity}
+.fact small{font-family:var(--mono); font-size:10.5px; letter-spacing:.12em; text-transform:uppercase; color:var(--ink-3)}
+.fact b{font-size:17px; letter-spacing:-.02em}
+.fact.due b{color:var(--signal)}
+@media (max-width:820px), (max-aspect-ratio:9/10){ .fact{padding:6px 11px 7px; border-radius:12px} .fact b{font-size:13px} .fact small{font-size:9px} }
+
+/* Kapitel 2: Fristen */
+#frist .tx h2{font-size:clamp(34px,3.8vw,58px)}
+.big{font-weight:100; font-size:clamp(120px,15vw,230px); line-height:.8; letter-spacing:-.06em; margin:30px 0 0; display:flex; align-items:flex-end; gap:18px; font-variant-numeric:tabular-nums; transition:color .5s}
+.big small{font-size:clamp(15px,1.3vw,18px); letter-spacing:0; font-weight:500; line-height:1.3; color:var(--ink-2); padding-bottom:.9em; max-width:12ch; transition:color .5s}
+.big.due, .big.due small{color:var(--signal)}
+.tick{display:flex; gap:5px; margin-top:26px; max-width:460px}
+.tick i{flex:1; height:24px; border-radius:3px; background:var(--line); transition:background .3s}
+.tick i.gone{background:transparent; box-shadow:inset 0 0 0 1px var(--line)}
+.tick i.rem{background:var(--ink)}
+.tick i.day{background:var(--signal)}
+.tick-l{display:flex; justify-content:space-between; max-width:460px; margin-top:10px; font-family:var(--mono); font-size:11px; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-3)}
+.tick-l b{color:var(--signal); font-weight:500}
+
+/* Kapitel 3: Suche */
+.q{display:flex; align-items:center; gap:14px; height:74px; padding:0 26px; border-radius:999px; background:var(--card); box-shadow:var(--shadow); margin-top:36px; max-width:460px; font-size:clamp(24px,2.2vw,32px); font-weight:600; letter-spacing:-.03em}
+.q svg{flex:none; color:var(--ink-3)}
+.q span{white-space:nowrap}
+.q i{width:2.5px; height:1.1em; background:var(--ink); animation:blink 1s steps(1) infinite; margin-left:-8px}
+@keyframes blink{50%{opacity:0}}
+
+/* Kapitel 4: Vertrauen */
+#trust{background:var(--inv-bg); color:var(--inv-ink); border-radius:44px; margin-inline:clamp(8px,1.4vw,20px)}
+#trust .eyebrow{color:var(--inv-2)}
+.tx p.reveal{font-size:clamp(30px,3.4vw,52px); font-weight:600; letter-spacing:-.035em; line-height:1.08; margin:0; max-width:17ch; color:inherit; text-wrap:balance}
+.reveal .wd{color:var(--inv-dim); transition:color .25s}
+.reveal .wd.lit{color:var(--inv-ink)}
+.vault{display:flex; gap:10px; margin-top:38px; flex-wrap:wrap}
+.vault span{display:flex; align-items:center; gap:10px; font-size:14px; padding:10px 16px 10px 12px; border-radius:999px; border:1px solid var(--inv-dim); color:var(--inv-ink)}
+.vault span i{width:8px; height:8px; border-radius:50%; background:var(--inv-ink)}
+.vault span.empty{color:var(--inv-2)}
+.vault span.empty i{background:transparent; box-shadow:inset 0 0 0 1.5px var(--inv-2)}
+
+/* Kapitel 5: PostSafe Web */
+.webs{padding-block:18vh 6vh; position:relative; z-index:31}
+.webs h2{font-size:clamp(40px,5vw,78px)}
+.webs .lede{max-width:44ch}
+.webs__row{display:flex; align-items:flex-end; gap:clamp(20px,3vw,48px); margin-top:48px}
+.webs__row .browser{flex:1; min-width:0}
+.webs__row .device{flex:0 0 clamp(180px,17vw,260px)}
+.go{display:inline-flex; align-items:center; gap:10px; margin-top:26px; height:50px; padding:0 22px; border-radius:999px; background:var(--ink); color:var(--paper); text-decoration:none; font-weight:600}
+.webs__hint{font-family:var(--mono); font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--ink-3); margin-top:16px}
+
+/* Kapitel 6 ff. */
+.keep{padding-block:14vh 12vh; position:relative; z-index:31}
+.keep h2{font-size:clamp(44px,7.4vw,124px)}
+.keep p{font-size:clamp(18px,1.6vw,22px); color:var(--ink-2); max-width:40ch; margin:26px 0 0}
+.fan{display:flex; margin-top:64px; perspective:1400px}
+.fan img{flex:0 0 min(380px,64vw); width:min(380px,64vw); height:auto; margin-right:-170px; filter:drop-shadow(0 20px 30px rgba(0,0,0,.18)); transform:rotateY(18deg) rotateZ(calc(var(--i) * -3deg)) translateY(calc(var(--i) * 12px)); transition:transform .9s var(--ease), margin .9s var(--ease)}
+.fan:hover img, .fan:focus-within img{margin-right:16px; transform:none}
+.fan-note{font-family:var(--mono); font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--ink-3); margin-top:26px}
+.fine{padding-block:4vh 12vh; position:relative; z-index:31}
+.fine h3{font-size:clamp(26px,2.6vw,36px); font-weight:600; letter-spacing:-.03em; margin:0 0 34px; max-width:22ch}
+.fine__grid{display:grid; grid-template-columns:repeat(4,1fr); border-top:1px solid var(--line)}
+.fine__grid p{margin:0; padding:22px 26px 0 0; font-size:15px; color:var(--ink-2); line-height:1.5}
+.fine__grid p b{display:block; color:var(--ink); font-size:16px; margin-bottom:6px; letter-spacing:-.01em}
+.fine__note{margin:40px 0 0; font-size:14px; color:var(--ink-3)}
+@media (max-width:900px){.fine__grid{grid-template-columns:1fr 1fr; row-gap:26px}}
+@media (max-width:520px){.fine__grid{grid-template-columns:1fr}}
+.contact{padding-block:4vh 16vh; position:relative; z-index:31}
+.contact__in{border-radius:40px; background:var(--card); box-shadow:var(--shadow); padding:clamp(28px,5vw,64px); display:grid; grid-template-columns:1.2fr 1fr; gap:32px; align-items:end}
+.contact h2{font-size:clamp(38px,4.4vw,64px)}
+.contact p{color:var(--ink-2); margin:18px 0 0; max-width:40ch}
+.mail{display:flex; flex-wrap:wrap; gap:10px; justify-content:flex-end}
+.mail a{font-size:clamp(18px,1.8vw,24px); font-weight:600; letter-spacing:-.02em; text-decoration:none; height:58px; display:inline-flex; align-items:center; padding:0 26px; border-radius:999px; background:var(--ink); color:var(--paper)}
+.mail button{height:58px; padding:0 20px; border-radius:999px; border:1px solid var(--line); background:var(--card); color:var(--ink); font:inherit; font-size:15px; font-weight:600; cursor:pointer}
+@media (max-width:820px){.contact__in{grid-template-columns:1fr}.mail{justify-content:flex-start}}
+
+.dock{position:fixed; z-index:40; left:50%; bottom:calc(env(safe-area-inset-bottom,0px) + 16px); transform:translate(-50%,140%); transition:transform .7s var(--ease); display:flex; align-items:center; gap:14px; padding:8px; border-radius:999px; background:var(--glass); border:1px solid var(--glass-line); backdrop-filter:blur(22px) saturate(1.6); -webkit-backdrop-filter:blur(22px) saturate(1.6); box-shadow:0 10px 40px rgba(0,0,0,.12); white-space:nowrap; max-width:calc(100vw - 32px)}
+.dock.on{transform:translate(-50%,0)}
+.dock > img{width:40px; height:40px; border-radius:10px; box-shadow:0 0 0 1px rgba(0,0,0,.06)}
+.dock p{margin:0; font-size:14px; line-height:1.2}
+.dock p small{display:block; color:var(--ink-3); font-size:12px}
+.dock .chip{height:42px; padding:0 18px}
+
+@media (max-width:820px), (max-aspect-ratio:9/10){
+  .hero{align-items:flex-start}
+  .hero__txt{max-width:none; padding-top:104px}
+  .hero h1{font-size:clamp(40px,10.5vw,72px)}
+  .lede{font-size:18px}
+  .cta{margin-top:22px; gap:14px}
+  .badges img{height:52px}
+  .hero .btn-q{display:none}
+  .hint{display:none}
+  #story .cap{top:96px; right:0}
+  .cards{bottom:6vh; left:50%; transform:translateX(-50%)}
+  .cards:not(.on){transform:translate(-50%,24px)}
+  .cards figure{width:40vw}
+  .big{font-size:clamp(84px,24vw,140px); margin-top:14px}
+  .big small{font-size:14px}
+  .tick,.tick-l{display:none}
+  .q{height:56px; margin-top:18px; font-size:22px}
+  .tx p.reveal{font-size:clamp(26px,7vw,40px)}
+  .vault{margin-top:18px}
+  .vault span{font-size:12px; padding:7px 12px 7px 10px}
+  #trust{border-radius:30px}
+  .webs__row{flex-direction:column; align-items:stretch}
+  .webs__row .device{display:none}
+  .fan img{margin-right:-240px}
+  .dock p small{display:none}
+}
+@media (max-width:420px){ .dock p{display:none} }
+@media (prefers-reduced-motion: reduce){ .rot .c{transition:none} .hint i{animation:none} }
+</style>
 </head>
 <body>
 
-<a class="skip" href="#inhalt">Zum Inhalt springen</a>
-
-<header class="site-head" id="top">
-  <div class="site-head__in">
-    <a class="brand" href="index.html">
-      <svg class="brand__mark" width="24" height="22.4" viewBox="207 183 650 608" aria-hidden="true" focusable="false"><linearGradient id="psz-kopf" gradientUnits="userSpaceOnUse" x1="354.7" y1="266.1" x2="669.3" y2="629.9"><stop offset="0" stop-color="#ff8b1f"/><stop offset="1" stop-color="#ff2d3e"/></linearGradient><g transform="translate(532 570) scale(1.3) translate(-512 -512)" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M298 646 L298 301.2 Q298 280 313 265 Q328 250 349.2 250 L588 250 Q616 250 635.8 269.8 L706.2 340.2 Q726 360 726 388 L726 470" stroke="url(#psz-kopf)" stroke-width="72"/><path d="M410 476 L610 476" stroke="#ff4935" stroke-width="40"/><path d="M406 360 L522 360" stroke="url(#psz-kopf)" stroke-width="44"/></g></svg>
+<header class="nav">
+  <div class="nav__in">
+    <a class="brand" href="#top" aria-label="PostSafe, zum Anfang">
+      <svg width="30" height="30" viewBox="0 0 1024 1024" aria-hidden="true" focusable="false"><defs><linearGradient id="lkb" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff8b21"/><stop offset="1" stop-color="#ff473b"/></linearGradient><linearGradient id="lkg" gradientUnits="userSpaceOnUse" x1="354.7" y1="266.1" x2="669.3" y2="629.9"><stop offset="0" stop-color="#ff8b1f"/><stop offset="1" stop-color="#ff2d3e"/></linearGradient></defs><g fill="none" stroke="url(#lkb)" stroke-width="34" stroke-linecap="round"><path d="M149 299 V207 A58 58 0 0 1 207 149 H299"/><path d="M725 149 H817 A58 58 0 0 1 875 207 V299"/><path d="M875 725 V817 A58 58 0 0 1 817 875 H725"/><path d="M299 875 H207 A58 58 0 0 1 149 817 V725"/></g><g transform="translate(97.82 132.53) scale(.78)"><g transform="translate(532 570) scale(1.3) translate(-512 -512)" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M298 646 L298 314.9 Q298 288 317 269 Q336 250 362.9 250 L588 250 Q616 250 635.8 269.8 L706.2 340.2 Q726 360 726 388 L726 470" stroke="url(#lkg)" stroke-width="72"/><path d="M410 476 L610 476" stroke="#ff4935" stroke-width="40"/><path d="M406 360 L522 360" stroke="url(#lkg)" stroke-width="44"/></g></g></svg>
       PostSafe
     </a>
-    <a class="head-web ps-chip" href="web.html">
-      <svg width="15" height="15" viewBox="0 0 15 15" aria-hidden="true"><path d="M1.2 1.2h4.4v4.4H1.2zM9.4 1.2h4.4v4.4H9.4zM1.2 9.4h4.4v4.4H1.2z" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M9.4 9.4h2v2h-2zM11.8 11.8h2v2h-2z" fill="currentColor"/></svg>
-      <span class="head-web__long">PostSafe </span>Web
-    </a>
-    <nav class="site-nav" aria-label="Rechtliches">
-      <a href="datenschutz.html">Datenschutz</a>
-      <a href="agb.html">Nutzungsbedingungen</a>
-      <a href="impressum.html">Impressum</a>
-    </nav>
-    <a class="head-back" href="#recht">Rechtliches</a>
+    <a class="lk" href="https://postsafe.eu/datenschutz.html">Datenschutz</a>
+    <a class="lk" href="https://postsafe.eu/agb.html">Nutzungsbedingungen</a>
+    <a class="lk" href="https://postsafe.eu/impressum.html">Impressum</a>
+    <button class="theme" type="button" id="theme" aria-label="Hell oder dunkel"><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="7.2" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M10 2.8a7.2 7.2 0 0 1 0 14.4z" fill="currentColor"/></svg></button>
+    <a class="chip" href="web.html"><svg width="14" height="14" viewBox="0 0 15 15" aria-hidden="true"><path d="M1.2 1.2h4.4v4.4H1.2zM9.4 1.2h4.4v4.4H9.4zM1.2 9.4h4.4v4.4H1.2z" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M9.4 9.4h2v2h-2zM11.8 11.8h2v2h-2z" fill="currentColor"/></svg>Web</a>
   </div>
 </header>
 
-<main id="inhalt">
-
-  <!-- 1 — Erster Bildschirm und der Stapel: ein Stück ------------------------ -->
-  <section class="story" id="ordnung" data-story>
-    <div class="story__stick">
-      <div class="story__glow" aria-hidden="true"></div>
-
-      <div class="story__words" data-words>
-        <div>
-          <h1 class="display">
-            <span class="zeile"><span class="lt">Deine Post</span> <span class="tippt" data-tippt aria-hidden="true"><span class="tippt__text">ist sortiert und gesichert.</span><span class="tippt__strich"></span></span><span class="nur-gelesen">ist sortiert und gesichert.</span></span>
-
-            <!-- Die Sätze der Überschrift. Hier ändern, einer je Zeile.
-                 „Deine Post“ steht bei jedem davor und bleibt stehen.
-                 Sie stehen zugleich unsichtbar übereinander und geben der
-                 Überschrift ihre Höhe — deshalb springt beim Tippen nichts. -->
-            <span class="mass" data-satz aria-hidden="true">ist sortiert und gesichert.</span>
-            <span class="mass" data-satz aria-hidden="true">auch Jahre später auffindbar.</span>
-            <span class="mass" data-satz aria-hidden="true">erinnert dich an Fristen.</span>
-            <span class="mass" data-satz aria-hidden="true">bleibt bei dir.</span>
-          </h1>
-          <p class="hero__sub">Du fotografierst den Brief. Mehr musst du nicht tun.</p>
-          <p class="stores" aria-label="Bald erhältlich">
-            <span class="badge badge--apple"><img src="marken/appstore.svg" alt="Laden im App Store" width="250" height="83"></span>
-            <span class="badge badge--play"><img src="marken/googleplay.png" alt="Jetzt bei Google Play" width="646" height="250"></span>
-          </p>
-        </div>
-      </div>
-
-      <div class="stage" data-stage role="img"
-           aria-label="Illustration: ein Stapel ungeöffneter Briefe. Jeder Brief wird gelesen, einzelne Angaben werden erkannt, dann wandert er in seinen Ordner — Wohnen, Behörden, Finanzen, Versicherungen.">
-
-        <article class="ltr" data-ltr data-folder="0" style="--fam:#FF3D78">
-          <div class="sheet">
-            <div class="sheet__from">Vermieter</div>
-            <div class="sheet__addr"><i style="--w:44%"></i><i style="--w:58%"></i><i style="--w:48%"></i></div>
-            <div class="sheet__subj"><i style="--w:74%"></i></div>
-            <div class="sheet__body">
-              <p><i style="--w:18%"></i><i style="--w:24%"></i><i style="--w:28%"></i><i style="--w:14%"></i></p>
-              <p><i style="--w:30%"></i><i style="--w:18%"></i><i style="--w:24%"></i></p>
-              <p><i style="--w:14%"></i><i class="mark" data-mark style="--w:29%"></i><i style="--w:22%"></i><i style="--w:16%"></i></p>
-              <p><i style="--w:26%"></i><i style="--w:20%"></i><i style="--w:28%"></i></p>
-              <p><i style="--w:20%"></i><i style="--w:16%"></i><i class="mark" data-mark style="--w:22%"></i><i style="--w:24%"></i></p>
-              <p><i style="--w:24%"></i><i style="--w:30%"></i></p>
-            </div>
-            <div class="sheet__foot"><i style="--w:42%"></i></div>
-          </div>
-          <span class="tag" data-tag>1.020,00 €</span>
-          <div class="scan" aria-hidden="true"></div>
-        </article>
-
-<article class="ltr" data-ltr data-folder="0" style="--fam:#FF3D78">
-          <div class="sheet">
-            <div class="sheet__from">Stadtwerke</div>
-            <div class="sheet__addr"><i style="--w:58%"></i><i style="--w:42%"></i><i style="--w:64%"></i></div>
-            <div class="sheet__subj"><i style="--w:70%"></i></div>
-            <div class="sheet__body">
-              <p><i style="--w:18%"></i><i style="--w:30%"></i><i style="--w:14%"></i><i style="--w:24%"></i></p>
-              <p><i style="--w:22%"></i><i style="--w:16%"></i><i style="--w:34%"></i><i style="--w:12%"></i></p>
-              <p><i style="--w:15%"></i><i class="mark" data-mark style="--w:27%"></i><i style="--w:20%"></i><i style="--w:16%"></i></p>
-              <p><i style="--w:28%"></i><i style="--w:14%"></i><i style="--w:22%"></i><i style="--w:24%"></i></p>
-              <p><i style="--w:16%"></i><i style="--w:24%"></i><i class="mark" data-mark style="--w:19%"></i><i style="--w:26%"></i></p>
-              <p><i style="--w:20%"></i><i style="--w:30%"></i><i style="--w:16%"></i></p>
-            </div>
-            <div class="sheet__foot"><i style="--w:38%"></i></div>
-          </div>
-          <span class="tag" data-tag>248,50 €</span>
-          <div class="scan" aria-hidden="true"></div>
-        </article>
-
-<article class="ltr" data-ltr data-folder="1" style="--fam:#2B4BFF">
-          <div class="sheet">
-            <div class="sheet__from">Finanzamt</div>
-            <div class="sheet__addr"><i style="--w:52%"></i><i style="--w:60%"></i><i style="--w:38%"></i></div>
-            <div class="sheet__subj"><i style="--w:64%"></i></div>
-            <div class="sheet__body">
-              <p><i style="--w:24%"></i><i style="--w:18%"></i><i style="--w:28%"></i><i style="--w:16%"></i></p>
-              <p><i style="--w:14%"></i><i class="mark" data-mark style="--w:24%"></i><i style="--w:30%"></i><i style="--w:14%"></i></p>
-              <p><i style="--w:30%"></i><i style="--w:20%"></i><i style="--w:26%"></i></p>
-              <p><i style="--w:18%"></i><i style="--w:26%"></i><i style="--w:16%"></i><i style="--w:22%"></i></p>
-              <p><i style="--w:22%"></i><i class="mark" data-mark style="--w:31%"></i><i style="--w:15%"></i></p>
-              <p><i style="--w:26%"></i><i style="--w:18%"></i><i style="--w:24%"></i></p>
-            </div>
-            <div class="sheet__foot"><i style="--w:34%"></i></div>
-          </div>
-          <span class="tag ps-sig" data-tag>Frist 14. August</span>
-          <div class="scan" aria-hidden="true"></div>
-        </article>
-
-<article class="ltr" data-ltr data-folder="3" style="--fam:#008AFF">
-          <div class="sheet">
-            <div class="sheet__from">Krankenkasse</div>
-            <div class="sheet__addr"><i style="--w:46%"></i><i style="--w:62%"></i><i style="--w:50%"></i></div>
-            <div class="sheet__subj"><i style="--w:76%"></i></div>
-            <div class="sheet__body">
-              <p><i style="--w:20%"></i><i style="--w:26%"></i><i style="--w:18%"></i><i style="--w:22%"></i></p>
-              <p><i style="--w:28%"></i><i style="--w:16%"></i><i style="--w:32%"></i></p>
-              <p><i style="--w:16%"></i><i style="--w:22%"></i><i class="mark" data-mark style="--w:25%"></i><i style="--w:18%"></i></p>
-              <p><i style="--w:24%"></i><i style="--w:30%"></i><i style="--w:14%"></i></p>
-              <p><i style="--w:18%"></i><i class="mark" data-mark style="--w:28%"></i><i style="--w:20%"></i></p>
-            </div>
-            <div class="sheet__foot"><i style="--w:40%"></i></div>
-          </div>
-          <span class="tag ps-sig" data-tag>Frist 2. September</span>
-          <div class="scan" aria-hidden="true"></div>
-        </article>
-
-<article class="ltr" data-ltr data-folder="3" style="--fam:#008AFF">
-          <div class="sheet">
-            <div class="sheet__from">Versicherung</div>
-            <div class="sheet__addr"><i style="--w:54%"></i><i style="--w:40%"></i><i style="--w:58%"></i></div>
-            <div class="sheet__subj"><i style="--w:68%"></i></div>
-            <div class="sheet__body">
-              <p><i style="--w:16%"></i><i style="--w:28%"></i><i style="--w:20%"></i><i style="--w:22%"></i></p>
-              <p><i style="--w:26%"></i><i class="mark" data-mark style="--w:22%"></i><i style="--w:30%"></i></p>
-              <p><i style="--w:20%"></i><i style="--w:18%"></i><i style="--w:26%"></i><i style="--w:16%"></i></p>
-              <p><i style="--w:30%"></i><i style="--w:16%"></i><i class="mark" data-mark style="--w:24%"></i></p>
-              <p><i style="--w:22%"></i><i style="--w:28%"></i><i style="--w:18%"></i></p>
-              <p><i style="--w:18%"></i><i style="--w:24%"></i><i style="--w:20%"></i></p>
-            </div>
-            <div class="sheet__foot"><i style="--w:36%"></i></div>
-          </div>
-          <span class="tag" data-tag>412,00 €</span>
-          <div class="scan" aria-hidden="true"></div>
-        </article>
-
-<article class="ltr" data-ltr data-folder="2" style="--fam:#00D084">
-          <div class="sheet">
-            <div class="sheet__from">Bank</div>
-            <div class="sheet__addr"><i style="--w:50%"></i><i style="--w:56%"></i><i style="--w:44%"></i></div>
-            <div class="sheet__subj"><i style="--w:60%"></i></div>
-            <div class="sheet__body">
-              <p><i style="--w:22%"></i><i style="--w:18%"></i><i style="--w:30%"></i></p>
-              <p><i style="--w:16%"></i><i style="--w:26%"></i><i style="--w:20%"></i><i style="--w:18%"></i></p>
-              <p><i style="--w:28%"></i><i class="mark" data-mark style="--w:23%"></i><i style="--w:22%"></i></p>
-              <p><i style="--w:20%"></i><i style="--w:32%"></i><i style="--w:16%"></i></p>
-              <p><i style="--w:24%"></i><i style="--w:16%"></i><i class="mark" data-mark style="--w:26%"></i></p>
-            </div>
-            <div class="sheet__foot"><i style="--w:32%"></i></div>
-          </div>
-          <span class="tag ps-sig" data-tag>Frist 30. August</span>
-          <div class="scan" aria-hidden="true"></div>
-        </article>
-
-        <div class="phone" data-phone aria-hidden="true">
-          <span class="phone__island"></span>
-          <span class="phone__view"></span>
-        </div>
-
-        <div class="folders" data-folders aria-hidden="true">
-          <div class="folder" data-folder>
-            <span class="folder__flood" aria-hidden="true"><canvas class="mo" data-pal="0" data-seed="3.4" aria-hidden="true"></canvas></span><span class="sw"><canvas class="mo" data-pal="0" data-seed="3.4" aria-hidden="true"></canvas><svg class="folder__ic" width="18" height="15" viewBox="0 0 18 15" aria-hidden="true"><path d="M1 3.2A1.7 1.7 0 0 1 2.7 1.5h3.4l1.6 2h7.6A1.7 1.7 0 0 1 17 5.2v7.1a1.7 1.7 0 0 1-1.7 1.7H2.7A1.7 1.7 0 0 1 1 12.3z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg></span>
-            <span class="folder__name">Wohnen</span>
-            <span class="folder__n" data-n>0</span>
-          </div>
-          <div class="folder" data-folder>
-            <span class="folder__flood" aria-hidden="true"><canvas class="mo" data-pal="1" data-seed="7.1" aria-hidden="true"></canvas></span><span class="sw"><canvas class="mo" data-pal="1" data-seed="7.1" aria-hidden="true"></canvas><svg class="folder__ic" width="18" height="15" viewBox="0 0 18 15" aria-hidden="true"><path d="M1 3.2A1.7 1.7 0 0 1 2.7 1.5h3.4l1.6 2h7.6A1.7 1.7 0 0 1 17 5.2v7.1a1.7 1.7 0 0 1-1.7 1.7H2.7A1.7 1.7 0 0 1 1 12.3z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg></span>
-            <span class="folder__name">Behörden</span>
-            <span class="folder__n" data-n>0</span>
-          </div>
-          <div class="folder" data-folder>
-            <span class="folder__flood" aria-hidden="true"><canvas class="mo" data-pal="3" data-seed="16.2" aria-hidden="true"></canvas></span><span class="sw"><canvas class="mo" data-pal="3" data-seed="16.2" aria-hidden="true"></canvas><svg class="folder__ic" width="18" height="15" viewBox="0 0 18 15" aria-hidden="true"><path d="M1 3.2A1.7 1.7 0 0 1 2.7 1.5h3.4l1.6 2h7.6A1.7 1.7 0 0 1 17 5.2v7.1a1.7 1.7 0 0 1-1.7 1.7H2.7A1.7 1.7 0 0 1 1 12.3z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg></span>
-            <span class="folder__name">Finanzen</span>
-            <span class="folder__n" data-n>0</span>
-          </div>
-          <div class="folder" data-folder>
-            <span class="folder__flood" aria-hidden="true"><canvas class="mo" data-pal="2" data-seed="11.8" aria-hidden="true"></canvas></span><span class="sw"><canvas class="mo" data-pal="2" data-seed="11.8" aria-hidden="true"></canvas><svg class="folder__ic" width="18" height="15" viewBox="0 0 18 15" aria-hidden="true"><path d="M1 3.2A1.7 1.7 0 0 1 2.7 1.5h3.4l1.6 2h7.6A1.7 1.7 0 0 1 17 5.2v7.1a1.7 1.7 0 0 1-1.7 1.7H2.7A1.7 1.7 0 0 1 1 12.3z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg></span>
-            <span class="folder__name">Versicherungen</span>
-            <span class="folder__n" data-n>0</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="story__caps">
-        <h2 class="cap" data-cap>Unerledigt. Unsortiert. Unterste Schublade.</h2>
-        <p class="cap cap--sub" data-cap>Ein Foto genügt. PostSafe liest den Brief und legt ihn ab.</p>
-        <p class="cap" data-cap>Sortiert, gesichert und auch Jahre später leicht zu finden.</p>
-      </div>
-
-      <div class="hero__marks" data-marks aria-hidden="true">
-        <span class="hmark"><span class="sw"><canvas class="mo" data-pal="0" data-seed="3.4" aria-hidden="true"></canvas></span>Wohnen</span>
-        <span class="hmark"><span class="sw"><canvas class="mo" data-pal="1" data-seed="7.1" aria-hidden="true"></canvas></span>Behörden</span>
-        <span class="hmark"><span class="sw"><canvas class="mo" data-pal="3" data-seed="16.2" aria-hidden="true"></canvas></span>Finanzen</span>
-        <span class="hmark"><span class="sw"><canvas class="mo" data-pal="2" data-seed="11.8" aria-hidden="true"></canvas></span>Versicherungen</span>
-      </div>
-      <div class="story__hint" aria-hidden="true">Scrollen<span></span></div>
-    </div>
-  </section>
-
-  <!-- 2 — Fristen ----------------------------------------------------------- -->
-  <section class="band" id="frist" data-reveal>
-    <div class="shell band__in">
-      <div class="band__text">
-        <div class="fristcard ps-art rise">
-          <canvas class="mo" data-pal="7" data-seed="5.2" aria-hidden="true"></canvas>
-          <h2 class="title">Fristen stehen im Nebensatz. PostSafe erinnert dich eine Woche vorher.</h2>
-        </div>
-      </div>
-      <div class="band__art rise" style="--delay:.15s">
-        <div class="cal" role="img" aria-label="Illustration eines Kalenders: die Frist ist der 18. Juni, PostSafe schlägt zwei Erinnerungen vor — am 11. Juni, eine Woche vorher, und am 15. Juni, drei Tage vorher. Ein Balken darunter bietet an, den Vorschlag anzunehmen oder zu ändern.">
-          <p class="cal__head">Juni</p>
-          <div class="cal__grid" data-cal>
-              <b>1</b><b>2</b><b>3</b><b>4</b><b>5</b><b>6</b><b>7</b>
-              <b>8</b><b>9</b><b>10</b><b class="is-rem" data-rem><span>11</span></b><b>12</b><b>13</b><b>14</b>
-              <b class="is-rem" data-rem><span>15</span></b><b>16</b><b>17</b><b class="is-due" data-target><span>18</span></b><b>19</b><b>20</b><b>21</b>
-              <b>22</b><b>23</b><b>24</b><b>25</b><b>26</b><b>27</b><b>28</b>
-              <b>29</b><b>30</b>
-          </div>
-          <div class="cal__legend">
-            <span class="cal__li"><i class="dot dot--rem"></i>Erinnerungen<em>11. und 15. Juni</em></span>
-            <span class="cal__li"><i class="dot dot--due"></i>Frist<em>18. Juni</em></span>
-          </div>
-          <div class="cal__bar">
-            <span class="cal__bartxt">Fristvorschlag aus dem Brief</span>
-            <span class="cal__btns">
-              <span class="cal__ok">Annehmen</span>
-              <span class="cal__alt">Ändern</span>
-            </span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- 3 — Suchen ------------------------------------------------------------ -->
-  <section class="band band--flip" id="suche" data-reveal>
-    <div class="shell band__in">
-      <div class="band__text">
-        <h2 class="title rise">Ein Wort genügt.</h2>
-        <p class="say rise" style="--delay:.1s">
-          Du musst nicht wissen, in welchem Ordner etwas liegt. Such nach
-          „Rechnung“ — PostSafe findet sie in allen Briefen, über alle Ordner hinweg.
+<main id="top">
+  <section class="hero" id="hero">
+    <div class="wrap"><div class="hero__txt">
+      <p class="eyebrow">Für iPhone</p>
+      <h1 class="display">
+        <span class="sr">Deine Post ist sortiert und gesichert.</span>
+        <span aria-hidden="true">Deine Post</span>
+        <span class="rot" data-rot aria-hidden="true">
+          <span class="on">ist sortiert und gesichert.</span>
+          <span>auch Jahre später auffindbar.</span>
+          <span>erinnert dich an Fristen.</span>
+          <span>bleibt bei dir.</span>
+        </span>
+      </h1>
+      <p class="lede">Du fotografierst den Brief. Mehr musst du nicht tun.</p>
+      <div class="cta">
+        <p class="badges" aria-label="Bald erhältlich"><small>Bald im App Store</small>
+          <img src="marken/appstore.svg" alt="Laden im App Store" width="180" height="60">
         </p>
+        <a class="btn-q" href="web.html">PostSafe Web</a>
       </div>
-      <div class="band__art rise" style="--delay:.15s">
-        <div class="find" role="img" aria-label="Illustration: die Suche nach dem Wort Rechnung liefert Treffer aus den Ordnern Wohnen, Versicherungen und Finanzen.">
-          <p class="find__bar" aria-hidden="true">
-            <svg width="17" height="17" viewBox="0 0 17 17"><circle cx="7.2" cy="7.2" r="5.2" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M11.2 11.2 15 15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-            <span class="find__word">Rechnung</span>
-            <span class="find__caret"></span>
-          </p>
-          <div class="find__hits" aria-hidden="true">
-            <div class="hit" style="--d:.75s"><b>Stadtwerke</b><span><u>Rechnung</u> · 248,50 €</span><em>Wohnen</em></div>
-            <div class="hit" style="--d:.95s"><b>Versicherung</b><span><u>Rechnung</u> · 412,00 €</span><em>Versicherungen</em></div>
-            <div class="hit" style="--d:1.15s"><b>Bank</b><span>Jahresab<u>rechnung</u></span><em>Finanzen</em></div>
-          </div>
-        </div>
+    </div></div>
+    <div class="hint" aria-hidden="true"><i></i>Scrollen</div>
+  </section>
+
+  <section class="chap" id="story" style="height:600vh">
+    <div class="pin"><div class="wrap"><div class="caps">
+      <div class="cap on" data-cap><p class="eyebrow">Der Stapel</p><h2 class="display">Unerledigt. Unsortiert. <b>Unterste Schublade.</b></h2></div>
+      <div class="cap" data-cap><p class="eyebrow">Ein Foto</p><h2 class="display">Ein Foto genügt. <b>PostSafe liest den Brief</b> und legt ihn ab.</h2></div>
+      <div class="cap" data-cap><p class="eyebrow">Abgelegt</p><h2 class="display">Sortiert, gesichert und <b>auch Jahre später</b> leicht zu finden.</h2></div>
+      <div class="cards" data-cards>
+        <figure data-card="wohnen"><img src="img/karte-wohnen.webp" alt="Ordner Wohnen"><b data-plus>+0</b></figure>
+        <figure data-card="behoerde"><img src="img/karte-behoerde.webp" alt="Ordner Behörde"><b data-plus>+0</b></figure>
       </div>
+    </div></div></div>
+  </section>
+
+  <section class="chap" id="frist" style="height:300vh">
+    <div class="pin"><div class="wrap"><div class="tx col-r">
+      <p class="eyebrow">Fristen</p>
+      <h2 class="display">Fristen stehen im Nebensatz. <b>PostSafe erinnert dich eine Woche vorher.</b></h2>
+      <div class="big" data-big><span data-days>21</span><small data-dlab>Tage bis zur Zahlung</small></div>
+      <div class="tick" data-tick aria-hidden="true"></div>
+      <div class="tick-l" aria-hidden="true"><span data-t0></span><span data-t1></span><b data-t2></b></div>
+    </div></div></div>
+  </section>
+
+  <section class="chap" id="suche" style="height:230vh">
+    <div class="pin"><div class="wrap"><div class="tx">
+      <p class="eyebrow">Suche</p>
+      <h2 class="display">Ein Wort <b>genügt.</b></h2>
+      <p>Du musst nicht wissen, in welchem Ordner etwas liegt. Such nach „Rechnung“ — PostSafe findet sie in allen Briefen, über alle Ordner hinweg.</p>
+      <div class="q" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 17 17"><circle cx="7.2" cy="7.2" r="5.2" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M11.2 11.2 15 15" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg><span data-q></span><i></i></div>
+    </div></div></div>
+  </section>
+
+  <section class="chap" id="trust" style="height:240vh">
+    <div class="pin"><div class="wrap"><div class="tx">
+      <p class="eyebrow">Dein Speicher</p>
+      <p class="reveal" data-reveal>Deine Briefe bleiben bei dir. Sie liegen in deinem eigenen Speicher und belegen deinen Platz. Wir kommen nicht daran.</p>
+      <div class="vault"><span><i></i>Dein iPhone</span><span><i></i>Deine iCloud</span><span class="empty"><i></i>Unser Server: kein Bild, kein Text, kein Ordnername</span></div>
+    </div></div></div>
+  </section>
+
+  <section class="webs" id="web">
+    <div class="wrap">
+      <p class="eyebrow">PostSafe Web</p>
+      <h2 class="display">Deine Briefe <b>am großen Bildschirm.</b></h2>
+      <p class="lede">Vier Ziffern vom iPhone, und der Computer zeigt dein Archiv — direkt aus deinem WLAN, ohne Umweg über einen Server.</p>
+      <a class="go" href="web.html">So verbindest du dich <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M2 7h10M7.5 2.5 12 7l-4.5 4.5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+      <div class="webs__row">
+        <div data-browser></div>
+        <div data-webdevice></div>
+      </div>
+      <p class="webs__hint">Klick dich durch — Ordner, Briefe und Suche funktionieren wie im echten PostSafe Web. Zum Scrollen im Fenster einmal hineinklicken.</p>
     </div>
   </section>
 
-  <!-- 4 — Vertrauen --------------------------------------------------------- -->
-  <section class="trust" data-reveal>
-    <div class="shell band__in">
-      <div class="band__text">
-        <h2 class="title rise">Deine Briefe bleiben bei dir.</h2>
-        <p class="say rise" style="--delay:.1s">
-          Sie liegen in deinem eigenen Speicher und belegen deinen Platz.
-          Wir kommen nicht daran.
-        </p>
+  <section class="keep">
+    <div class="wrap">
+      <p class="eyebrow">Ohne Ablaufdatum</p>
+      <h2 class="display">Was einmal drin ist, <b>bleibt dir.</b></h2>
+      <p>Auch wenn du eines Tages aufhörst: Deine Briefe bleiben lesbar, durchsuchbar und exportierbar.</p>
+      <div class="fan" tabindex="0" aria-label="Zwei deiner Ordner, aufgefächert">
+        <img src="img/karte-wohnen.webp" alt="Ordner Wohnen" style="--i:0">
+        <img src="img/karte-behoerde.webp" alt="Ordner Behörde" style="--i:1">
       </div>
-      <div class="band__art rise" style="--delay:.15s">
-        <div class="vault" role="img" aria-label="Illustration: deine Ordner liegen in deinem eigenen Speicher — iCloud oder Google Drive. Der Server daneben bleibt leer.">
-          <div>
-          <div class="vault__inside">
-            <span class="vault__label">Dein Speicher</span>
-            <div class="vault__stack">
-              <div class="folder">
-                <span class="folder__flood" aria-hidden="true"><canvas class="mo" data-pal="0" data-seed="3.4" aria-hidden="true"></canvas></span><span class="sw"><canvas class="mo" data-pal="0" data-seed="3.4" aria-hidden="true"></canvas><svg class="folder__ic" width="18" height="15" viewBox="0 0 18 15" aria-hidden="true"><path d="M1 3.2A1.7 1.7 0 0 1 2.7 1.5h3.4l1.6 2h7.6A1.7 1.7 0 0 1 17 5.2v7.1a1.7 1.7 0 0 1-1.7 1.7H2.7A1.7 1.7 0 0 1 1 12.3z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg></span>
-                <span class="folder__name">Wohnen</span>
-                <span class="folder__n is-on">2</span>
-              </div>
-              <div class="folder">
-                <span class="folder__flood" aria-hidden="true"><canvas class="mo" data-pal="1" data-seed="7.1" aria-hidden="true"></canvas></span><span class="sw"><canvas class="mo" data-pal="1" data-seed="7.1" aria-hidden="true"></canvas><svg class="folder__ic" width="18" height="15" viewBox="0 0 18 15" aria-hidden="true"><path d="M1 3.2A1.7 1.7 0 0 1 2.7 1.5h3.4l1.6 2h7.6A1.7 1.7 0 0 1 17 5.2v7.1a1.7 1.7 0 0 1-1.7 1.7H2.7A1.7 1.7 0 0 1 1 12.3z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg></span>
-                <span class="folder__name">Behörden</span>
-                <span class="folder__n is-on">1</span>
-              </div>
-              <div class="folder">
-                <span class="folder__flood" aria-hidden="true"><canvas class="mo" data-pal="2" data-seed="11.8" aria-hidden="true"></canvas></span><span class="sw"><canvas class="mo" data-pal="2" data-seed="11.8" aria-hidden="true"></canvas><svg class="folder__ic" width="18" height="15" viewBox="0 0 18 15" aria-hidden="true"><path d="M1 3.2A1.7 1.7 0 0 1 2.7 1.5h3.4l1.6 2h7.6A1.7 1.7 0 0 1 17 5.2v7.1a1.7 1.7 0 0 1-1.7 1.7H2.7A1.7 1.7 0 0 1 1 12.3z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg></span>
-                <span class="folder__name">Versicherungen</span>
-                <span class="folder__n is-on">2</span>
-              </div>
-            </div>
-          </div>
-          <p class="vault__use">
-            <span><img src="marken/icloud.svg" alt="" width="120" height="78">iCloud</span>
-            <span><img src="marken/drive.svg" alt="" width="87" height="78">Google Drive</span>
-          </p>
-          </div>
-          <div class="vault__link" aria-hidden="true"></div>
-          <div class="vault__outside">
-            <p class="vault__empty"><b>Unser Server</b>Kein Bild, kein Text, kein Ordnername.</p>
-          </div>
-        </div>
-      </div>
+      <p class="fan-note">Abo beendet — neue Scans pausieren. Deine Ordner bleiben.</p>
     </div>
   </section>
 
-  <!-- 5 — Archiv ------------------------------------------------------------ -->
-  <section class="band band--flip" data-reveal>
-    <div class="shell band__in">
-      <div class="band__text">
-        <h2 class="title rise">Was einmal drin ist, bleibt dir.</h2>
-        <p class="say rise" style="--delay:.1s">
-          Auch wenn du eines Tages aufhörst: Deine Briefe bleiben lesbar,
-          durchsuchbar und exportierbar. Ohne Ablaufdatum.
-        </p>
-      </div>
-      <div class="band__art rise" style="--delay:.15s">
-        <div class="keep" role="img" aria-label="Illustration: die Ordner bleiben vollständig, auch wenn kein Abo mehr läuft.">
-          <div class="folder">
-            <span class="folder__flood" aria-hidden="true"><canvas class="mo" data-pal="0" data-seed="3.4" aria-hidden="true"></canvas></span><span class="sw"><canvas class="mo" data-pal="0" data-seed="3.4" aria-hidden="true"></canvas><svg class="folder__ic" width="18" height="15" viewBox="0 0 18 15" aria-hidden="true"><path d="M1 3.2A1.7 1.7 0 0 1 2.7 1.5h3.4l1.6 2h7.6A1.7 1.7 0 0 1 17 5.2v7.1a1.7 1.7 0 0 1-1.7 1.7H2.7A1.7 1.7 0 0 1 1 12.3z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg></span>
-            <span class="folder__name">Wohnen</span><span class="folder__n">2</span>
-          </div>
-          <div class="folder">
-            <span class="folder__flood" aria-hidden="true"><canvas class="mo" data-pal="1" data-seed="7.1" aria-hidden="true"></canvas></span><span class="sw"><canvas class="mo" data-pal="1" data-seed="7.1" aria-hidden="true"></canvas><svg class="folder__ic" width="18" height="15" viewBox="0 0 18 15" aria-hidden="true"><path d="M1 3.2A1.7 1.7 0 0 1 2.7 1.5h3.4l1.6 2h7.6A1.7 1.7 0 0 1 17 5.2v7.1a1.7 1.7 0 0 1-1.7 1.7H2.7A1.7 1.7 0 0 1 1 12.3z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg></span>
-            <span class="folder__name">Behörden</span><span class="folder__n">1</span>
-          </div>
-          <div class="folder">
-            <span class="folder__flood" aria-hidden="true"><canvas class="mo" data-pal="3" data-seed="16.2" aria-hidden="true"></canvas></span><span class="sw"><canvas class="mo" data-pal="3" data-seed="16.2" aria-hidden="true"></canvas><svg class="folder__ic" width="18" height="15" viewBox="0 0 18 15" aria-hidden="true"><path d="M1 3.2A1.7 1.7 0 0 1 2.7 1.5h3.4l1.6 2h7.6A1.7 1.7 0 0 1 17 5.2v7.1a1.7 1.7 0 0 1-1.7 1.7H2.7A1.7 1.7 0 0 1 1 12.3z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg></span>
-            <span class="folder__name">Finanzen</span><span class="folder__n">1</span>
-          </div>
-          <div class="folder">
-            <span class="folder__flood" aria-hidden="true"><canvas class="mo" data-pal="2" data-seed="11.8" aria-hidden="true"></canvas></span><span class="sw"><canvas class="mo" data-pal="2" data-seed="11.8" aria-hidden="true"></canvas><svg class="folder__ic" width="18" height="15" viewBox="0 0 18 15" aria-hidden="true"><path d="M1 3.2A1.7 1.7 0 0 1 2.7 1.5h3.4l1.6 2h7.6A1.7 1.7 0 0 1 17 5.2v7.1a1.7 1.7 0 0 1-1.7 1.7H2.7A1.7 1.7 0 0 1 1 12.3z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg></span>
-            <span class="folder__name">Versicherungen</span><span class="folder__n">2</span>
-          </div>
-          <p class="keep__gone">Abo beendet — neue Scans pausieren.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- 6 — Kontakt ----------------------------------------------------------- -->
-  <section class="soon" data-reveal>
-    <div class="shell">
-      <div class="soon__in ps-art">
-        <canvas class="mo" data-name="PostSafe" aria-hidden="true"></canvas>
-      <h2 class="title rise">So erreichst du uns.</h2>
-      <p class="say rise" style="--delay:.1s">
-        Fragen zur App, zu deinem Konto oder zum Datenschutz beantworten wir
-        schriftlich — so bleibt für beide Seiten nachvollziehbar, was besprochen wurde.
-      </p>
-      <div class="actions rise" style="--delay:.2s">
-        <a class="btn btn--primary ps-pill" href="mailto:kontakt@postsafe.eu">
-          kontakt@postsafe.eu
-        </a>
-        <a class="btn btn--quiet ps-chip" href="datenschutz.html">Wie wir mit Daten umgehen</a>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- 7 — Kleingedrucktes für Neugierige ------------------------------------ -->
-  <section class="fine" data-reveal>
-    <div class="shell">
-      <div class="fine__head">
-        <h2 class="rise">Für alle, die es genauer wissen wollen</h2>
-      </div>
+  <section class="fine">
+    <div class="wrap">
+      <h3>Für alle, die es genauer wissen wollen</h3>
       <div class="fine__grid">
-        <p class="rise"><b>Gelesen wird in Europa</b>Briefe werden bei einem europäischen Anbieter ausgelesen. Zum Training von KI-Modellen werden sie dort nicht verwendet.</p>
-        <p class="rise" style="--delay:.08s"><b>Ordnernamen bleiben auf dem Gerät</b>Wie du deine Ordner nennst, erfährt niemand außer dir.</p>
-        <p class="rise" style="--delay:.16s"><b>Auf dem Server bleibt nichts liegen</b>Kein Bild, kein Text, kein Absender, kein Betrag. So ist die App gebaut, und das wird laufend geprüft.</p>
-        <p class="rise" style="--delay:.24s"><b>Anmeldung mit Apple</b>Ein eigenes Passwort brauchst du nicht.</p>
+        <p><b>Gelesen wird in Europa</b>Briefe werden bei einem europäischen Anbieter ausgelesen. Zum Training von KI-Modellen werden sie dort nicht verwendet.</p>
+        <p><b>Ordnernamen bleiben auf dem Gerät</b>Wie du deine Ordner nennst, erfährt niemand außer dir.</p>
+        <p><b>Auf dem Server bleibt nichts liegen</b>Kein Bild, kein Text, kein Absender, kein Betrag. So ist die App gebaut, und das wird laufend geprüft.</p>
+        <p><b>Anmeldung mit Apple</b>Ein eigenes Passwort brauchst du nicht.</p>
       </div>
-      <p class="fine__note rise" style="--delay:.3s">
-        PostSafe hilft beim Ordnen und Erinnern und ersetzt keine Rechtsberatung.
-        Was die App kostet, steht in den <a href="agb.html">Nutzungsbedingungen</a>.
-      </p>
+      <p class="fine__note">PostSafe hilft beim Ordnen und Erinnern und ersetzt keine Rechtsberatung.</p>
     </div>
   </section>
 
+  <section class="contact">
+    <div class="wrap"><div class="contact__in">
+      <div><h2 class="display">So erreichst du <b>uns.</b></h2><p>Fragen zur App, zu deinem Konto oder zum Datenschutz beantworten wir schriftlich — so bleibt für beide Seiten nachvollziehbar, was besprochen wurde.</p></div>
+      <div class="mail"><a href="mailto:kontakt@postsafe.eu" id="mailto">kontakt@postsafe.eu</a><button type="button" id="copy">Kopieren</button></div>
+    </div></div>
+  </section>
 </main>
 
 <footer class="site-foot" id="recht">
@@ -424,16 +303,16 @@
   <div class="site-foot__in">
     <div>
       <p class="site-foot__brand">
-        <svg class="brand__mark" width="22" height="20.6" viewBox="207 183 650 608" aria-hidden="true" focusable="false"><linearGradient id="psz-fuss" gradientUnits="userSpaceOnUse" x1="354.7" y1="266.1" x2="669.3" y2="629.9"><stop offset="0" stop-color="#ff8b1f"/><stop offset="1" stop-color="#ff2d3e"/></linearGradient><g transform="translate(532 570) scale(1.3) translate(-512 -512)" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M298 646 L298 301.2 Q298 280 313 265 Q328 250 349.2 250 L588 250 Q616 250 635.8 269.8 L706.2 340.2 Q726 360 726 388 L726 470" stroke="url(#psz-fuss)" stroke-width="72"/><path d="M410 476 L610 476" stroke="#ff4935" stroke-width="40"/><path d="M406 360 L522 360" stroke="url(#psz-fuss)" stroke-width="44"/></g></svg>
+        <svg width="30" height="30" viewBox="0 0 1024 1024" aria-hidden="true" focusable="false"><defs><linearGradient id="lfb" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff8b21"/><stop offset="1" stop-color="#ff473b"/></linearGradient><linearGradient id="lfg" gradientUnits="userSpaceOnUse" x1="354.7" y1="266.1" x2="669.3" y2="629.9"><stop offset="0" stop-color="#ff8b1f"/><stop offset="1" stop-color="#ff2d3e"/></linearGradient></defs><g fill="none" stroke="url(#lfb)" stroke-width="34" stroke-linecap="round"><path d="M149 299 V207 A58 58 0 0 1 207 149 H299"/><path d="M725 149 H817 A58 58 0 0 1 875 207 V299"/><path d="M875 725 V817 A58 58 0 0 1 817 875 H725"/><path d="M299 875 H207 A58 58 0 0 1 149 817 V725"/></g><g transform="translate(97.82 132.53) scale(.78)"><g transform="translate(532 570) scale(1.3) translate(-512 -512)" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M298 646 L298 314.9 Q298 288 317 269 Q336 250 362.9 250 L588 250 Q616 250 635.8 269.8 L706.2 340.2 Q726 360 726 388 L726 470" stroke="url(#lfg)" stroke-width="72"/><path d="M410 476 L610 476" stroke="#ff4935" stroke-width="40"/><path d="M406 360 L522 360" stroke="url(#lfg)" stroke-width="44"/></g></g></svg>
         PostSafe
       </p>
       <p class="site-foot__note">Post ordnen, ohne dass jemand mitliest.</p>
     </div>
     <nav class="foot-links" aria-label="Rechtliches und Kontakt">
       <a href="web.html">PostSafe Web</a>
-      <a href="datenschutz.html">Datenschutz</a>
-      <a href="agb.html">Nutzungsbedingungen</a>
-      <a href="impressum.html">Impressum</a>
+      <a href="https://postsafe.eu/datenschutz.html">Datenschutz</a>
+      <a href="https://postsafe.eu/agb.html">Nutzungsbedingungen</a>
+      <a href="https://postsafe.eu/impressum.html">Impressum</a>
       <a href="mailto:kontakt@postsafe.eu">kontakt@postsafe.eu</a>
     </nav>
     <p class="site-foot__legal">© 2026 Josef Werner</p>
@@ -441,8 +320,295 @@
   </div>
 </footer>
 
-<script src="home.js?v=10" defer></script>
-<script src="tippen.js?v=10" defer></script>
-<script src="moire.js?v=10" defer></script>
+<div class="dock" id="dock"><img src="img/icon.png" alt=""><p><b>PostSafe</b><small>Bald im App Store · für iPhone</small></p><a class="chip" href="web.html">PostSafe Web</a></div>
+
+<canvas class="stage" id="stage" aria-hidden="true"></canvas>
+<div class="dev-fixed" id="device" aria-label="PostSafe auf dem iPhone" role="img"></div>
+<div class="chips" data-chips aria-hidden="true"></div>
+<svg class="scanframe" aria-hidden="true"><defs><linearGradient id="scang" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff8b1f"/><stop offset="1" stop-color="#ff2d3e"/></linearGradient><linearGradient id="band" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FF8B1F" stop-opacity="0"/><stop offset=".5" stop-color="#FF8B1F" stop-opacity=".22"/><stop offset="1" stop-color="#FF8B1F" stop-opacity="0"/></linearGradient></defs><g data-frame></g></svg>
+
+<script type="module">
+import { createStage } from "./js/stage.js";
+import { mountDevice } from "./js/screens.js";
+import { LETTERS, drawLetter, drawBack, drawEnvelope, drawEnvelopeBack } from "./js/letters.js";
+import { mountBrowser } from "./js/browser.js";
+import { smoothScroll } from "./js/smooth.js";
+smoothScroll({ skip: e => !!e.target.closest?.(".browser__view.live") });
+/* Die Animationen folgen einem geglätteten Scrollwert — auch Trackpad, Tasten und Scrollbalken wirken so weich */
+let ys = scrollY;
+const smoothY = () => { const d = scrollY - ys; ys = Math.abs(d) < .3 ? scrollY : ys + d * .18; return ys; };
+
+const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
+const clamp = (v, a, b) => v < a ? a : v > b ? b : v, lerp = (a, b, t) => a + (b - a) * t;
+const ease = t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+const Q = new URLSearchParams(location.search);
+
+/* ---------------------------------------------------------- Hell/Dunkel */
+const root = document.documentElement;
+const isDark = () => root.getAttribute("data-theme") === "dark" || (!root.hasAttribute("data-theme") && matchMedia("(prefers-color-scheme: dark)").matches);
+$("#theme").addEventListener("click", () => { const n = isDark() ? "light" : "dark"; root.setAttribute("data-theme", n); applyTheme(); });
+
+/* ---------------------------------------------------------- iPhone ---- */
+const devEl = $("#device"), screen = mountDevice(devEl);
+screen.preload(["scan", "archiv", "brief", "suche0", "suche1", "einst"]);
+const webDev = mountDevice($("[data-webdevice]")); webDev.set({ a: "web" });
+let browser = null;
+mountBrowser($("[data-browser]"), { height: 640 }).then(b => { browser = b; applyTheme(); });
+function applyTheme() { const d = isDark(); screen.setTheme("hell");   /* das iPhone zeigt die App immer hell */ webDev.setTheme("hell"); if (browser) browser.setDark(d); }
+applyTheme(); matchMedia("(prefers-color-scheme: dark)").addEventListener("change", applyTheme);
+
+/* ---------------------------------------------------------- Briefe ---- */
+const st = createStage($("#stage"));
+const items = [];
+LETTERS.slice(0, 7).forEach((L, i) => { const f = drawLetter(L); const l = st.addLetter(f, drawBack(f), "sheet"); l.boxes = f.boxes; l.fold = [.32 + (i % 3) * .12, .22 + (i % 2) * .16]; l.curl = .05 + (i % 3) * .02; items.push(l); });
+[["Mobilfunk", "Mobilfunk GmbH", "Postfach 11 22 · 12342 Musterstadt"]].forEach(([a, b, c]) => {
+  const l = st.addLetter(drawEnvelope(a, b, c), drawEnvelopeBack(), "env"); l.fold = [0, 0]; l.curl = .03; items.push(l);
+});
+items.forEach(l => st.bendSheet(l.geo, l.w, l.h, l.fold[0], l.fold[1], l.curl));
+/* Wer im Kapitel „Ein Foto“ gescannt wird, und in welchen Ordner er fliegt */
+const dd = n => { const d = new Date(); d.setDate(d.getDate() + n); return d.toLocaleDateString("de-DE", { day: "numeric", month: "long" }); };
+const FLY = [
+  { i: 0, to: "wohnen", facts: [["Absender", "Stadtwerke", "sender"], ["Betrag", "84,20 €", "amount"], ["Frist", dd(7), "due"], ["Ordner", "Wohnen"]] },
+  { i: 1, to: "behoerde", facts: [["Absender", "Finanzamt", "sender"], ["Betrag", "1.284,00 €", "amount"], ["Frist", dd(5), "due"], ["Ordner", "Behörde"]] },
+  { i: 3, to: "wohnen", facts: [["Absender", "Hausverwaltung", "sender"], ["Betrag", "312,45 €", "amount"], ["Frist", dd(25), "due"], ["Ordner", "Wohnen"]] },
+  { i: 6, to: "behoerde", facts: [["Absender", "Landratsamt", "sender"], ["Betreff", "Wohngeld", "subject"], ["Frist", dd(21), "due"], ["Ordner", "Behörde"]] }
+];
+const FW = .115, F0 = .13;                                   /* Fenster je Brief im Kapitel, Beginn */
+const FLOAT = [
+  { x: .02, y: -.4, z: -200, rx: 16, ry: -26, rz: -12 }, { x: .44, y: -.36, z: -300, rx: -10, ry: 30, rz: 14 },
+  { x: .45, y: .38, z: -120, rx: 22, ry: -22, rz: -6 }, { x: .12, y: .47, z: 0, rx: -26, ry: 24, rz: 18 },
+  { x: .08, y: -.06, z: -460, rx: 8, ry: 40, rz: -26 }, { x: .5, y: .02, z: -600, rx: -18, ry: -34, rz: 10 },
+  { x: -.47, y: -.53, z: -360, rx: 20, ry: 10, rz: -22 }, { x: -.2, y: .53, z: -80, rx: -32, ry: -8, rz: 14 }
+];
+const FLOAT_M = [
+  { x: -.44, y: .32, z: -160, rx: 16, ry: -26, rz: -12 }, { x: .45, y: .3, z: -60, rx: -10, ry: 30, rz: 14 },
+  { x: .42, y: .6, z: 40, rx: 22, ry: -22, rz: -6 }, { x: -.42, y: .62, z: 0, rx: -26, ry: 24, rz: 18 },
+  { x: -.22, y: .5, z: -520, rx: 8, ry: 40, rz: -26 }, { x: .24, y: .5, z: -560, rx: -18, ry: -34, rz: 10 },
+  { x: .46, y: -.49, z: -420, rx: 20, ry: 10, rz: -22 }, { x: 0, y: .7, z: -180, rx: -32, ry: -8, rz: 14 }
+];
+
+/* ---------------------------------------------------------- Maße ------ */
+let vw, vh, mobile, secs = {}, dev = { w: 0, h: 0, x: 0, y: 0 };
+function measure() {
+  vw = innerWidth; vh = innerHeight; mobile = vw <= 820 || vw / vh < .9;
+  for (const id of ["hero", "story", "frist", "suche", "trust", "web"]) {
+    const el = document.getElementById(id), top = el.getBoundingClientRect().top + scrollY;
+    secs[id] = { top, h: el.offsetHeight, range: Math.max(1, el.offsetHeight - vh) };
+  }
+  /* Das iPhone: so hoch wie es der Platz erlaubt — auf dem Handy unten, ganz sichtbar */
+  if (mobile) { dev.h = Math.min(vh * .42, vw * 1.02 * 2760 / 1350 * .5); dev.w = dev.h * 1350 / 2760; dev.xr = dev.xl = (vw - dev.w) / 2; dev.y = vh - dev.h - 18; }
+  else { dev.h = Math.min(vh * .82, 780); dev.w = dev.h * 1350 / 2760; dev.xr = Math.min(vw * .72, vw - dev.w * .5 - 60) - dev.w / 2; dev.xl = Math.max(vw * .27, dev.w * .5 + 60) - dev.w / 2; dev.y = (vh - dev.h) / 2 + 12; }
+  devEl.style.width = dev.w + "px";
+  st.resize();
+}
+const prog = (id, y) => clamp((y - secs[id].top) / secs[id].range, 0, 1);
+
+/* ---------------------------------------------------------- Kapitel --- */
+const caps = $$("[data-cap]"), cardsEl = $("[data-cards]");
+const cardEl = { wohnen: $('[data-card="wohnen"]'), behoerde: $('[data-card="behoerde"]') };
+const tick = $("[data-tick]"); for (let i = 0; i < 22; i++) tick.appendChild(document.createElement("i"));
+const ticks = [...tick.children];
+const due = new Date(); due.setDate(due.getDate() + 7);
+const d21 = new Date(due); d21.setDate(d21.getDate() - 21); const d7 = new Date(due); d7.setDate(d7.getDate() - 7);
+const fmt = d => d.toLocaleDateString("de-DE", { day: "numeric", month: "short" });
+$("[data-t0]").textContent = fmt(d21); $("[data-t1]").textContent = fmt(d7) + " · Erinnerung"; $("[data-t2]").textContent = fmt(due) + " · Frist";
+const dueLong = due.toLocaleDateString("de-DE", { day: "numeric", month: "long" });
+const words = (() => { const r = $("[data-reveal]"); r.innerHTML = r.textContent.trim().split(/\s+/).map(w => `<span class="wd">${w}</span>`).join(" "); return $$(".reveal .wd"); })();
+let lastCap = -1, lastDays = -1, lastQ = null, lastW = -1;
+
+function chapters(y) {
+  const ps = prog("story", y), pf = prog("frist", y), pq = prog("suche", y), pt = prog("trust", y), mid = vh * .5;
+  const cap = ps < .12 ? 0 : ps < .62 ? 1 : 2;
+  if (cap !== lastCap) { caps.forEach((c, i) => c.classList.toggle("on", i === cap)); lastCap = cap; }
+  cardsEl.classList.toggle("on", y > secs.story.top && ps > .1 && ps < (mobile ? .64 : .98));
+
+  let a = "scan", notif = 0;
+  if (y < secs.frist.top - mid) { if (ps > .62) a = "archiv"; }
+  else if (y < secs.suche.top - mid) { a = "brief"; notif = pf > .56 ? 1 : 0; }
+  else if (y < secs.trust.top - mid) { a = pq > .5 ? "suche1" : "suche0"; }
+  else a = "einst";
+  screen.set({ a, notif, notifText: { title: "Frist", l1: "Stadtwerke — noch 7 Tage, fällig am", l2: dueLong } });
+
+  /* Fristen: 21 Tage schrumpfen auf 7 */
+  const days = Math.round(lerp(21, 7, clamp(pf / .55, 0, 1)));
+  if (days !== lastDays) { lastDays = days; $("[data-days]").textContent = days; const d = days <= 7; $("[data-big]").classList.toggle("due", d);
+    $("[data-dlab]").textContent = d ? "Tage vorher — PostSafe erinnert dich" : "Tage bis zur Zahlung";
+    ticks.forEach((c, i) => c.className = i < 21 - days ? "gone" : i === 14 ? "rem" : i === 21 ? "day" : ""); }
+
+  const q = "Rechnung".slice(0, Math.round(clamp((pq - .05) / .42, 0, 1) * 8));
+  if (q !== lastQ) { lastQ = q; $("[data-q]").textContent = q; }
+  const wl = Math.round(clamp((pt - .04) / .6, 0, 1) * words.length);
+  if (wl !== lastW) { lastW = wl; words.forEach((w, i) => w.classList.toggle("lit", i < wl)); }
+  $("#dock").classList.toggle("on", y > vh * .7 && y < document.documentElement.scrollHeight - vh * 1.4 && !(mobile && y > secs.story.top - vh * .3 && y < secs.web.top));
+  return ps;
+}
+
+/* Wo das iPhone steht. Gekippt, gedreht oder verändert wird es nie (Apples Regeln
+   für Produktbilder) — es lebt davon, dass es sich durch den Raum bewegt: es fährt
+   beim Laden herein, wechselt für die Fristen die Seite, gleitet beim Scrollen
+   leicht nach und geht am Ende mit der Seite nach oben.                      */
+const T0 = performance.now();
+function placeDevice(y, ps, now) {
+  const e = t => t < .5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+  /* Seite: rechts, für die Fristen links */
+  const toL = clamp((y - (secs.frist.top - vh)) / vh, 0, 1), toR = clamp((y - (secs.suche.top - vh)) / vh, 0, 1);
+  const side = e(toL) - e(toR);
+  let x = lerp(dev.xr, dev.xl, side);
+  /* Nachgleiten: in jedem Kapitel wandert es ein wenig gegen die Leserichtung */
+  let dy = 0;
+  for (const id of ["story", "frist", "suche", "trust"]) { const s0 = secs[id]; if (y >= s0.top - vh && y <= s0.top + s0.h) dy = lerp(28, -28, clamp((y - s0.top + vh) / (s0.h + vh), 0, 1)); }
+  dy += lerp(0, -18, clamp(y / vh, 0, 1)) * (y < secs.story.top ? 1 : 0);
+  /* Auftritt beim Laden */
+  const intro = reduce ? 1 : clamp((now - T0 - 250) / 1300, 0, 1), ie = 1 - Math.pow(1 - intro, 4);
+  dy += (1 - ie) * vh * .35;
+  if (mobile && y > secs.story.top - vh) {                     /* auf dem Handy macht es im Stapel-Kapitel Platz */
+    const inS = clamp((y - (secs.story.top - vh * .6)) / (vh * .6), 0, 1), outS = clamp((ps - .64) / .1, 0, 1);
+    dy += (1 - Math.min(1, outS + (1 - inS))) * (vh - dev.y + 20);
+  }
+  const leave = secs.trust.top + secs.trust.h - vh;
+  if (y > leave) dy -= (y - leave);
+  devEl.style.opacity = ie.toFixed(3);
+  devEl.style.transform = `translate3d(${x.toFixed(1)}px, ${(dev.y + dy).toFixed(1)}px, 0)`;
+}
+
+/* ---------------------------------------------------------- Briefe ---- */
+const d2r = Math.PI / 180, qTmp = new st.THREE.Quaternion(), eTmp = new st.THREE.Euler(), flat = new st.THREE.Quaternion();
+const frameG = $("[data-frame]");
+const plus = { wohnen: 0, behoerde: 0 };
+function cardWorld(name) { const r = cardEl[name].getBoundingClientRect(); return st.toWorld((r.left + r.width / 2) / vw - .5, (r.top + r.height / 2) / vh - .5, 0); }
+const chipsEl = $("[data-chips]");
+let chipsFor = -1;
+function lettersAt(y, ps, now) {
+  const F = mobile ? FLOAT_M : FLOAT, sc = mobile ? .38 : .56;
+  let scan = null; const landed = { wohnen: 0, behoerde: 0 };
+  items.forEach((l, i) => {
+    const f = F[i], t = now / 1000 + i * 1.7;
+    let p = st.toWorld(f.x, f.y, f.z), rx = f.rx, ry = f.ry, rz = f.rz, s = sc, o = 1, fold = 1, glow = 0;
+    if (!reduce) { p.y += Math.sin(t * .6) * 5; rz += Math.sin(t * .45) * 4; ry += Math.cos(t * .38) * 7; }
+    const fly = FLY.findIndex(x => x.i === i);
+    const fly0 = FLY.findIndex(x => x.i === i);
+    /* Einer nach dem anderen auf den Stapel — die übrigen gleiten zur Seite weg */
+    const tp = y < secs.story.top ? 0 : ease(clamp((ps - (fly0 < 0 ? 0 : fly0 * .022)) / .075, 0, 1));
+    if (fly < 0) { o = 1 - clamp(tp * 2.2, 0, 1); p.x += Math.sign(f.x || 1) * tp * 160; p.z -= tp * 120; }
+    else if (tp > 0) {                                           /* der Stapel */
+      /* jedes Blatt hat seine eigene Ebene im Stapel und kommt von oben an */
+      const pile = st.toWorld(mobile ? 0 : -.21, mobile ? .14 : .12, 30 + fly * 24);
+      pile.x += (fly * 29 % 40 - 20); pile.y += (fly * 17 % 20 - 10);
+      p.lerp(pile, tp); p.z += Math.sin(Math.PI * tp) * 90;
+      rx = lerp(rx, -24, tp); ry = lerp(ry, 0, tp); rz = lerp(rz, [-14, 9, -4, 16][fly], tp);
+      fold = lerp(1, .3, tp);
+    }
+    eTmp.set(rx * d2r, ry * d2r, rz * d2r); qTmp.setFromEuler(eTmp);
+    if (fly >= 0) {
+      const u = clamp((ps - (F0 + fly * FW)) / FW, 0, 1);
+      if (y > secs.frist.top - vh * .5) o = 0;
+      if (u > 0) {
+        const spot = st.toWorld(mobile ? 0 : -.2, mobile ? .065 : .1, 250);   /* weit vor dem Stapel */
+        const a = ease(clamp(u / .16, 0, 1));                  /* heben und glätten */
+        p.lerp(spot, a); qTmp.slerp(flat, a); fold = lerp(.3, 0, a); s = lerp(sc, sc * (mobile ? .95 : .96) * (370 / 510), a);
+        if (u > .12 && u < .84) scan = { l, fly, u };
+        glow = u > .2 && u < .32 ? Math.sin((u - .2) / .12 * Math.PI) * .5 : 0;
+        const c = ease(clamp((u - .76) / .24, 0, 1));           /* in den Ordner */
+        if (c > 0) { p.lerp(cardWorld(FLY[fly].to), c); s = lerp(s, sc * .16, c); o = 1 - clamp((c - .75) / .25, 0, 1); }
+        if (u >= 1) { landed[FLY[fly].to]++; o = 0; }
+      }
+    }
+    l.group.position.copy(p); l.group.quaternion.copy(qTmp); l.group.scale.setScalar(s);
+    l.group.visible = o > .01;
+    l.mats.forEach(m => { m.transparent = o < .999; m.opacity = o; });
+    l.mats[0].emissiveIntensity = glow;
+    if (Math.abs((l._fold ?? 1) - fold) > .02) { st.bendSheet(l.geo, l.w, l.h, l.fold[0] * fold, l.fold[1] * fold, l.curl * (.4 + .6 * fold)); l._fold = fold; }
+  });
+  drawScan(scan);
+  for (const k of ["wohnen", "behoerde"]) if (landed[k] !== plus[k]) { plus[k] = landed[k]; const bEl = cardEl[k].querySelector("b"); bEl.textContent = "+" + landed[k]; bEl.classList.toggle("on", landed[k] > 0); }
+}
+
+/* Der Scan: Rahmen aus dem App-Icon rastet ein, ein Lichtband fährt über das Blatt,
+   was es findet, wird markiert und springt als Angabe heraus. */
+function drawScan(sc) {
+  if (!sc) { if (chipsFor !== -1 || frameG.innerHTML) { frameG.innerHTML = ""; chipsEl.innerHTML = ""; chipsFor = -1; } return; }
+  const { l, fly, u } = sc, def = FLY[fly];
+  l.group.updateMatrixWorld(true);
+  const c = st.corners(l), xs = c.map(v => v[0]), ys = c.map(v => v[1]);
+  const X0 = Math.min(...xs), X1 = Math.max(...xs), Y0 = Math.min(...ys), Y1 = Math.max(...ys);
+  const k = ease(clamp((u - .12) / .1, 0, 1)), out = clamp((u - .74) / .06, 0, 1), vis = k * (1 - out);
+  const pad = lerp(70, 14, k), x0 = X0 - pad, x1 = X1 + pad, y0 = Y0 - pad, y1 = Y1 + pad, L = Math.min(46, (x1 - x0) * .22);
+  let svg = `<g opacity="${vis.toFixed(2)}" class="br"><path d="M${x0} ${y0 + L}V${y0 + 14}q0-14 14-14H${x0 + L}"/><path d="M${x1 - L} ${y0}H${x1 - 14}q14 0 14 14V${y0 + L}"/><path d="M${x1} ${y1 - L}V${y1 - 14}q0 14-14 14H${x1 - L}"/><path d="M${x0 + L} ${y1}H${x0 + 14}q-14 0-14-14V${y1 - L}"/></g>`;
+  /* Lichtband */
+  const sw = clamp((u - .2) / .28, 0, 1);
+  if (sw > 0 && sw < 1) { const by = lerp(Y0, Y1, sw); svg += `<rect x="${X0}" y="${by - 34}" width="${X1 - X0}" height="68" fill="url(#band)" opacity="${(1 - out).toFixed(2)}"/><rect x="${X0 - 6}" y="${by - 1}" width="${X1 - X0 + 12}" height="2.5" rx="1" fill="#FF6A28" opacity=".9"/>`; }
+  /* Markierungen und herausgesprungene Angaben */
+  if (chipsFor !== fly) { chipsFor = fly; chipsEl.innerHTML = def.facts.map(([k1, v, box]) => `<div class="fact${k1 === "Frist" ? " due" : ""}"><small>${k1}</small><b>${v}</b></div>`).join(""); }
+  const chips = [...chipsEl.children];
+  const card = cardEl[def.to].getBoundingClientRect();
+  /* Erst alle Fundstellen bestimmen, dann die Kärtchen auf ihre Höhe setzen —
+     von oben nach unten, ohne Überlappung. So laufen die Linien nebeneinander
+     und kreuzen sich nie. */
+  const found = def.facts.map(([k1, v, box]) => {
+    const b = box && l.boxes && l.boxes[box];
+    if (!b) return null;
+    const p0 = st.project(l, b[0], b[1]), p1 = st.project(l, b[0] + b[2], b[1] + b[3]);
+    const hx = Math.min(p0[0], p1[0]), hyy = Math.min(p0[1], p1[1]), hw = Math.abs(p1[0] - p0[0]), hh = Math.abs(p1[1] - p0[1]);
+    return { hx, hy: hyy, hw, hh, seen: (Y0 + (Y1 - Y0) * sw > hyy || sw >= 1) && u > .2 };
+  });
+  const H = chips[0] ? chips[0].offsetHeight : 52, gap = 10;
+  let lastY = -1e9; const slotY = [];
+  def.facts.forEach((_, j) => {
+    const f = found[j];
+    let want = mobile ? Y1 + 18 + Math.floor(j / 2) * (H + 8) : (f ? f.hy + f.hh / 2 - H / 2 : lastY + H + gap);
+    if (!mobile) want = Math.max(want, lastY + H + gap);
+    slotY[j] = want; lastY = want;
+  });
+  def.facts.forEach(([k1, v, box], j) => {
+    const f = found[j];
+    let hy = null, hx1 = null;
+    if (f && f.seen) { svg += `<rect class="hl${k1 === "Frist" ? " due" : ""}" x="${f.hx}" y="${f.hy}" width="${f.hw}" height="${f.hh}" rx="4" opacity="${(1 - out).toFixed(2)}"/>`; hy = f.hy + f.hh / 2; hx1 = f.hx + f.hw; }
+    const ch = chips[j]; if (!ch) return;
+    const appear = clamp((u - (.3 + j * .075)) / .06, 0, 1), ae = 1 - Math.pow(1 - appear, 3);
+    const cx = mobile ? vw / 2 + (j % 2 ? 6 : -ch.offsetWidth - 6) : X1 + 56, cy = slotY[j];
+    const go = ease(clamp((u - .76) / .2, 0, 1));
+    const tx = lerp(cx, card.left + card.width / 2 - ch.offsetWidth / 2, go), ty = lerp(cy, card.top + card.height / 2 - ch.offsetHeight / 2, go);
+    const from = hy != null ? [hx1 - ch.offsetWidth / 2, hy - ch.offsetHeight / 2] : [cx - 30, cy];
+    const x = lerp(from[0], tx, ae), yy = lerp(from[1], ty, ae);
+    ch.style.opacity = (ae * (1 - clamp((go - .6) / .4, 0, 1))).toFixed(3);
+    ch.style.transform = `translate3d(${x.toFixed(1)}px, ${yy.toFixed(1)}px, 0) scale(${(lerp(.6, 1, ae) * lerp(1, .5, go)).toFixed(3)})`;
+    if (!mobile && hy != null && ae > .98 && go === 0) {
+      const ey = cy + ch.offsetHeight / 2, mx = (hx1 + cx) / 2;
+      svg += `<path class="ln" d="M${hx1 + 4} ${hy}C${mx} ${hy},${mx} ${ey},${cx - 4} ${ey}"/>`;
+    }
+  });
+  frameG.innerHTML = svg;
+}
+
+/* ---------------------------------------------------------- Lauf ------ */
+function tick_(now) {
+  const y = smoothY(), ps = chapters(y);
+  placeDevice(y, ps, now);
+  lettersAt(y, ps, now);
+  screen.draw(now); webDev.draw(now);
+  st.render();
+}
+function frame(now) { tick_(now); requestAnimationFrame(frame); }
+
+(() => {
+  const rot = $("[data-rot]"), list = [...rot.children]; let i = 0;
+  list.forEach(s => s.innerHTML = s.textContent.split(" ").map(w => `<span class="w">${[...w].map((c, k) => `<span class="c" style="transition-delay:${k * .018}s">${c}</span>`).join("")}</span>`).join(" "));
+  if (reduce) return;
+  setInterval(() => { const a = list[i]; i = (i + 1) % list.length; const b = list[i]; a.classList.add("out");
+    setTimeout(() => { a.classList.remove("on", "out"); b.classList.add("pre", "on"); void b.offsetWidth; requestAnimationFrame(() => b.classList.remove("pre")); }, 420); }, 3400);
+})();
+$("#copy").addEventListener("click", function () {
+  const b = this, done = () => { b.textContent = "Kopiert"; setTimeout(() => b.textContent = "Kopieren", 1600); };
+  const sel = () => { const r = document.createRange(); r.selectNodeContents($("#mailto")); const s = getSelection(); s.removeAllRanges(); s.addRange(r); };
+  try { navigator.clipboard.writeText("kontakt@postsafe.eu").then(done, sel); } catch (_) { sel(); }
+});
+let rt; addEventListener("resize", () => { clearTimeout(rt); rt = setTimeout(measure, 150); });
+addEventListener("load", () => {
+  measure();
+});
+measure();
+requestAnimationFrame(frame);
+</script>
 </body>
 </html>
