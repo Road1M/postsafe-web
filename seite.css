@@ -111,7 +111,7 @@ main{position:relative; z-index:1; background:var(--paper); border-end-start-rad
 
 /* Die App-Store-Badges, wie Apple und Google sie liefern */
 .badges{display:flex; align-items:center; gap:12px; flex-wrap:wrap}
-.badges img{display:block; height:60px; width:auto}
+.badges img{display:block; height:clamp(44px, 3.4vw, 60px); width:auto}
 .badges small{display:block; width:100%; font-family:var(--mono); font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--ink-3)}
 
 /* Browserfenster mit der echten Seite von PostSafe Web */

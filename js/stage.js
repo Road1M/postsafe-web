@@ -25,8 +25,8 @@ function buildLetter(frontCanvas, backCanvas, kind) {
   const geo = new THREE.PlaneGeometry(w, h, 12, kind === "env" ? 6 : 36);
   const ft = new THREE.CanvasTexture(frontCanvas), bt = new THREE.CanvasTexture(backCanvas);
   ft.colorSpace = bt.colorSpace = THREE.SRGBColorSpace; ft.anisotropy = bt.anisotropy = 8;
-  const mf = new THREE.MeshStandardMaterial({ map: ft, roughness: .86, metalness: 0, side: THREE.FrontSide, envMapIntensity: .3, emissive: 0xffffff, emissiveIntensity: 0 });
-  const mb = new THREE.MeshStandardMaterial({ map: bt, roughness: .9, metalness: 0, side: THREE.BackSide, envMapIntensity: .28 });
+  const mf = new THREE.MeshStandardMaterial({ map: ft, roughness: .86, metalness: 0, side: THREE.FrontSide, envMapIntensity: .3, emissive: 0xffffff, emissiveMap: ft, emissiveIntensity: .16 });
+  const mb = new THREE.MeshStandardMaterial({ map: bt, roughness: .9, metalness: 0, side: THREE.BackSide, envMapIntensity: .28, emissive: 0xffffff, emissiveMap: bt, emissiveIntensity: .14 });
   mf.toneMapped = mb.toneMapped = false;              /* Papier bleibt weiß */
   g.add(new THREE.Mesh(geo, mf), new THREE.Mesh(geo, mb));
   return { group: g, geo, w, h, kind, mats: [mf, mb] };
