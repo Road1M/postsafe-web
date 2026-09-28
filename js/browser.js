@@ -71,12 +71,16 @@ export async function mountBrowser(el, { height = 620 } = {}) {
     say("Im echten PostSafe Web geht die Datei jetzt über dein WLAN auf dein iPhone.");
   });
   /* Wer über das Fenster hinwegscrollt, scrollt die Seite. Erst ein Klick hinein
-     macht das Fenster selbst scrollbar — bis der Zeiger es wieder verlässt. */
+     macht das Fenster selbst scrollbar — bis der Zeiger es wieder verlässt. Auf dem
+     Handy ist jeder Wisch auch ein Antippen; dort macht erst ein Tippen ins Fenster
+     es scrollbar, und ein Tippen daneben wieder die Seite. */
   const arm = on => view.classList.toggle("live", on);
-  view.addEventListener("pointerdown", () => arm(true));
+  view.addEventListener("pointerdown", e => { if (e.pointerType !== "touch") arm(true); });
+  view.addEventListener("click", () => arm(true));
   view.addEventListener("focusin", () => arm(true));
-  view.addEventListener("pointerleave", () => arm(false));
+  view.addEventListener("pointerleave", e => { if (e.pointerType !== "touch") arm(false); });
   view.addEventListener("focusout", () => arm(false));
+  document.addEventListener("pointerdown", e => { if (e.pointerType === "touch" && !view.contains(e.target)) arm(false); });
   back.addEventListener("click", () => { if (pos > 0) { pos--; render(hist[pos]); } });
   fwd.addEventListener("click", () => { if (pos < hist.length - 1) { pos++; render(hist[pos]); } });
 

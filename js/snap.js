@@ -5,13 +5,40 @@
    und Herscrollen nichts Hektisches.
 
    Die Halte liefert die Seite (stops): die Momente ihrer Geschichte, nicht die
-   Oberkanten ihrer Abschnitte.                                                   */
-export function snapScroll({ stops, skip = () => false }) {
+   Oberkanten ihrer Abschnitte.
+
+   Wie lange eine Fahrt dauert, bestimmt nicht die Strecke, sondern was unterwegs
+   passiert (pace): Wo ein Brief gescannt wird, fährt die Seite langsam, so dass
+   jede Animation in ihrem Tempo abläuft; wo nichts geschieht, geht es zügig
+   weiter. pace() liefert Bereiche [von, bis, Millisekunden]; alles andere fährt
+   mit ms Millisekunden je Bildschirmhöhe.                                        */
+export function snapScroll({ stops, skip = () => false, pace = () => [], ms = 1000 }) {
   const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
   let tween = null, lastWheel = 0, acc = 0, own = false, idle = null;
-  const ease = t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
-  const list = () => [...new Set(stops().map(v => Math.round(Math.max(0, Math.min(v, max())))))].sort((a, b) => a - b);
   const max = () => document.documentElement.scrollHeight - innerHeight;
+  const list = () => [...new Set(stops().map(v => Math.round(Math.max(0, Math.min(v, max())))))].sort((a, b) => a - b);
+
+  /* Anfahren und Abbremsen kurz, dazwischen gleichmäßig — so spielen die
+     Animationen mit ihrer eigenen Dynamik statt im Zeitraffer der Fahrt */
+  const A = .2, V = 1 / (1 - A);
+  const profile = t => t < A ? V * t * t / (2 * A) : t > 1 - A ? 1 - V * (1 - t) * (1 - t) / (2 * A) : V * (t - A / 2);
+  const cubic = t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+
+  /* Kosten jedes Pixels auf der Strecke in Millisekunden, aufsummiert */
+  function plan(from, to) {
+    const zones = pace(), N = Math.max(2, Math.min(600, Math.ceil(Math.abs(to - from) / 4)));
+    const cost = y => { for (const [a, b, m] of zones) if (y >= Math.min(a, b) && y < Math.max(a, b)) return m / Math.abs(b - a); return ms / innerHeight; };
+    const ys = [from], cum = [0];
+    for (let i = 1; i <= N; i++) { const y = from + (to - from) * i / N; ys.push(y); cum.push(cum[i - 1] + cost((ys[i - 1] + y) / 2) * Math.abs(to - from) / N); }
+    const total = cum[N];
+    const at = c => {                                       /* Kostenanteil → Position */
+      const want = c * total; let lo = 0, hi = N;
+      while (hi - lo > 1) { const m = (lo + hi) >> 1; if (cum[m] < want) lo = m; else hi = m; }
+      const f = cum[hi] > cum[lo] ? (want - cum[lo]) / (cum[hi] - cum[lo]) : 0;
+      return ys[lo] + (ys[hi] - ys[lo]) * f;
+    };
+    return { dur: Math.max(650, total), at };
+  }
 
   function current() {
     const s = list(), y = scrollY;
@@ -19,17 +46,22 @@ export function snapScroll({ stops, skip = () => false }) {
     s.forEach((v, i) => { if (Math.abs(v - y) < Math.abs(s[best] - y)) best = i; });
     return { s, i: best };
   }
-  function goTo(target) {
+  /* paced: eine Fahrt zum Nachbarhalt, im Tempo ihrer Animationen. Sonst (Pos1,
+     Ende, Anker über mehrere Abschnitte) ein zügiger Sprung. */
+  function goTo(target, paced = true) {
     const from = scrollY, dist = Math.abs(target - from);
     if (dist < 1) return;
-    const dur = reduce ? 1 : Math.max(800, Math.min(1500, 650 + dist / innerHeight * 260));
+    let dur, pos;
+    if (reduce) { dur = 1; pos = () => target; }
+    else if (paced) { const p = plan(from, target); dur = p.dur; pos = k => p.at(profile(k)); }
+    else { dur = Math.max(800, Math.min(1600, 650 + dist / innerHeight * 200)); pos = k => from + (target - from) * cubic(k); }
     const t0 = performance.now();
     tween = { done: false };
     const me = tween;
     const step = now => {
       if (me !== tween) return;
       const k = Math.min(1, (now - t0) / dur);
-      own = true; scrollTo(0, from + (target - from) * ease(k)); own = false;
+      own = true; scrollTo(0, k < 1 ? pos(k) : target); own = false;
       if (k < 1) requestAnimationFrame(step); else me.done = true;
     };
     requestAnimationFrame(step);
@@ -42,20 +74,29 @@ export function snapScroll({ stops, skip = () => false }) {
     j = Math.max(0, Math.min(s.length - 1, j));
     goTo(s[j]);
   }
-  const busy = () => (tween && !tween.done) || performance.now() - lastWheel < 240;
+  const busy = () => (tween && !tween.done) || performance.now() - lastWheel < 450;
 
-  let locked = false;
+  /* Wann beginnt eine neue Geste? Wenn das Rad eine knappe halbe Sekunde still
+     war — oder wenn der Ausschlag wieder ansteigt: Nachlauf wird immer schwächer,
+     ein neuer Wisch dagegen stärker. So bleibt ein stockender Nachlauf (langsamer
+     Rechner) eine Geste, ein zweiter Wisch mitten im Nachlauf zählt trotzdem.   */
+  let locked = false, hist = [];
   addEventListener("wheel", e => {
     if (e.ctrlKey) return;
-    const now = performance.now(), quiet = now - lastWheel > 240;
+    const now = performance.now(), gap = now - lastWheel;
     lastWheel = now;
     /* Ein Fenster in der Seite scrollt selbst; sein Nachlauf am Rand bewegt die Seite nicht */
     if (skip(e)) { locked = true; return; }
     e.preventDefault();
+    const d = e.deltaMode === 1 ? e.deltaY * 18 : e.deltaY, mag = Math.abs(d);
+    if (gap > 450) hist = [];
+    const prev = hist.slice(-3), avg = prev.reduce((a, b) => a + b, 0) / (prev.length || 1);
+    const rising = prev.length >= 2 && mag >= 12 && mag > avg * 1.6;
+    hist.push(mag); if (hist.length > 6) hist.shift();
     if (tween && !tween.done) return;               /* Schwung während der Fahrt: geschluckt */
-    if (quiet) { acc = 0; locked = false; }         /* das Rad war still: eine neue Geste */
+    if (gap > 450 || rising) { acc = 0; locked = false; }   /* eine neue Geste */
     if (locked) return;                             /* Nachlauf der letzten Geste */
-    acc += e.deltaMode === 1 ? e.deltaY * 18 : e.deltaY;
+    acc += d;
     if (Math.abs(acc) > 28) { go(Math.sign(acc)); acc = 0; locked = true; }
   }, { passive: false });
 
@@ -67,15 +108,20 @@ export function snapScroll({ stops, skip = () => false }) {
     if (!down && !up && e.key !== "Home" && e.key !== "End") return;
     e.preventDefault();
     if (tween && !tween.done) return;
-    if (e.key === "Home") goTo(0); else if (e.key === "End") goTo(max()); else go(down ? 1 : -1);
+    if (e.key === "Home") goTo(0, false); else if (e.key === "End") goTo(max(), false); else go(down ? 1 : -1);
   });
 
-  /* Wischen auf dem Handy: eine Wischgeste, ein Halt */
-  let ty = null, tx = null, inner = false;
-  addEventListener("touchstart", e => { inner = skip(e); ty = e.touches[0].clientY; tx = e.touches[0].clientX; }, { passive: true });
-  addEventListener("touchmove", e => { if (!inner && ty !== null && e.touches.length === 1) e.preventDefault(); }, { passive: false });
+  /* Wischen auf dem Handy: eine Wischgeste, ein Halt. Beginnt sie in einem Fenster,
+     das in diese Richtung noch scrollen kann, gehört sie dem Fenster. */
+  let ty = null, tx = null, from = null, mode = null;
+  addEventListener("touchstart", e => { from = e.target; mode = null; ty = e.touches[0].clientY; tx = e.touches[0].clientX; }, { passive: true });
+  addEventListener("touchmove", e => {
+    if (ty === null || e.touches.length !== 1) return;
+    if (!mode) mode = skip({ target: from, deltaY: ty - e.touches[0].clientY }) ? "inner" : "page";
+    if (mode === "page") e.preventDefault();
+  }, { passive: false });
   addEventListener("touchend", e => {
-    if (inner || ty === null) return;
+    if (ty === null || mode !== "page") { ty = null; return; }
     const dy = ty - e.changedTouches[0].clientY, dx = tx - e.changedTouches[0].clientX; ty = null;
     if (Math.abs(dy) < 36 || Math.abs(dx) > Math.abs(dy)) return;
     if (tween && !tween.done) return;
@@ -88,7 +134,7 @@ export function snapScroll({ stops, skip = () => false }) {
     const el = document.querySelector(a.getAttribute("href")); if (!el) return;
     e.preventDefault();
     const top = el.getBoundingClientRect().top + scrollY, s = list();
-    goTo(s.find(v => v >= top - 2) ?? s[s.length - 1]);
+    goTo(s.find(v => v >= top - 2) ?? s[s.length - 1], false);
   });
 
   /* Kam die Seite anders an eine Stelle (Scrollbalken, Neuladen), rastet sie am nächsten Halt ein */

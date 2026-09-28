@@ -381,7 +381,7 @@ const FLY = [
   { i: 3, to: "wohnen", facts: [["Absender", "Hausverwaltung", "sender"], ["Betrag", "312,45 €", "amount"], ["Frist", dd(25), "due"], ["Ordner", "Wohnen"]] },
   { i: 6, to: "behoerde", facts: [["Absender", "Landratsamt", "sender"], ["Betreff", "Wohngeld", "subject"], ["Frist", dd(21), "due"], ["Ordner", "Behörde"]] }
 ];
-const FW = .115, F0 = .13;                                   /* Fenster je Brief im Kapitel, Beginn */
+const FW = .115, F0 = .16;                                   /* Fenster je Brief im Kapitel, Beginn */
 const FLOAT = [
   { x: .02, y: -.4, z: -200, rx: 16, ry: -26, rz: -12 }, { x: .44, y: -.36, z: -300, rx: -10, ry: 30, rz: 14 },
   { x: .45, y: .38, z: -120, rx: 22, ry: -22, rz: -6 }, { x: .12, y: .47, z: 0, rx: -26, ry: 24, rz: 18 },
@@ -445,7 +445,7 @@ let lastCap = -1, lastDays = -1, lastQ = null, lastW = -1;
 
 function chapters(y) {
   const ps = prog("story", y), pf = prog("frist", y), pq = prog("suche", y), pt = prog("trust", y), mid = vh * .5;
-  const cap = ps < .12 ? 0 : ps < .62 ? 1 : 2;
+  const cap = ps < .12 ? 0 : ps < .625 ? 1 : 2;
   if (cap !== lastCap) { caps.forEach((c, i) => c.classList.toggle("on", i === cap)); lastCap = cap; }
   cardsEl.classList.toggle("on", y > secs.story.top && ps > .15 && ps < (mobile ? .64 : .98));   /* erst, wenn der Stapel liegt */
 
@@ -636,18 +636,45 @@ addEventListener("load", () => {
 measure();
 requestAnimationFrame(frame);
 
-/* Abschnitt für Abschnitt — die Halte sind die Momente der Geschichte */
+/* Abschnitt für Abschnitt — die Halte sind die Momente der Geschichte. Jede Fahrt
+   dauert so lange, wie ihre Animation braucht: Ein Brief fliegt in seinen Ordner
+   (1 s), der nächste hebt sich (0,7 s) und wird gelesen (1,7 s); das iPhone wechselt
+   in 2 s die Seite. Wo die Seite nur steht (angeheftete Kapitel ohne Bewegung),
+   geht es in einem Zug darüber hinweg. */
+const at = (id, p) => secs[id].top + p * secs[id].range, top = sel => $(sel).getBoundingClientRect().top + scrollY;
+const PILE = .155, REST = .7, DONE = () => mobile ? .76 : .66;           /* REST: der Brief ist gelesen, die Angaben stehen */
+const letter = k => F0 + k * FW;
 snapScroll({
   skip: insideLiveBrowser,
   stops: () => {
-    const at = (id, p) => secs[id].top + p * secs[id].range, top = sel => $(sel).getBoundingClientRect().top + scrollY;
-    const s = [0, at("story", .1)];                                       /* Anfang, der Stapel */
-    for (let k = 0; k < FLY.length; k++) s.push(at("story", F0 + (k + .62) * FW));   /* jeder Scan */
-    s.push(at("story", .8));                                              /* abgelegt */
+    const s = [0, at("story", PILE)];                                     /* Anfang, der Stapel */
+    for (let k = 0; k < FLY.length; k++) s.push(at("story", letter(k + REST)));   /* jeder Scan */
+    s.push(at("story", DONE()));                                          /* abgelegt */
     s.push(at("frist", 0), at("frist", .75));                             /* 21 Tage, dann 7 */
     s.push(at("suche", .75), at("trust", .72));                           /* gefunden, dein Speicher */
     s.push(top("#web"), top(".keep"), top(".fine"), top(".contact"), 1e9);
     return s;
+  },
+  pace: () => {
+    const S = p => at("story", p), z = [[secs.story.top, S(PILE), 1700]];   /* die Blätter sammeln sich */
+    for (let k = 0; k < FLY.length; k++) {
+      z.push([S(k ? letter(k) : PILE), S(letter(k + .2)), 700]);         /* heben, Rahmen rastet ein */
+      z.push([S(letter(k + .2)), S(letter(k + REST)), 1700]);            /* Lichtband, Angaben */
+      z.push([S(letter(k + REST)), S(letter(k + 1)), 1000]);             /* in den Ordner */
+    }
+    z.push([S(letter(FLY.length)), S(DONE()), mobile ? 1400 : 600]);    /* abgelegt */
+    return z.concat([
+      [S(DONE()), S(1), 250],                                             /* das Kapitel steht still */
+      [S(1), secs.frist.top, 2000],                                       /* iPhone wechselt nach links */
+      [secs.frist.top, at("frist", .6), 2400],                            /* 21 Tage werden 7 */
+      [at("frist", .75), at("frist", 1), 150],
+      [at("frist", 1), secs.suche.top, 2000],                             /* und zurück nach rechts */
+      [secs.suche.top, at("suche", .52), 2000],                           /* „Rechnung“ wird getippt */
+      [at("suche", .75), at("suche", 1), 120],
+      [at("suche", 1), secs.trust.top, 1400],
+      [secs.trust.top, at("trust", .66), 2200],                           /* die Worte leuchten auf */
+      [at("trust", .72), at("trust", 1), 120]
+    ]);
   }
 });
 </script>

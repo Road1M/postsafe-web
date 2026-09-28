@@ -250,7 +250,9 @@ snapScroll({
   stops: () => {
     const at = p => secs.schritte.top + p * secs.schritte.range, top = sel => document.querySelector(sel).getBoundingClientRect().top + scrollY;
     return [0, at(.15), at(.5), at(.85), top(".after"), top(".facts") - innerHeight * .25, 1e9];
-  }
+  },
+  /* Von Schritt zu Schritt: Zeit genug, dass Ring und Bildschirm in Ruhe wechseln */
+  pace: () => [[secs.schritte.top + .15 * secs.schritte.range, secs.schritte.top + .85 * secs.schritte.range, 2600]]
 });
 </script>
 
