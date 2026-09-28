@@ -9,7 +9,7 @@
 <meta name="theme-color" content="#070707" media="(prefers-color-scheme: dark)">
 <link rel="icon" href="favicon.svg?v=2" type="image/svg+xml">
 <link rel="canonical" href="https://postsafe.eu/web.html">
-<link rel="stylesheet" href="seite.css?v=12">
+<link rel="stylesheet" href="seite.css?v=13">
 <style>
 .dev-fixed{position:fixed; z-index:30; left:0; top:0; pointer-events:none; will-change:transform}
 .hero{min-height:100svh; display:flex; align-items:center}
@@ -164,11 +164,16 @@
 <script type="module">
 import { mountDevice } from "./js/screens.js";
 import { mountBrowser } from "./js/browser.js";
-import { smoothScroll } from "./js/smooth.js";
-smoothScroll({ skip: e => !!e.target.closest?.(".browser__view.live") });
+import { snapScroll } from "./js/snap.js";
+/* Die Vorschau scrollt selbst, solange sie in Gestenrichtung noch Platz hat */
+const insideLiveBrowser = e => {
+  const v = e.target.closest?.(".browser__view.live");
+  if (!v || e.deltaY === undefined) return !!v;
+  return e.deltaY > 0 ? v.scrollTop + v.clientHeight < v.scrollHeight - 1 : v.scrollTop > 0;
+};
 /* Die Animationen folgen einem geglätteten Scrollwert — auch Trackpad, Tasten und Scrollbalken wirken so weich */
 let ys = scrollY;
-const smoothY = () => { const d = scrollY - ys; ys = Math.abs(d) < .3 ? scrollY : ys + d * .18; return ys; };
+const smoothY = () => { const d = scrollY - ys; ys = Math.abs(d) < .3 ? scrollY : ys + d * .3; return ys; };
 
 const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
 const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
@@ -238,6 +243,15 @@ function frame(now) { tick(now); requestAnimationFrame(frame); }
 let rt; addEventListener("resize", () => { clearTimeout(rt); rt = setTimeout(measure, 150); });
 addEventListener("load", () => { measure(); const at = Q.get("at"); if (at) { const [id, p] = at.split(":"); scrollTo(0, id === "after" ? document.querySelector(".after").offsetTop - 40 : secs[id].top + (+p) * secs[id].range); } });
 measure(); requestAnimationFrame(frame);
+
+/* Abschnitt für Abschnitt: Anfang, die drei Schritte, die Vorschau, das Kleingedruckte */
+snapScroll({
+  skip: insideLiveBrowser,
+  stops: () => {
+    const at = p => secs.schritte.top + p * secs.schritte.range, top = sel => document.querySelector(sel).getBoundingClientRect().top + scrollY;
+    return [0, at(.15), at(.5), at(.85), top(".after"), top(".facts") - innerHeight * .25, 1e9];
+  }
+});
 </script>
 
 </body>

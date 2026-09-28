@@ -126,7 +126,7 @@ main{position:relative; z-index:1; background:var(--paper); border-end-start-rad
 .browser__url{flex:1; margin:0 12% 0 4%; height:30px; border-radius:8px; background:var(--card); border:1px solid var(--line); display:flex; align-items:center; justify-content:center; gap:7px; font-size:13.5px; color:var(--ink)}
 .browser__url svg{color:var(--ink-3)}
 .browser__view{position:relative; overflow:hidden; background:var(--paper)}
-.browser__view.live{overflow-y:auto; overscroll-behavior:auto}
+.browser__view.live{overflow-y:auto; overscroll-behavior:contain}
 .browser__page{overflow:hidden}
 .browser__toast{position:sticky; bottom:14px; margin:0 auto; width:max-content; max-width:90%; padding:10px 16px; border-radius:999px; background:var(--ink); color:var(--paper); font-size:14px; opacity:0; transform:translateY(10px); transition:opacity .3s, transform .4s var(--ease); pointer-events:none}
 .browser__toast.on{opacity:1; transform:none}

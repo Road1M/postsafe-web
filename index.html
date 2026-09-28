@@ -20,7 +20,7 @@
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="PostSafe — Deine Post kennt ihren Platz.">
 <meta name="twitter:card" content="summary_large_image">
-<link rel="stylesheet" href="seite.css?v=12">
+<link rel="stylesheet" href="seite.css?v=13">
 <style>
 /* Hero */
 .hero{min-height:100svh; display:flex; align-items:center; position:relative}
@@ -332,11 +332,16 @@ import { createStage } from "./js/stage.js";
 import { mountDevice } from "./js/screens.js";
 import { LETTERS, drawLetter, drawBack, drawEnvelope, drawEnvelopeBack } from "./js/letters.js";
 import { mountBrowser } from "./js/browser.js";
-import { smoothScroll } from "./js/smooth.js";
-smoothScroll({ skip: e => !!e.target.closest?.(".browser__view.live") });
+import { snapScroll } from "./js/snap.js";
+/* Die Vorschau scrollt selbst, solange sie in Gestenrichtung noch Platz hat */
+const insideLiveBrowser = e => {
+  const v = e.target.closest?.(".browser__view.live");
+  if (!v || e.deltaY === undefined) return !!v;
+  return e.deltaY > 0 ? v.scrollTop + v.clientHeight < v.scrollHeight - 1 : v.scrollTop > 0;
+};
 /* Die Animationen folgen einem geglätteten Scrollwert — auch Trackpad, Tasten und Scrollbalken wirken so weich */
 let ys = scrollY;
-const smoothY = () => { const d = scrollY - ys; ys = Math.abs(d) < .3 ? scrollY : ys + d * .18; return ys; };
+const smoothY = () => { const d = scrollY - ys; ys = Math.abs(d) < .3 ? scrollY : ys + d * .3; return ys; };
 
 const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
 const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
@@ -630,6 +635,21 @@ addEventListener("load", () => {
 });
 measure();
 requestAnimationFrame(frame);
+
+/* Abschnitt für Abschnitt — die Halte sind die Momente der Geschichte */
+snapScroll({
+  skip: insideLiveBrowser,
+  stops: () => {
+    const at = (id, p) => secs[id].top + p * secs[id].range, top = sel => $(sel).getBoundingClientRect().top + scrollY;
+    const s = [0, at("story", .1)];                                       /* Anfang, der Stapel */
+    for (let k = 0; k < FLY.length; k++) s.push(at("story", F0 + (k + .62) * FW));   /* jeder Scan */
+    s.push(at("story", .8));                                              /* abgelegt */
+    s.push(at("frist", 0), at("frist", .75));                             /* 21 Tage, dann 7 */
+    s.push(at("suche", .75), at("trust", .72));                           /* gefunden, dein Speicher */
+    s.push(top("#web"), top(".keep"), top(".fine"), top(".contact"), 1e9);
+    return s;
+  }
+});
 </script>
 </body>
 </html>
