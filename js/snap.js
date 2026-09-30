@@ -20,8 +20,7 @@ export function snapScroll({ stops, skip = () => false, pace = () => [], ms = 10
 
   /* Anfahren und Abbremsen kurz, dazwischen gleichmäßig — so spielen die
      Animationen mit ihrer eigenen Dynamik statt im Zeitraffer der Fahrt */
-  const A = .2, V = 1 / (1 - A);
-  const profile = t => t < A ? V * t * t / (2 * A) : t > 1 - A ? 1 - V * (1 - t) * (1 - t) / (2 * A) : V * (t - A / 2);
+  const profile = (t, A) => { const V = 1 / (1 - A); return t < A ? V * t * t / (2 * A) : t > 1 - A ? 1 - V * (1 - t) * (1 - t) / (2 * A) : V * (t - A / 2); };
   const cubic = t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
 
   /* Kosten jedes Pixels auf der Strecke in Millisekunden, aufsummiert */
@@ -53,7 +52,7 @@ export function snapScroll({ stops, skip = () => false, pace = () => [], ms = 10
     if (dist < 1) return;
     let dur, pos;
     if (reduce) { dur = 1; pos = () => target; }
-    else if (paced) { const p = plan(from, target); dur = p.dur; pos = k => p.at(profile(k)); }
+    else if (paced) { const p = plan(from, target), A = Math.min(.2, 450 / p.dur); dur = p.dur; pos = k => p.at(profile(k, A)); }   /* Anfahren höchstens eine knappe halbe Sekunde */
     else { dur = Math.max(800, Math.min(1600, 650 + dist / innerHeight * 200)); pos = k => from + (target - from) * cubic(k); }
     const t0 = performance.now();
     tween = { done: false };
@@ -90,9 +89,12 @@ export function snapScroll({ stops, skip = () => false, pace = () => [], ms = 10
     e.preventDefault();
     const d = e.deltaMode === 1 ? e.deltaY * 18 : e.deltaY, mag = Math.abs(d);
     if (gap > 450) hist = [];
-    const prev = hist.slice(-3), avg = prev.reduce((a, b) => a + b, 0) / (prev.length || 1);
-    const rising = prev.length >= 2 && mag >= 12 && mag > avg * 1.6;
-    hist.push(mag); if (hist.length > 6) hist.shift();
+    /* ansteigend heißt: dreimal hintereinander stärker, zusammen deutlich über dem
+       Nachlauf davor — ein einzelner Ausreißer (zusammengefasste Ereignisse bei
+       voller Leitung) zählt nicht */
+    hist.push(mag); if (hist.length > 8) hist.shift();
+    const h = hist, m = h.length, base = h.slice(0, Math.max(1, m - 3)).reduce((a, b) => a + b, 0) / Math.max(1, m - 3);
+    const rising = m >= 5 && mag >= 12 && h[m - 1] > h[m - 2] && h[m - 2] > h[m - 3] && mag > base * 1.8;
     if (tween && !tween.done) return;               /* Schwung während der Fahrt: geschluckt */
     if (gap > 450 || rising) { acc = 0; locked = false; }   /* eine neue Geste */
     if (locked) return;                             /* Nachlauf der letzten Geste */

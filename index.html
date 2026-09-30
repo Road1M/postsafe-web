@@ -48,23 +48,33 @@
 #story .cap{position:absolute; left:0; top:max(96px,12vh); max-width:560px; transition:opacity .6s var(--ease), transform .8s var(--ease), filter .6s}
 #story .cap:not(.on){opacity:0; transform:translateY(22px); filter:blur(6px); pointer-events:none}
 #story .cap h2{font-size:clamp(32px,min(4.2vw,6.6vh),64px)}   /* auf niedrigen Bildschirmen kleiner — mehr Luft für den Scan */
-.cards{position:absolute; left:0; bottom:5vh; display:flex; gap:14px; transition:opacity .6s var(--ease), transform .8s var(--ease)}
-.cards:not(.on){opacity:0; transform:translateY(24px)}
-.cards figure{position:relative; margin:0; width:clamp(170px,15vw,230px)}
-.cards img{display:block; width:100%; height:auto; filter:drop-shadow(0 14px 22px rgba(0,0,0,.14))}
-.cards b{position:absolute; left:-8px; top:-10px; min-width:34px; height:28px; padding:0 9px; border-radius:14px; background:var(--ink); color:var(--paper); font-size:14px; display:grid; place-items:center; opacity:0; transform:scale(.4); transition:opacity .25s, transform .5s var(--ease)}
-.cards b.on{opacity:1; transform:none}
+/* Die Ordner wie auf der alten Seite: eine Spalte aus Zeilen. Kommt ein Brief an,
+   füllt sich seine Zeile in der Ordnerfarbe der App, und die Zahl springt hoch. */
+.sort{position:absolute; left:0; top:0; width:clamp(210px,17vw,290px); display:flex; flex-direction:column; gap:12px; transition:opacity .6s var(--ease), transform .8s var(--ease)}
+.sort:not(.on){opacity:0; transform:translateX(24px)}
+.row{position:relative; display:flex; align-items:center; gap:12px; height:clamp(52px,6.4vh,62px); padding:0 18px 0 8px; border-radius:999px; background:var(--card); box-shadow:inset 0 0 0 1px var(--line), 0 10px 30px rgba(0,0,0,.06); overflow:hidden; isolation:isolate}
+.row__fill{position:absolute; inset:0; z-index:-1; background:var(--c); opacity:calc(var(--p,0) * .16)}
+.row__sw{flex:none; width:clamp(36px,4.4vh,44px); aspect-ratio:1; border-radius:50%; display:grid; place-items:center; background:var(--c); color:#fff; transform:scale(calc(1 + var(--p,0) * .16))}
+.row__sw svg{width:46%; height:auto}
+.row__tx{flex:1; min-width:0; display:flex; flex-direction:column; line-height:1.15}
+.row__tx b{font-size:clamp(15px,1.15vw,18px); letter-spacing:-.01em}
+.row__tx small{font-size:12.5px; color:var(--ink-2); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-height:0; opacity:0; transition:max-height .4s var(--ease), opacity .4s, color .3s}
+.row.has .row__tx small{max-height:18px; opacity:1; margin-top:2px}
+.row__n{font-size:15px; font-variant-numeric:tabular-nums; color:var(--ink-3); transition:color .3s}
+.row.has .row__n{color:var(--ink)}
+.row.bump .row__n{animation:bump .5s var(--ease)}
+@keyframes bump{40%{transform:scale(1.5)}}
+.tag{position:fixed; z-index:32; left:0; top:0; display:flex; align-items:center; gap:10px; padding:12px 22px 12px 16px; border-radius:999px; background:var(--card); color:var(--ink); font-size:clamp(17px,1.35vw,21px); letter-spacing:-.01em; white-space:nowrap; pointer-events:none; transform-origin:center; will-change:transform, opacity; box-shadow:0 1px 2px rgba(0,0,0,.08), 0 10px 26px rgba(0,0,0,.16)}
+.tag i{width:.7em; height:.7em; border-radius:50%; background:var(--c)}
+.tag span{color:var(--ink-2)}
 .scanframe{position:fixed; z-index:31; left:0; top:0; width:100vw; height:100vh; pointer-events:none; overflow:visible}
-.scanframe .br{fill:none; stroke:url(#scang); stroke-width:6; stroke-linecap:round; stroke-linejoin:round}
-.scanframe .hl{fill:rgba(255,106,40,.14); stroke:#FF6A28; stroke-width:2}
-.scanframe .hl.due{fill:rgba(255,59,24,.14); stroke:#FF3B18}
-.scanframe .ln{stroke:#FF6A28; stroke-width:1.5; stroke-dasharray:3 4; fill:none}
-.chips{position:fixed; z-index:32; left:0; top:0; pointer-events:none}
-.fact{position:absolute; left:0; top:0; display:flex; flex-direction:column; gap:1px; padding:9px 16px 10px; border-radius:16px; background:var(--card); box-shadow:0 1px 2px rgba(0,0,0,.06), 0 12px 30px rgba(0,0,0,.14); white-space:nowrap; will-change:transform, opacity}
-.fact small{font-family:var(--mono); font-size:10.5px; letter-spacing:.12em; text-transform:uppercase; color:var(--ink-3)}
-.fact b{font-size:17px; letter-spacing:-.02em}
-.fact.due b{color:var(--signal)}
-@media (max-width:820px), (max-aspect-ratio:9/10){ .fact{padding:6px 11px 7px; border-radius:12px} .fact b{font-size:13px} .fact small{font-size:9px} }
+/* Der Scan ist für jeden Brief gleich: neutral, in der Farbe der Schrift. Welcher
+   Ordner es wird, zeigt erst das Schildchen — wenn der Brief gelesen ist. */
+.scanframe .br{fill:none; stroke:var(--ink); stroke-width:5; stroke-linecap:round; stroke-linejoin:round}
+.scanframe .hl{fill:rgba(29,29,31,.07); stroke:rgba(29,29,31,.55); stroke-width:1.5}
+.scanframe .band{fill:url(#band)}
+.scanframe .line{fill:#1D1D1F}
+.scanframe .glow{fill:#1D1D1F; opacity:.35; filter:url(#glow)}
 
 /* Kapitel 2: Fristen */
 #frist .tx h2{font-size:clamp(34px,3.8vw,58px)}
@@ -150,9 +160,13 @@
   .hero .btn-q{display:none}
   .hint{display:none}
   #story .cap{top:96px; right:0}
-  .cards{bottom:6vh; left:50%; transform:translateX(-50%)}
-  .cards:not(.on){transform:translate(-50%,24px)}
-  .cards figure{width:40vw}
+  .sort{display:grid; grid-template-columns:1fr 1fr; gap:8px; width:auto}
+  .sort:not(.on){transform:translateY(24px)}
+  .row{height:46px; gap:8px; padding:0 12px 0 5px}
+  .row__sw{width:36px}
+  .row__tx b{font-size:14px}
+  .row__tx small{display:none}
+  .tag{font-size:15px; padding:8px 15px 8px 12px; gap:8px}
   .big{font-size:clamp(84px,24vw,140px); margin-top:14px}
   .big small{font-size:14px}
   .tick,.tick-l{display:none}
@@ -216,9 +230,11 @@
       <div class="cap on" data-cap><p class="eyebrow">Der Stapel</p><h2 class="display">Unerledigt. Unsortiert. <b>Unterste Schublade.</b></h2></div>
       <div class="cap" data-cap><p class="eyebrow">Ein Foto</p><h2 class="display">Ein Foto genügt. <b>PostSafe liest den Brief</b> und legt ihn ab.</h2></div>
       <div class="cap" data-cap><p class="eyebrow">Abgelegt</p><h2 class="display">Sortiert, gesichert und <b>auch Jahre später</b> leicht zu finden.</h2></div>
-      <div class="cards" data-cards>
-        <figure data-card="wohnen"><img src="img/karte-wohnen.webp" alt="Ordner Wohnen"><b data-plus>+0</b></figure>
-        <figure data-card="behoerde"><img src="img/karte-behoerde.webp" alt="Ordner Behörde"><b data-plus>+0</b></figure>
+      <div class="sort" data-sort aria-hidden="true">
+        <div class="row" data-row="behoerde" style="--c:color(display-p3 0 .4157 1)"><i class="row__fill"></i><span class="row__sw"><svg viewBox="0 0 18 15" aria-hidden="true"><path d="M1 3.2A1.7 1.7 0 0 1 2.7 1.5h3.4l1.6 2h7.6A1.7 1.7 0 0 1 17 5.2v7.1a1.7 1.7 0 0 1-1.7 1.7H2.7A1.7 1.7 0 0 1 1 12.3z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg></span><span class="row__tx"><b>Behörde</b><small data-note></small></span><span class="row__n" data-n>0</span></div>
+        <div class="row" data-row="wohnen" style="--c:color(display-p3 1 .4 0)"><i class="row__fill"></i><span class="row__sw"><svg viewBox="0 0 18 15" aria-hidden="true"><path d="M1 3.2A1.7 1.7 0 0 1 2.7 1.5h3.4l1.6 2h7.6A1.7 1.7 0 0 1 17 5.2v7.1a1.7 1.7 0 0 1-1.7 1.7H2.7A1.7 1.7 0 0 1 1 12.3z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg></span><span class="row__tx"><b>Wohnen</b><small data-note></small></span><span class="row__n" data-n>0</span></div>
+        <div class="row" data-row="gesundheit" style="--c:color(display-p3 1 .2353 .549)"><i class="row__fill"></i><span class="row__sw"><svg viewBox="0 0 18 15" aria-hidden="true"><path d="M1 3.2A1.7 1.7 0 0 1 2.7 1.5h3.4l1.6 2h7.6A1.7 1.7 0 0 1 17 5.2v7.1a1.7 1.7 0 0 1-1.7 1.7H2.7A1.7 1.7 0 0 1 1 12.3z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg></span><span class="row__tx"><b>Gesundheit</b><small data-note></small></span><span class="row__n" data-n>0</span></div>
+        <div class="row" data-row="bank" style="--c:color(display-p3 .1098 .7451 .3608)"><i class="row__fill"></i><span class="row__sw"><svg viewBox="0 0 18 15" aria-hidden="true"><path d="M1 3.2A1.7 1.7 0 0 1 2.7 1.5h3.4l1.6 2h7.6A1.7 1.7 0 0 1 17 5.2v7.1a1.7 1.7 0 0 1-1.7 1.7H2.7A1.7 1.7 0 0 1 1 12.3z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg></span><span class="row__tx"><b>Bank</b><small data-note></small></span><span class="row__n" data-n>0</span></div>
       </div>
     </div></div></div>
   </section>
@@ -324,8 +340,8 @@
 
 <canvas class="stage" id="stage" aria-hidden="true"></canvas>
 <div class="dev-fixed" id="device" aria-label="PostSafe auf dem iPhone" role="img"></div>
-<div class="chips" data-chips aria-hidden="true"></div>
-<svg class="scanframe" aria-hidden="true"><defs><linearGradient id="scang" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff8b1f"/><stop offset="1" stop-color="#ff2d3e"/></linearGradient><linearGradient id="band" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FF8B1F" stop-opacity="0"/><stop offset=".5" stop-color="#FF8B1F" stop-opacity=".22"/><stop offset="1" stop-color="#FF8B1F" stop-opacity="0"/></linearGradient></defs><g data-frame></g></svg>
+<div class="tag" data-tag aria-hidden="true" style="opacity:0"></div>
+<svg class="scanframe" aria-hidden="true"><defs><linearGradient id="scang" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff8b1f"/><stop offset="1" stop-color="#ff2d3e"/></linearGradient><linearGradient id="band" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1D1D1F" stop-opacity="0"/><stop offset="1" stop-color="#1D1D1F" stop-opacity=".2"/></linearGradient><filter id="glow" x="-10%" y="-400%" width="120%" height="900%"><feGaussianBlur stdDeviation="3"/></filter></defs><g data-frame></g></svg>
 
 <script type="module">
 import { createStage } from "./js/stage.js";
@@ -375,13 +391,20 @@ items.forEach(l => st.bendSheet(l.geo, l.w, l.h, l.fold[0], l.fold[1], l.curl));
 /* Stichtag der App-Aufnahmen (siehe js/letters.js) — alle Daten dieser Seite gehen von ihm aus */
 const STICHTAG = () => new Date(2026, 8, 23, 9);
 const dd = n => { const d = STICHTAG(); d.setDate(d.getDate() + n); return d.toLocaleDateString("de-DE", { day: "numeric", month: "long" }); };
+/* Vier Briefe, einer je Ordner — in der Reihenfolge der App: Behörde, Wohnen,
+   Gesundheit, Bank. Was PostSafe liest, wird markiert; ein Schildchen nennt das
+   Wichtigste, und die Ordnerzeile merkt es sich. */
 const FLY = [
-  { i: 0, to: "wohnen", facts: [["Absender", "Stadtwerke", "sender"], ["Betrag", "84,20 €", "amount"], ["Frist", dd(7), "due"], ["Ordner", "Wohnen"]] },
-  { i: 1, to: "behoerde", facts: [["Absender", "Finanzamt", "sender"], ["Betrag", "1.284,00 €", "amount"], ["Frist", dd(5), "due"], ["Ordner", "Behörde"]] },
-  { i: 3, to: "wohnen", facts: [["Absender", "Hausverwaltung", "sender"], ["Betrag", "312,45 €", "amount"], ["Frist", dd(25), "due"], ["Ordner", "Wohnen"]] },
-  { i: 6, to: "behoerde", facts: [["Absender", "Landratsamt", "sender"], ["Betreff", "Wohngeld", "subject"], ["Frist", dd(21), "due"], ["Ordner", "Behörde"]] }
+  { i: 0, to: "wohnen", tag: "84,20 €", note: "Stadtwerke · 84,20 €", boxes: ["sender", "subject", "amount"] },
+  { i: 1, to: "behoerde", tag: "Frist " + dd(5), note: "Finanzamt · bis " + dd(5), boxes: ["sender", "subject", "due"] },
+  { i: 2, to: "gesundheit", tag: "412,60 €", note: "Krankenkasse · 412,60 €", boxes: ["sender", "subject", "amount"] },
+  { i: 5, to: "bank", tag: "Neue Entgelte", note: "Hausbank · neue Entgelte", boxes: ["sender", "subject"] }
 ];
-const FW = .115, F0 = .16;                                   /* Fenster je Brief im Kapitel, Beginn */
+/* Der Ablauf im Kapitel (Anteil des Kapitels): Stapel liegt bei PILE, dann in einem
+   Zug alle vier Briefe. Jeder braucht SPAN; der nächste hebt sich, sobald der
+   vorige in seinen Ordner fliegt (STEP). */
+const PILE = .155, START = .165, SPAN = .16, STEP = .1, SORTED = START + (FLY.length - 1) * STEP + SPAN;
+const DONE = () => mobile ? .78 : .66;
 const FLOAT = [
   { x: .02, y: -.4, z: -200, rx: 16, ry: -26, rz: -12 }, { x: .44, y: -.36, z: -300, rx: -10, ry: 30, rz: 14 },
   { x: .45, y: .38, z: -120, rx: 22, ry: -22, rz: -6 }, { x: .12, y: .47, z: 0, rx: -26, ry: 24, rz: 18 },
@@ -413,26 +436,28 @@ function measure() {
 /* Der Scan-Bereich richtet sich nach dem freien Platz zwischen Überschrift und
    Ordnerkarten — mit Luft nach oben und unten. So liegt auf einem kleineren
    Bildschirm nichts über den Ordnern oder an der Überschrift. */
-let area = { fy: .12, spotY: .1, sPile: .56, sScan: .39 };
+let area = { fx: -.21, fy: .12, spotY: .1, sPile: .56, sScan: .39 };
 function measureScan() {
-  if (mobile) { area = { fy: .14, spotY: .065, sPile: .38, sScan: .38 * .95 * (370 / 510) }; return; }
-  const pin = $("#story .pin").getBoundingClientRect().top;
-  const capB = Math.max(...caps.map(c => c.getBoundingClientRect().bottom - pin - (c.classList.contains("on") ? 0 : 22)));
-  const cardT = cardsEl.getBoundingClientRect().top - pin - (cardsEl.classList.contains("on") ? 0 : 24);
-  const top = capB + 36, bottom = cardT - 40, gap = Math.max(160, bottom - top);
+  if (mobile) { sortEl.style.cssText = "left:0; right:0; top:auto; bottom:6vh"; area = { fx: 0, fy: .08, spotY: .065, sPile: .33, sScan: .38 * .95 * (370 / 510) }; return; }
+  const pin = $("#story .pin").getBoundingClientRect(), cps = $("#story .caps").getBoundingClientRect();
+  const capB = Math.max(...caps.map(c => c.getBoundingClientRect().bottom - pin.top - (c.classList.contains("on") ? 0 : 22)));
+  /* Die Ordnerspalte steht links vom iPhone, der Brief mittig im Platz davor */
+  const rw = sortEl.offsetWidth, rh = sortEl.offsetHeight, rowsL = dev.xr - 56 - rw;
+  const left = cps.left, availW = rowsL - left;
+  const top = capB + 36, bottom = vh - 40 - 64, gap = Math.max(160, bottom - top), midPx = (top + bottom) / 2;   /* unten Platz fürs Schildchen */
+  sortEl.style.cssText = `left:${(rowsL - cps.left).toFixed(0)}px; top:${(midPx - rh / 2 - (cps.top - pin.top)).toFixed(0)}px`;
   const pxmm = z => vh / (2 * (620 - z) * Math.tan(12 * Math.PI / 180));
-  const mid = (top + bottom) / 2 / vh - .5;
   area = {
-    fy: mid, spotY: mid,
-    sPile: Math.min(.56, Math.max(.2, (gap * .84 / pxmm(66) - 20) / 159)),
-    sScan: Math.min(.39, Math.max(.16, (gap * .9 - 40) / (148.5 * pxmm(250))))
+    fx: (left + availW * .5) / vw - .5, fy: midPx / vh - .5, spotY: midPx / vh - .5,
+    sPile: Math.min(.56, (gap * .84 / pxmm(66) - 20) / 159, availW * .66 / (pxmm(66) * 118)),
+    sScan: Math.max(.16, Math.min(.39, (gap * .9 - 40) / (148.5 * pxmm(250)), (availW - 150) / (105 * pxmm(250))))
   };
 }
 const prog = (id, y) => clamp((y - secs[id].top) / secs[id].range, 0, 1);
 
 /* ---------------------------------------------------------- Kapitel --- */
-const caps = $$("[data-cap]"), cardsEl = $("[data-cards]");
-const cardEl = { wohnen: $('[data-card="wohnen"]'), behoerde: $('[data-card="behoerde"]') };
+const caps = $$("[data-cap]"), sortEl = $("[data-sort]");
+const rowEl = Object.fromEntries($$("[data-row]").map(r => [r.dataset.row, r]));
 const tick = $("[data-tick]"); for (let i = 0; i < 22; i++) tick.appendChild(document.createElement("i"));
 const ticks = [...tick.children];
 const due = STICHTAG(); due.setDate(due.getDate() + 7);
@@ -445,19 +470,19 @@ let lastCap = -1, lastDays = -1, lastQ = null, lastW = -1;
 
 function chapters(y) {
   const ps = prog("story", y), pf = prog("frist", y), pq = prog("suche", y), pt = prog("trust", y), mid = vh * .5;
-  const cap = ps < .12 ? 0 : ps < .625 ? 1 : 2;
+  const cap = ps < .12 ? 0 : ps < SORTED + .005 ? 1 : 2;
   if (cap !== lastCap) { caps.forEach((c, i) => c.classList.toggle("on", i === cap)); lastCap = cap; }
-  cardsEl.classList.toggle("on", y > secs.story.top && ps > .15 && ps < (mobile ? .64 : .98));   /* erst, wenn der Stapel liegt */
+  sortEl.classList.toggle("on", y > secs.story.top && ps > .15 && ps < (mobile ? .67 : .98));   /* erst, wenn der Stapel liegt */
 
   let a = "scan", notif = 0;
-  if (y < secs.frist.top - mid) { if (ps > .62) a = "archiv"; }
+  if (y < secs.frist.top - mid) { if (ps > SORTED) a = "archiv"; }
   else if (y < secs.suche.top - mid) { a = "brief"; notif = pf > .56 ? 1 : 0; }
   else if (y < secs.trust.top - mid) { a = pq > .5 ? "suche1" : "suche0"; }
   else a = "einst";
   screen.set({ a, notif, notifText: { title: "Frist", l1: "Stadtwerke — noch 7 Tage, fällig am", l2: dueLong } });
 
   /* Fristen: 21 Tage schrumpfen auf 7 */
-  const days = Math.round(lerp(21, 7, clamp(pf / .55, 0, 1)));
+  const fk = clamp(pf / .55, 0, 1), days = Math.round(lerp(21, 7, 1 - Math.pow(1 - fk, 3)));   /* schnell los, sanft auf die 7 */
   if (days !== lastDays) { lastDays = days; $("[data-days]").textContent = days; const d = days <= 7; $("[data-big]").classList.toggle("due", d);
     $("[data-dlab]").textContent = d ? "Tage vorher — PostSafe erinnert dich" : "Tage bis zur Zahlung";
     ticks.forEach((c, i) => c.className = i < 21 - days ? "gone" : i === 14 ? "rem" : i === 21 ? "day" : ""); }
@@ -489,7 +514,7 @@ function placeDevice(y, ps, now) {
   const intro = reduce ? 1 : clamp((now - T0 - 250) / 1300, 0, 1), ie = 1 - Math.pow(1 - intro, 4);
   dy += (1 - ie) * vh * .35;
   if (mobile && y > secs.story.top - vh) {                     /* auf dem Handy macht es im Stapel-Kapitel Platz */
-    const inS = clamp((y - (secs.story.top - vh * .6)) / (vh * .6), 0, 1), outS = clamp((ps - .64) / .1, 0, 1);
+    const inS = clamp((y - (secs.story.top - vh * .6)) / (vh * .6), 0, 1), outS = clamp((ps - .67) / .1, 0, 1);
     dy += (1 - Math.min(1, outS + (1 - inS))) * (vh - dev.y + 20);
   }
   const leave = secs.trust.top + secs.trust.h - vh;
@@ -500,26 +525,24 @@ function placeDevice(y, ps, now) {
 
 /* ---------------------------------------------------------- Briefe ---- */
 const d2r = Math.PI / 180, qTmp = new st.THREE.Quaternion(), eTmp = new st.THREE.Euler(), flat = new st.THREE.Quaternion();
-const frameG = $("[data-frame]");
-const plus = { wohnen: 0, behoerde: 0 };
-function cardWorld(name) { const r = cardEl[name].getBoundingClientRect(); return st.toWorld((r.left + r.width / 2) / vw - .5, (r.top + r.height / 2) / vh - .5, 0); }
-const chipsEl = $("[data-chips]");
-let chipsFor = -1;
+const frameG = $("[data-frame]"), tagEl = $("[data-tag]");
+const rectOf = el => el.getBoundingClientRect();
+function rowWorld(id) { const r = rectOf(rowEl[id].querySelector(".row__sw")); return st.toWorld((r.left + r.width / 2) / vw - .5, (r.top + r.height / 2) / vh - .5, 0); }
+const V3 = st.THREE.Vector3, arcA = new V3(), arcB = new V3(), arcC = new V3();
+const rowState = {};
 function lettersAt(y, ps, now) {
-  const F = mobile ? FLOAT_M : FLOAT, sc = mobile ? .38 : .56;
-  let scan = null; const landed = { wohnen: 0, behoerde: 0 };
+  const F = mobile ? FLOAT_M : FLOAT, sc = mobile ? .38 : .56, n = FLY.length;
+  let scan = null, tag = null; const rows = {};
   items.forEach((l, i) => {
     const f = F[i], t = now / 1000 + i * 1.7;
-    let p = st.toWorld(f.x, f.y, f.z), rx = f.rx, ry = f.ry, rz = f.rz, s = sc, o = 1, fold = 1, glow = 0;
+    let p = st.toWorld(f.x, f.y, f.z), rx = f.rx, ry = f.ry, rz = f.rz, s = sc, o = 1, fold = 1, glow = 0, lit = 0;
     if (!reduce) { p.y += Math.sin(t * .6) * 5; rz += Math.sin(t * .45) * 4; ry += Math.cos(t * .38) * 7; }
     const fly = FLY.findIndex(x => x.i === i);
-    const fly0 = FLY.findIndex(x => x.i === i);
-    /* Einer nach dem anderen auf den Stapel — die übrigen gleiten zur Seite weg */
-    const tp = y < secs.story.top ? 0 : ease(clamp((ps - (fly0 < 0 ? 0 : fly0 * .022)) / .075, 0, 1));
+    /* Auf den Stapel: wer zuletzt gelesen wird, liegt zuunterst und kommt zuerst an */
+    const tp = y < secs.story.top ? 0 : ease(clamp((ps - (fly < 0 ? 0 : (n - 1 - fly) * .022)) / .075, 0, 1));
     if (fly < 0) { o = 1 - clamp(tp * 2.2, 0, 1); p.x += Math.sign(f.x || 1) * tp * 160; p.z -= tp * 120; }
-    else if (tp > 0) {                                           /* der Stapel */
-      /* jedes Blatt hat seine eigene Ebene im Stapel und kommt von oben an */
-      const pile = st.toWorld(mobile ? 0 : -.21, area.fy, 30 + fly * 24);
+    else if (tp > 0) {
+      const pile = st.toWorld(area.fx, area.fy, 30 + (n - 1 - fly) * 24);
       pile.x += (fly * 29 % 40 - 20); pile.y += (fly * 17 % 20 - 10);
       p.lerp(pile, tp); p.z += Math.sin(Math.PI * tp) * 90; s = lerp(sc, area.sPile, tp);
       rx = lerp(rx, -24, tp); ry = lerp(ry, 0, tp); rz = lerp(rz, [-14, 9, -4, 16][fly], tp);
@@ -527,84 +550,98 @@ function lettersAt(y, ps, now) {
     }
     eTmp.set(rx * d2r, ry * d2r, rz * d2r); qTmp.setFromEuler(eTmp);
     if (fly >= 0) {
-      const u = clamp((ps - (F0 + fly * FW)) / FW, 0, 1);
+      const t0 = START + fly * STEP, u = clamp((ps - t0) / SPAN, 0, 1), to = FLY[fly].to;
+      const r = rows[to] || (rows[to] = { n: 0, note: "", p: 0 });
       if (y > secs.frist.top - vh * .5) o = 0;
       if (u > 0) {
-        const spot = st.toWorld(mobile ? 0 : -.2, area.spotY, 250);   /* weit vor dem Stapel */
-        const a = ease(clamp(u / .16, 0, 1));                  /* heben und glätten */
-        p.lerp(spot, a); qTmp.slerp(flat, a); fold = lerp(.3, 0, a); s = lerp(area.sPile, area.sScan, a);
-        if (u > .12 && u < .84) scan = { l, fly, u };
-        glow = u > .2 && u < .32 ? Math.sin((u - .2) / .12 * Math.PI) * .5 : 0;
-        const c = ease(clamp((u - .76) / .24, 0, 1));           /* in den Ordner */
-        if (c > 0) { p.lerp(cardWorld(FLY[fly].to), c); s = lerp(s, sc * .16, c); o = 1 - clamp((c - .75) / .25, 0, 1); }
-        if (u >= 1) { landed[FLY[fly].to]++; o = 0; }
+        const spot = st.toWorld(area.fx, area.spotY, 250);     /* weit vor dem Stapel */
+        const a = ease(clamp(u / .18, 0, 1));                  /* heben und glätten */
+        p.lerp(spot, a); qTmp.slerp(flat, a); fold = lerp(.3, 0, a); s = lerp(area.sPile, area.sScan, a); lit = a;   /* frontal zum Licht: hell wie Papier */
+        if (u > .1 && u < .68) scan = { l, fly, u };
+        if (u > .4 && u < 1) tag = { l, fly, u };
+        glow = u > .2 && u < .3 ? Math.sin((u - .2) / .1 * Math.PI) * .3 : 0;
+        /* Einsortieren: der Brief wird klein wie eine Karteikarte und gleitet in
+           einem Bogen in seine Zeile — oben herum, nie durch andere Zeilen hindurch */
+        const k = clamp((u - .64) / .36, 0, 1);
+        if (k > 0) {
+          const c = k < .5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2;
+          arcA.copy(p); arcC.copy(rowWorld(to)); arcC.z = 60;
+          arcB.set((arcA.x + arcC.x) / 2, Math.max(arcA.y, arcC.y) + 70, 180);
+          const m = 1 - c; p.set(m * m * arcA.x + 2 * m * c * arcB.x + c * c * arcC.x, m * m * arcA.y + 2 * m * c * arcB.y + c * c * arcC.y, m * m * arcA.z + 2 * m * c * arcB.z + c * c * arcC.z);
+          s = lerp(s, sc * .09, Math.pow(c, .7));
+          eTmp.set(0, 0, -Math.sin(Math.PI * c) * 10 * d2r); qTmp.multiply(new st.THREE.Quaternion().setFromEuler(eTmp));
+          o = 1 - clamp((c - .82) / .18, 0, 1);
+        }
+        if (u >= 1) { r.n++; r.note = FLY[fly].note; o = 0; }
+        /* Die Zeile nimmt ihn auf: ein kurzes Aufleuchten, danach ist sie wieder ruhig */
+        const pk = clamp((ps - (t0 + SPAN * .92)) / .03, 0, 1);
+        if (pk > 0 && pk < 1) r.p = Math.max(r.p, Math.sin(Math.PI * pk));
       }
     }
     l.group.position.copy(p); l.group.quaternion.copy(qTmp); l.group.scale.setScalar(s);
     l.group.visible = o > .01;
     l.mats.forEach(m => { m.transparent = o < .999; m.opacity = o; });
-    l.mats[0].emissiveIntensity = .16 + glow;               /* Papier leuchtet leicht aus sich heraus — heller, nie grau */
+    l.mats[0].emissiveIntensity = .16 + lit * .2 + glow;               /* Papier leuchtet leicht aus sich heraus — heller, nie grau */
     if (Math.abs((l._fold ?? 1) - fold) > .02) { st.bendSheet(l.geo, l.w, l.h, l.fold[0] * fold, l.fold[1] * fold, l.curl * (.4 + .6 * fold)); l._fold = fold; }
   });
-  drawScan(scan);
-  for (const k of ["wohnen", "behoerde"]) if (landed[k] !== plus[k]) { plus[k] = landed[k]; const bEl = cardEl[k].querySelector("b"); bEl.textContent = "+" + landed[k]; bEl.classList.toggle("on", landed[k] > 0); }
+  drawScan(scan); drawTag(tag);
+  for (const id in rowEl) {
+    const r = rows[id] || { n: 0, note: "", p: 0 }, el = rowEl[id], was = rowState[id] || { n: 0, note: "", p: 0 };
+    if (r.n !== was.n) {
+      el.querySelector("[data-n]").textContent = r.n; el.classList.toggle("has", r.n > 0);
+      if (r.n > was.n) { el.classList.remove("bump"); void el.offsetWidth; el.classList.add("bump"); }
+    }
+    if (r.note !== was.note) el.querySelector("[data-note]").textContent = r.note;
+    if (r.p !== was.p) el.style.setProperty("--p", r.p.toFixed(3));
+    rowState[id] = r;
+  }
 }
 
-/* Der Scan: Rahmen aus dem App-Icon rastet ein, ein Lichtband fährt über das Blatt,
-   was es findet, wird markiert und springt als Angabe heraus. */
+/* Der Scan: Rahmen rastet ein, ein Lichtband fährt über das Blatt und markiert,
+   was PostSafe liest. Für jeden Brief gleich — neutral. */
 function drawScan(sc) {
-  if (!sc) { if (chipsFor !== -1 || frameG.innerHTML) { frameG.innerHTML = ""; chipsEl.innerHTML = ""; chipsFor = -1; } return; }
+  if (!sc) { if (frameG.innerHTML) frameG.innerHTML = ""; return; }
   const { l, fly, u } = sc, def = FLY[fly];
   l.group.updateMatrixWorld(true);
   const c = st.corners(l), xs = c.map(v => v[0]), ys = c.map(v => v[1]);
   const X0 = Math.min(...xs), X1 = Math.max(...xs), Y0 = Math.min(...ys), Y1 = Math.max(...ys);
-  const k = ease(clamp((u - .12) / .1, 0, 1)), out = clamp((u - .74) / .06, 0, 1), vis = k * (1 - out);
-  const pad = lerp(70, 14, k), x0 = X0 - pad, x1 = X1 + pad, y0 = Y0 - pad, y1 = Y1 + pad, L = Math.min(46, (x1 - x0) * .22);
+  const k = ease(clamp((u - .1) / .1, 0, 1)), out = clamp((u - .58) / .08, 0, 1), vis = k * (1 - out);
+  const pad = lerp(60, 12, k), x0 = X0 - pad, x1 = X1 + pad, y0 = Y0 - pad, y1 = Y1 + pad, L = Math.min(46, (x1 - x0) * .22);
   let svg = `<g opacity="${vis.toFixed(2)}" class="br"><path d="M${x0} ${y0 + L}V${y0 + 14}q0-14 14-14H${x0 + L}"/><path d="M${x1 - L} ${y0}H${x1 - 14}q14 0 14 14V${y0 + L}"/><path d="M${x1} ${y1 - L}V${y1 - 14}q0 14-14 14H${x1 - L}"/><path d="M${x0 + L} ${y1}H${x0 + 14}q-14 0-14-14V${y1 - L}"/></g>`;
-  /* Lichtband */
-  const sw = clamp((u - .2) / .28, 0, 1);
-  if (sw > 0 && sw < 1) { const by = lerp(Y0, Y1, sw); svg += `<rect x="${X0}" y="${by - 34}" width="${X1 - X0}" height="68" fill="url(#band)" opacity="${(1 - out).toFixed(2)}"/><rect x="${X0 - 6}" y="${by - 1}" width="${X1 - X0 + 12}" height="2.5" rx="1" fill="#FF6A28" opacity=".9"/>`; }
-  /* Markierungen und herausgesprungene Angaben */
-  if (chipsFor !== fly) { chipsFor = fly; chipsEl.innerHTML = def.facts.map(([k1, v, box]) => `<div class="fact${k1 === "Frist" ? " due" : ""}"><small>${k1}</small><b>${v}</b></div>`).join(""); }
-  const chips = [...chipsEl.children];
-  const card = cardEl[def.to].getBoundingClientRect();
-  /* Erst alle Fundstellen bestimmen, dann die Kärtchen auf ihre Höhe setzen —
-     von oben nach unten, ohne Überlappung. So laufen die Linien nebeneinander
-     und kreuzen sich nie. */
-  const found = def.facts.map(([k1, v, box]) => {
-    const b = box && l.boxes && l.boxes[box];
-    if (!b) return null;
+  const sw = clamp((u - .18) / .3, 0, 1);
+  if (sw > 0 && sw < 1) {                                   /* ein kräftiger Streifen, dahinter eine Schleppe */
+    const by = lerp(Y0, Y1, sw), th = Math.min(110, by - Y0), fin = Math.min(1, sw * 8, (1 - sw) * 8);
+    svg += `<g opacity="${fin.toFixed(2)}"><rect class="band" x="${X0}" y="${by - th}" width="${X1 - X0}" height="${th}"/><rect class="glow" x="${X0 - 8}" y="${by - 3}" width="${X1 - X0 + 16}" height="6" rx="3"/><rect class="line" x="${X0 - 8}" y="${by - 1.5}" width="${X1 - X0 + 16}" height="3" rx="1.5"/></g>`;
+  }
+  for (const key of def.boxes) {
+    const b = l.boxes && l.boxes[key]; if (!b) continue;
     const p0 = st.project(l, b[0], b[1]), p1 = st.project(l, b[0] + b[2], b[1] + b[3]);
-    const hx = Math.min(p0[0], p1[0]), hyy = Math.min(p0[1], p1[1]), hw = Math.abs(p1[0] - p0[0]), hh = Math.abs(p1[1] - p0[1]);
-    return { hx, hy: hyy, hw, hh, seen: (Y0 + (Y1 - Y0) * sw > hyy || sw >= 1) && u > .2 };
-  });
-  const H = chips[0] ? chips[0].offsetHeight : 52, gap = 10;
-  let lastY = -1e9; const slotY = [];
-  def.facts.forEach((_, j) => {
-    const f = found[j];
-    let want = mobile ? Y1 + 18 + Math.floor(j / 2) * (H + 8) : (f ? f.hy + f.hh / 2 - H / 2 : lastY + H + gap);
-    if (!mobile) want = Math.max(want, lastY + H + gap);
-    slotY[j] = want; lastY = want;
-  });
-  def.facts.forEach(([k1, v, box], j) => {
-    const f = found[j];
-    let hy = null, hx1 = null;
-    if (f && f.seen) { svg += `<rect class="hl${k1 === "Frist" ? " due" : ""}" x="${f.hx}" y="${f.hy}" width="${f.hw}" height="${f.hh}" rx="4" opacity="${(1 - out).toFixed(2)}"/>`; hy = f.hy + f.hh / 2; hx1 = f.hx + f.hw; }
-    const ch = chips[j]; if (!ch) return;
-    const appear = clamp((u - (.3 + j * .075)) / .06, 0, 1), ae = 1 - Math.pow(1 - appear, 3);
-    const cx = mobile ? vw / 2 + (j % 2 ? 6 : -ch.offsetWidth - 6) : X1 + 56, cy = slotY[j];
-    const go = ease(clamp((u - .76) / .2, 0, 1));
-    const tx = lerp(cx, card.left + card.width / 2 - ch.offsetWidth / 2, go), ty = lerp(cy, card.top + card.height / 2 - ch.offsetHeight / 2, go);
-    const from = hy != null ? [hx1 - ch.offsetWidth / 2, hy - ch.offsetHeight / 2] : [cx - 30, cy];
-    const x = lerp(from[0], tx, ae), yy = lerp(from[1], ty, ae);
-    ch.style.opacity = (ae * (1 - clamp((go - .6) / .4, 0, 1))).toFixed(3);
-    ch.style.transform = `translate3d(${x.toFixed(1)}px, ${yy.toFixed(1)}px, 0) scale(${(lerp(.6, 1, ae) * lerp(1, .5, go)).toFixed(3)})`;
-    if (!mobile && hy != null && ae > .98 && go === 0) {
-      const ey = cy + ch.offsetHeight / 2, mx = (hx1 + cx) / 2;
-      svg += `<path class="ln" d="M${hx1 + 4} ${hy}C${mx} ${hy},${mx} ${ey},${cx - 4} ${ey}"/>`;
-    }
-  });
+    const hx = Math.min(p0[0], p1[0]), hy = Math.min(p0[1], p1[1]), hw = Math.abs(p1[0] - p0[0]), hh = Math.abs(p1[1] - p0[1]);
+    if (u > .18 && (Y0 + (Y1 - Y0) * sw > hy || sw >= 1)) svg += `<rect class="hl" x="${hx}" y="${hy}" width="${hw}" height="${hh}" rx="4" opacity="${(1 - out).toFixed(2)}"/>`;
+  }
   frameG.innerHTML = svg;
+}
+
+/* Das Ergebnis des Lesens: ein Schildchen mit dem Ordner in seiner Farbe. Es
+   fliegt mit in die Zeile und geht in ihrer Zahl auf. */
+let tagFor = -1;
+function drawTag(tg) {
+  if (!tg) { if (tagFor !== -1) { tagEl.style.opacity = 0; tagFor = -1; } return; }
+  const { l, fly, u } = tg, def = FLY[fly], row = rowEl[def.to];
+  if (tagFor !== fly) { tagFor = fly; tagEl.style.setProperty("--c", getComputedStyle(row).getPropertyValue("--c")); tagEl.innerHTML = `<i></i><b>${row.querySelector("b").textContent}</b><span>${def.tag}</span>`; }
+  l.group.updateMatrixWorld(true);
+  const c = st.corners(l), xs = c.map(v => v[0]), Y1 = Math.max(...c.map(v => v[1]));
+  const ap = clamp((u - .42) / .08, 0, 1), ae = 1 - Math.pow(1 - ap, 3);
+  /* mittig unter dem Brief, mit Luft zum Rahmen — es steigt aus dem Blatt nach unten */
+  let x = (Math.min(...xs) + Math.max(...xs)) / 2 - tagEl.offsetWidth / 2, yy = Y1 + (mobile ? 22 : 34) - lerp(18, 0, ae), sc = lerp(.8, 1, ae), op = ae;
+  const k = clamp((u - .64) / .36, 0, 1);
+  if (k > 0) {                                              /* mit in die Zeile, auf den Platz der Notiz */
+    const e2 = k < .5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2, nr = rectOf(row.querySelector("[data-n]"));
+    x = lerp(x, nr.left + nr.width / 2 - tagEl.offsetWidth * .2, e2); yy = lerp(yy, nr.top + nr.height / 2 - tagEl.offsetHeight / 2, e2); sc = lerp(1, .4, e2);
+    op = 1 - clamp((k - .5) / .4, 0, 1);
+  }
+  tagEl.style.opacity = op.toFixed(3);
+  tagEl.style.transform = `translate3d(${x.toFixed(1)}px, ${yy.toFixed(1)}px, 0) scale(${sc.toFixed(3)})`;
 }
 
 /* ---------------------------------------------------------- Lauf ------ */
@@ -637,45 +674,34 @@ measure();
 requestAnimationFrame(frame);
 
 /* Abschnitt für Abschnitt — die Halte sind die Momente der Geschichte. Jede Fahrt
-   dauert so lange, wie ihre Animation braucht: Ein Brief fliegt in seinen Ordner
-   (1 s), der nächste hebt sich (0,7 s) und wird gelesen (1,7 s); das iPhone wechselt
-   in 2 s die Seite. Wo die Seite nur steht (angeheftete Kapitel ohne Bewegung),
+   dauert so lange, wie ihre Animation braucht: Das Lesen und Einsortieren aller
+   vier Briefe ist eine Geste von sieben Sekunden, das iPhone wechselt in zwei
+   Sekunden die Seite. Wo die Seite nur steht (angeheftete Kapitel ohne Bewegung),
    geht es in einem Zug darüber hinweg. */
 const at = (id, p) => secs[id].top + p * secs[id].range, top = sel => $(sel).getBoundingClientRect().top + scrollY;
-const PILE = .155, REST = .7, DONE = () => mobile ? .76 : .66;           /* REST: der Brief ist gelesen, die Angaben stehen */
-const letter = k => F0 + k * FW;
 snapScroll({
   skip: insideLiveBrowser,
-  stops: () => {
-    const s = [0, at("story", PILE)];                                     /* Anfang, der Stapel */
-    for (let k = 0; k < FLY.length; k++) s.push(at("story", letter(k + REST)));   /* jeder Scan */
-    s.push(at("story", DONE()));                                          /* abgelegt */
-    s.push(at("frist", 0), at("frist", .75));                             /* 21 Tage, dann 7 */
-    s.push(at("suche", .75), at("trust", .72));                           /* gefunden, dein Speicher */
-    s.push(top("#web"), top(".keep"), top(".fine"), top(".contact"), 1e9);
-    return s;
-  },
-  pace: () => {
-    const S = p => at("story", p), z = [[secs.story.top, S(PILE), 1700]];   /* die Blätter sammeln sich */
-    for (let k = 0; k < FLY.length; k++) {
-      z.push([S(k ? letter(k) : PILE), S(letter(k + .2)), 700]);         /* heben, Rahmen rastet ein */
-      z.push([S(letter(k + .2)), S(letter(k + REST)), 1700]);            /* Lichtband, Angaben */
-      z.push([S(letter(k + REST)), S(letter(k + 1)), 1000]);             /* in den Ordner */
-    }
-    z.push([S(letter(FLY.length)), S(DONE()), mobile ? 1400 : 600]);    /* abgelegt */
-    return z.concat([
-      [S(DONE()), S(1), 250],                                             /* das Kapitel steht still */
-      [S(1), secs.frist.top, 2000],                                       /* iPhone wechselt nach links */
-      [secs.frist.top, at("frist", .6), 2400],                            /* 21 Tage werden 7 */
-      [at("frist", .75), at("frist", 1), 150],
-      [at("frist", 1), secs.suche.top, 2000],                             /* und zurück nach rechts */
-      [secs.suche.top, at("suche", .52), 2000],                           /* „Rechnung“ wird getippt */
-      [at("suche", .75), at("suche", 1), 120],
-      [at("suche", 1), secs.trust.top, 1400],
-      [secs.trust.top, at("trust", .66), 2200],                           /* die Worte leuchten auf */
-      [at("trust", .72), at("trust", 1), 120]
-    ]);
-  }
+  stops: () => [
+    0, at("story", PILE), at("story", DONE()),                            /* Anfang, der Stapel, alles abgelegt */
+    at("frist", 0), at("frist", .75),                                     /* 21 Tage, dann 7 */
+    at("suche", .75), at("trust", .72),                                   /* gefunden, dein Speicher */
+    top("#web"), top(".keep"), top(".fine"), top(".contact"), 1e9
+  ],
+  pace: () => [
+    [secs.story.top, at("story", PILE), 1700],                            /* die Blätter sammeln sich */
+    [at("story", PILE), at("story", SORTED), 6600],                       /* lesen und einsortieren */
+    [at("story", SORTED), at("story", DONE()), mobile ? 1400 : 500],      /* abgelegt */
+    [at("story", DONE()), at("story", 1), 250],                           /* das Kapitel steht still */
+    [at("story", 1), secs.frist.top, 2000],                               /* iPhone wechselt nach links */
+    [secs.frist.top, at("frist", .6), 2400],                              /* 21 Tage werden 7 */
+    [at("frist", .75), at("frist", 1), 150],
+    [at("frist", 1), secs.suche.top, 2000],                               /* und zurück nach rechts */
+    [secs.suche.top, at("suche", .52), 2000],                             /* „Rechnung“ wird getippt */
+    [at("suche", .75), at("suche", 1), 120],
+    [at("suche", 1), secs.trust.top, 1400],
+    [secs.trust.top, at("trust", .66), 2200],                             /* die Worte leuchten auf */
+    [at("trust", .72), at("trust", 1), 120]
+  ]
 });
 </script>
 </body>
