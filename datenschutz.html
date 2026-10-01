@@ -35,7 +35,7 @@
 <div class="wrap__in">
 
 <h1>Datenschutzerklärung</h1>
-<p class="stand">Gilt für die App <strong>PostSafe</strong> für iOS und für diese Website. Stand: 23. September 2026.</p>
+<p class="stand">Gilt für die App <strong>PostSafe</strong> für iOS und für diese Website. Stand: 1. Oktober 2026.</p>
 
 <h2>Das Wichtigste vorweg</h2>
 <p class="lead">
@@ -51,9 +51,11 @@
       im Aufbau der Software verankert und durch automatische Tests abgesichert.</li>
   <li>Für die Texterkennung wird eine Seite <strong>zur Verarbeitung</strong> an einen europäischen
       KI-Dienst übertragen und dort nicht zum Training verwendet. Details unten.</li>
-  <li><strong>Ordnernamen verlassen Ihr Gerät nie.</strong> Wie Ihre Ordner heißen — etwa „Onkologie"
-      oder „Schuldnerberatung" — geht niemanden etwas an und wird ausschließlich auf dem Gerät
-      verarbeitet.</li>
+  <li><strong>Ihre Ordnernamen gehen nur an den KI-Dienst, und nur zum Einsortieren.</strong> Damit ein
+      Brief in einem Ihrer vorhandenen Ordner landet, statt dass die App einen neuen anlegt, werden die
+      Namen Ihrer Ordner zusammen mit dem Brief zur Verarbeitung übertragen — nur die Namen, ohne Farbe,
+      Reihenfolge oder Zahl der Briefe darin. Mein Server reicht sie nur durch und speichert sie nicht;
+      an niemanden sonst gehen sie.</li>
 </ul>
 
 <h2>1. Verantwortlicher</h2>
@@ -97,6 +99,15 @@
           muss, dass die Verarbeitung rechtmäßig war, solange sie galt</td>
     </tr>
     <tr>
+      <td>Protokoll der Aufrufe beim KI-Dienst: je Aufruf die Seitenzahl oder die Länge des
+          übertragenen Textes, die Länge des zurückgegebenen Textes und ob der Aufruf gelang —
+          <strong>nie der Inhalt selbst</strong></td>
+      <td>Supabase, Frankfurt am Main</td>
+      <td>Art. 6 Abs. 1 lit. f DSGVO — das berechtigte Interesse, Missbrauch des KI-Dienstes und
+          dadurch entstehende Kosten abzuwehren</td>
+      <td>48 Stunden; entfernt wird ein Eintrag mit der nächsten Verarbeitung danach</td>
+    </tr>
+    <tr>
       <td>Löschnachweis: Ihre zufällige Nutzerkennung, der Zeitpunkt der Löschung und zwei Häkchen
           dafür, dass die Apple-Anmeldung widerrufen und der Datensatz bei RevenueCat entfernt wurde</td>
       <td>Supabase, Frankfurt am Main</td>
@@ -105,11 +116,11 @@
       <td>Drei Jahre ab der Löschung, dann wird auch dieser Datensatz automatisch entfernt</td>
     </tr>
     <tr>
-      <td>Briefinhalt <strong>während der Verarbeitung</strong> (Seitenbild, erkannter Text)</td>
+      <td>Briefinhalt <strong>während der Verarbeitung</strong> (Seitenbild, erkannter Text) und die
+          Namen Ihrer Ordner, damit der Brief einem davon zugeordnet werden kann</td>
       <td>Mistral AI, Rechenzentren in der EU</td>
       <td>Art. 6 Abs. 1 lit. b und Art. 9 Abs. 2 lit. a DSGVO</td>
-      <td>Nur für die Dauer der Verarbeitung. Bei der Stapelverarbeitung hochgeladene Dateien werden
-          unmittelbar nach Abruf des Ergebnisses gelöscht. Mistral behält Daten bis zu 30 Tage zur
+      <td>Nur für die Dauer der Verarbeitung. Mistral behält Daten bis zu 30 Tage zur
           Missbrauchskontrolle</td>
     </tr>
     <tr>
@@ -199,15 +210,14 @@
 
 <h3>Keine Nutzung Ihrer Briefe zum Training von KI-Modellen</h3>
 <p>
-  Für die Texterkennung wird der Briefinhalt an Mistral AI übertragen. Für das genutzte Konto ist die
+  Für die Texterkennung und das Einsortieren werden der Briefinhalt und die Namen Ihrer Ordner an
+  Mistral AI übertragen. Für das genutzte Konto ist die
   Verwendung von API-Daten zum Training der Modelle <strong>abgeschaltet</strong>, ebenso die sogenannten
   Labs-Modelle, für die diese Abschaltung nicht gälte. Diese Einstellung wird vor jeder
   Veröffentlichung der App erneut überprüft.
 </p>
 <p>
   Mistral behält Daten auf dem genutzten Tarif bis zu <strong>30 Tage</strong> zur Missbrauchskontrolle.
-  Bei der Stapelverarbeitung hochgeladene Dateien werden von PostSafe unmittelbar nach Abruf des
-  Ergebnisses gelöscht, statt die 30 Tage abzuwarten.
 </p>
 <p>
   Weder RevenueCat noch TelemetryDeck noch Supabase erhalten Briefinhalte in irgendeiner Form.
