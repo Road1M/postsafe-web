@@ -178,9 +178,8 @@
   .webs__row{flex-direction:column; align-items:stretch}
   .webs__row .device{display:none}
   .fan img{margin-right:-240px}
-  .dock p small{display:none}
+  .dock{display:none}   /* am Handy kann die Leiste oben dasselbe */
 }
-@media (max-width:420px){ .dock p{display:none} }
 @media (prefers-reduced-motion: reduce){ .rot .c{transition:none} .hint i{animation:none} }
 </style>
 </head>
@@ -485,7 +484,7 @@ function chapters(y) {
   if (q !== lastQ) { lastQ = q; $("[data-q]").textContent = q; }
   const wl = Math.round(clamp((pt - .04) / .6, 0, 1) * words.length);
   if (wl !== lastW) { lastW = wl; words.forEach((w, i) => w.classList.toggle("lit", i < wl)); }
-  $("#dock").classList.toggle("on", y > vh * .7 && y < document.documentElement.scrollHeight - vh * 1.4 && !(mobile && y > secs.story.top - vh * .3 && y < secs.web.top) && !(y > secs.story.top - vh * .3 && y < secs.frist.top - vh * .3));
+  $("#dock").classList.toggle("on", y > vh * .7 && y < document.documentElement.scrollHeight - vh * 1.4 && !(y > secs.story.top - vh * .3 && y < secs.frist.top - vh * .3));
   return ps;
 }
 
