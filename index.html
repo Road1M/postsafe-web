@@ -20,7 +20,7 @@
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="PostSafe — Deine Post kennt ihren Platz.">
 <meta name="twitter:card" content="summary_large_image">
-<link rel="stylesheet" href="seite.css?v=14">
+<link rel="stylesheet" href="seite.css?v=15">
 <style>
 /* Hero */
 .hero{min-height:100svh; display:flex; align-items:center; position:relative}
@@ -348,13 +348,6 @@ import { createStage } from "./js/stage.js";
 import { mountDevice } from "./js/screens.js";
 import { LETTERS, drawLetter, drawBack, drawEnvelope, drawEnvelopeBack } from "./js/letters.js";
 import { mountBrowser } from "./js/browser.js";
-import { snapScroll } from "./js/snap.js";
-/* Die Vorschau scrollt selbst, solange sie in Gestenrichtung noch Platz hat */
-const insideLiveBrowser = e => {
-  const v = e.target.closest?.(".browser__view.live");
-  if (!v || e.deltaY === undefined) return !!v;
-  return e.deltaY > 0 ? v.scrollTop + v.clientHeight < v.scrollHeight - 1 : v.scrollTop > 0;
-};
 /* Die Animationen folgen einem geglätteten Scrollwert — auch Trackpad, Tasten und Scrollbalken wirken so weich */
 let ys = scrollY;
 const smoothY = () => { const d = scrollY - ys; ys = Math.abs(d) < .3 ? scrollY : ys + d * .3; return ys; };
@@ -403,11 +396,9 @@ const FLY = [
   { i: 2, to: "gesundheit", tag: "412,60 €", note: "Krankenkasse · 412,60 €", boxes: ["sender", "subject", "amount"] },
   { i: 5, to: "bank", tag: "Neue Entgelte", note: "Hausbank · neue Entgelte", boxes: ["sender", "subject"] }
 ];
-/* Der Ablauf im Kapitel (Anteil des Kapitels): Stapel liegt bei PILE, dann in einem
-   Zug alle vier Briefe. Jeder braucht SPAN; der nächste hebt sich, sobald der
-   vorige in seinen Ordner fliegt (STEP). */
-const PILE = .155, START = .165, SPAN = .16, STEP = .1, SORTED = START + (FLY.length - 1) * STEP + SPAN;
-const DONE = () => mobile ? .78 : .66;
+/* Der Ablauf im Kapitel (Anteil des Kapitels): in einem Zug alle vier Briefe. Jeder braucht
+   SPAN; der nächste hebt sich, sobald der vorige in seinen Ordner fliegt (STEP). */
+const START = .165, SPAN = .16, STEP = .1, SORTED = START + (FLY.length - 1) * STEP + SPAN;
 const FLOAT = [
   { x: .02, y: -.4, z: -200, rx: 16, ry: -26, rz: -12 }, { x: .44, y: -.36, z: -300, rx: -10, ry: 30, rz: 14 },
   { x: .45, y: .38, z: -120, rx: 22, ry: -22, rz: -6 }, { x: .12, y: .47, z: 0, rx: -26, ry: 24, rz: 18 },
@@ -676,28 +667,6 @@ addEventListener("load", () => {
 measure();
 requestAnimationFrame(frame);
 
-/* Abschnitt für Abschnitt — die Halte sind die Momente der Geschichte. Jede Fahrt
-   dauert so lange, wie ihre Animation braucht: Das Lesen und Einsortieren aller
-   vier Briefe ist eine Geste von sieben Sekunden, das iPhone wechselt in zwei
-   Sekunden die Seite. Wo die Seite nur steht (angeheftete Kapitel ohne Bewegung),
-   geht es in einem Zug darüber hinweg. Ab dem Anfang der Fristen (die 21) scrollt
-   die Seite frei. */
-const at = (id, p) => secs[id].top + p * secs[id].range;
-snapScroll({
-  skip: insideLiveBrowser,
-  stops: () => [
-    0, at("story", PILE), at("story", DONE()),                            /* Anfang, der Stapel, alles abgelegt */
-    at("frist", 0)                                                        /* 21 Tage — ab hier frei */
-  ],
-  open: true,
-  pace: () => [
-    [secs.story.top, at("story", PILE), 1700],                            /* die Blätter sammeln sich */
-    [at("story", PILE), at("story", SORTED), 6600],                       /* lesen und einsortieren */
-    [at("story", SORTED), at("story", DONE()), mobile ? 1400 : 500],      /* abgelegt */
-    [at("story", DONE()), at("story", 1), 250],                           /* das Kapitel steht still */
-    [at("story", 1), secs.frist.top, 2000]                                /* iPhone wechselt nach links */
-  ]
-});
 </script>
 </body>
 </html>

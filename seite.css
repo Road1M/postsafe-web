@@ -63,7 +63,10 @@ a{color:inherit}
 
 /* Angeheftete Kapitel */
 .chap{position:relative}
-.pin{position:sticky; top:0; height:100vh; height:100svh; overflow:hidden}
+/* Papierfarben, obwohl es nicht zu sehen ist (main trägt dieselbe Fläche): Safari färbt seit iOS 26
+   seine Leisten oben und unten nach klebenden Elementen am Bildschirmrand. Ein durchsichtiges
+   angeheftetes Kapitel ergab dort dunkle Balken, auch auf der hellen Seite. */
+.pin{position:sticky; top:0; height:100vh; height:100svh; overflow:hidden; background:var(--paper)}
 .pin .wrap{height:100%; display:grid; grid-template-columns:1fr 1fr; align-items:center}
 .col-r{grid-column:2}
 .tx{max-width:520px}
