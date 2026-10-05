@@ -32,7 +32,7 @@
   --shadow:0 2px 6px rgba(0,0,0,.5),0 22px 52px rgba(0,0,0,.55);
 }
 *{box-sizing:border-box}
-html{-webkit-text-size-adjust:100%}
+html{-webkit-text-size-adjust:100%; background:var(--paper)}   /* auch die Fläche hinter Safaris Leisten */
 body{margin:0; background:var(--paper); color:var(--ink); font-family:var(--sans); font-size:17px; line-height:1.5; -webkit-font-smoothing:antialiased; overflow-x:clip}
 body::before{content:""; position:fixed; inset:0; z-index:-1; pointer-events:none; background:radial-gradient(120% 70% at 50% -10%, var(--paper-hi) 0%, transparent 62%), var(--paper)}
 a{color:inherit}

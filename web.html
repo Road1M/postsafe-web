@@ -9,7 +9,7 @@
 <meta name="theme-color" content="#070707" media="(prefers-color-scheme: dark)">
 <link rel="icon" href="favicon.svg?v=2" type="image/svg+xml">
 <link rel="canonical" href="https://postsafe.eu/web.html">
-<link rel="stylesheet" href="seite.css?v=13">
+<link rel="stylesheet" href="seite.css?v=14">
 <style>
 .dev-fixed{position:fixed; z-index:30; left:0; top:0; pointer-events:none; will-change:transform}
 .hero{min-height:100svh; display:flex; align-items:center}
@@ -207,7 +207,10 @@ const devEl = $("#device"), screen = mountDevice(devEl);
 screen.preload(["web", "einst"]);
 let browser = null;
 mountBrowser($("[data-browser]"), { height: 680 }).then(b => { browser = b; applyTheme(); });
-function applyTheme() { const d = isDark(); screen.setTheme("hell");   /* das iPhone zeigt die App immer hell */ if (browser) browser.setDark(d); }
+/* Safari färbt seine Leisten oben und unten nach der Seite. Wer am dunklen iPhone auf hell
+   schaltet, bekäme sonst weiter die dunkle Leistenfarbe aus theme-color. */
+const barColor = d => $$('meta[name="theme-color"]').forEach(m => m.content = d ? "#070707" : "#F1F1EF");
+function applyTheme() { const d = isDark(); barColor(d); screen.setTheme("hell");   /* das iPhone zeigt die App immer hell */ if (browser) browser.setDark(d); }
 applyTheme(); matchMedia("(prefers-color-scheme: dark)").addEventListener("change", applyTheme);
 
 /* Vier Kästchen, die zeigen, was im echten Feld steht */

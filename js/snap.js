@@ -11,12 +11,19 @@
    passiert (pace): Wo ein Brief gescannt wird, fährt die Seite langsam, so dass
    jede Animation in ihrem Tempo abläuft; wo nichts geschieht, geht es zügig
    weiter. pace() liefert Bereiche [von, bis, Millisekunden]; alles andere fährt
-   mit ms Millisekunden je Bildschirmhöhe.                                        */
-export function snapScroll({ stops, skip = () => false, pace = () => [], ms = 1000 }) {
+   mit ms Millisekunden je Bildschirmhöhe.
+
+   open: Hinter dem letzten Halt scrollt die Seite frei, ohne Einrasten. Wer von
+   dort zurück nach oben scrollt, wird am letzten Halt angehalten; von da an rastet
+   es wieder ein.                                                                 */
+export function snapScroll({ stops, skip = () => false, pace = () => [], ms = 1000, open = false }) {
   const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
   let tween = null, lastWheel = 0, acc = 0, own = false, idle = null;
   const max = () => document.documentElement.scrollHeight - innerHeight;
   const list = () => [...new Set(stops().map(v => Math.round(Math.max(0, Math.min(v, max())))))].sort((a, b) => a - b);
+  const last = () => list().at(-1);
+  /* frei: hinter dem letzten Halt, oder an ihm und in Richtung des freien Teils */
+  const free = dir => { if (!open) return false; const y = scrollY, L = last(); return y > L + 2 || (y >= L - 2 && dir > 0); };
 
   /* Anfahren und Abbremsen kurz, dazwischen gleichmäßig — so spielen die
      Animationen mit ihrer eigenen Dynamik statt im Zeitraffer der Fahrt */
@@ -79,14 +86,13 @@ export function snapScroll({ stops, skip = () => false, pace = () => [], ms = 10
      war — oder wenn der Ausschlag wieder ansteigt: Nachlauf wird immer schwächer,
      ein neuer Wisch dagegen stärker. So bleibt ein stockender Nachlauf (langsamer
      Rechner) eine Geste, ein zweiter Wisch mitten im Nachlauf zählt trotzdem.   */
-  let locked = false, hist = [];
+  let locked = false, hist = [], freeGesture = false;
   addEventListener("wheel", e => {
     if (e.ctrlKey) return;
     const now = performance.now(), gap = now - lastWheel;
     lastWheel = now;
     /* Ein Fenster in der Seite scrollt selbst; sein Nachlauf am Rand bewegt die Seite nicht */
     if (skip(e)) { locked = true; return; }
-    e.preventDefault();
     const d = e.deltaMode === 1 ? e.deltaY * 18 : e.deltaY, mag = Math.abs(d);
     if (gap > 450) hist = [];
     /* ansteigend heißt: dreimal hintereinander stärker, zusammen deutlich über dem
@@ -95,6 +101,16 @@ export function snapScroll({ stops, skip = () => false, pace = () => [], ms = 10
     hist.push(mag); if (hist.length > 8) hist.shift();
     const h = hist, m = h.length, base = h.slice(0, Math.max(1, m - 3)).reduce((a, b) => a + b, 0) / Math.max(1, m - 3);
     const rising = m >= 5 && mag >= 12 && h[m - 1] > h[m - 2] && h[m - 2] > h[m - 3] && mag > base * 1.8;
+    /* Im freien Teil scrollt der Browser selbst — bis die Geste über den letzten Halt
+       zurück nach oben will: dort hält die Seite an, der Rest der Geste verfällt */
+    if (gap > 450 || rising) freeGesture = !(tween && !tween.done) && free(d);
+    if (freeGesture) {
+      if (scrollY + d >= last()) return;
+      e.preventDefault(); freeGesture = false; acc = 0; locked = true;
+      own = true; scrollTo(0, last()); own = false;
+      return;
+    }
+    e.preventDefault();
     if (tween && !tween.done) return;               /* Schwung während der Fahrt: geschluckt */
     if (gap > 450 || rising) { acc = 0; locked = false; }   /* eine neue Geste */
     if (locked) return;                             /* Nachlauf der letzten Geste */
@@ -108,6 +124,7 @@ export function snapScroll({ stops, skip = () => false, pace = () => [], ms = 10
     const down = ["ArrowDown", "PageDown", " "].includes(e.key) && !(e.key === " " && e.shiftKey);
     const up = ["ArrowUp", "PageUp"].includes(e.key) || (e.key === " " && e.shiftKey);
     if (!down && !up && e.key !== "Home" && e.key !== "End") return;
+    if (e.key === "End" ? open : e.key !== "Home" && free(down ? 1 : -1)) return;   /* der Browser scrollt selbst */
     e.preventDefault();
     if (tween && !tween.done) return;
     if (e.key === "Home") goTo(0, false); else if (e.key === "End") goTo(max(), false); else go(down ? 1 : -1);
@@ -119,7 +136,7 @@ export function snapScroll({ stops, skip = () => false, pace = () => [], ms = 10
   addEventListener("touchstart", e => { from = e.target; mode = null; ty = e.touches[0].clientY; tx = e.touches[0].clientX; }, { passive: true });
   addEventListener("touchmove", e => {
     if (ty === null || e.touches.length !== 1) return;
-    if (!mode) mode = skip({ target: from, deltaY: ty - e.touches[0].clientY }) ? "inner" : "page";
+    if (!mode) { const dy = ty - e.touches[0].clientY; mode = skip({ target: from, deltaY: dy }) ? "inner" : free(dy) ? "free" : "page"; }
     if (mode === "page") e.preventDefault();
   }, { passive: false });
   addEventListener("touchend", e => {
@@ -136,12 +153,22 @@ export function snapScroll({ stops, skip = () => false, pace = () => [], ms = 10
     const el = document.querySelector(a.getAttribute("href")); if (!el) return;
     e.preventDefault();
     const top = el.getBoundingClientRect().top + scrollY, s = list();
-    goTo(s.find(v => v >= top - 2) ?? s[s.length - 1], false);
+    goTo(open && top > s.at(-1) + 2 ? Math.min(top, max()) : s.find(v => v >= top - 2) ?? s[s.length - 1], false);
   });
 
-  /* Kam die Seite anders an eine Stelle (Scrollbalken, Neuladen), rastet sie am nächsten Halt ein */
+  /* Kam die Seite anders an eine Stelle (Scrollbalken, Neuladen), rastet sie am nächsten Halt ein.
+     Im freien Teil nicht — und schwingt ein Wisch von dort über den letzten Halt
+     nach oben, hält die Seite an ihm an. */
+  let prevY = scrollY;
   addEventListener("scroll", () => {
-    if (own || busy()) return;
+    const y = scrollY, was = prevY; prevY = y;
+    if (own || (tween && !tween.done)) return;
+    if (open) {
+      const L = last();
+      if (was > L + 2 && y < L - 2) { own = true; scrollTo(0, L); own = false; prevY = L; return; }
+      if (y > L + 2) return;
+    }
+    if (busy()) return;
     clearTimeout(idle);
     idle = setTimeout(() => { if (!busy()) { const { s, i } = current(); goTo(s[i]); } }, 260);
   }, { passive: true });

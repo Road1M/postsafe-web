@@ -20,7 +20,7 @@
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="PostSafe — Deine Post kennt ihren Platz.">
 <meta name="twitter:card" content="summary_large_image">
-<link rel="stylesheet" href="seite.css?v=13">
+<link rel="stylesheet" href="seite.css?v=14">
 <style>
 /* Hero */
 .hero{min-height:100svh; display:flex; align-items:center; position:relative}
@@ -376,7 +376,10 @@ screen.preload(["scan", "archiv", "brief", "suche0", "suche1", "einst"]);
 const webDev = mountDevice($("[data-webdevice]")); webDev.set({ a: "web" });
 let browser = null;
 mountBrowser($("[data-browser]"), { height: 640 }).then(b => { browser = b; applyTheme(); });
-function applyTheme() { const d = isDark(); screen.setTheme("hell");   /* das iPhone zeigt die App immer hell */ webDev.setTheme("hell"); if (browser) browser.setDark(d); }
+/* Safari färbt seine Leisten oben und unten nach der Seite. Wer am dunklen iPhone auf hell
+   schaltet, bekäme sonst weiter die dunkle Leistenfarbe aus theme-color. */
+const barColor = d => $$('meta[name="theme-color"]').forEach(m => m.content = d ? "#070707" : "#F1F1EF");
+function applyTheme() { const d = isDark(); barColor(d); screen.setTheme("hell");   /* das iPhone zeigt die App immer hell */ webDev.setTheme("hell"); if (browser) browser.setDark(d); }
 applyTheme(); matchMedia("(prefers-color-scheme: dark)").addEventListener("change", applyTheme);
 
 /* ---------------------------------------------------------- Briefe ---- */
@@ -677,30 +680,22 @@ requestAnimationFrame(frame);
    dauert so lange, wie ihre Animation braucht: Das Lesen und Einsortieren aller
    vier Briefe ist eine Geste von sieben Sekunden, das iPhone wechselt in zwei
    Sekunden die Seite. Wo die Seite nur steht (angeheftete Kapitel ohne Bewegung),
-   geht es in einem Zug darüber hinweg. */
-const at = (id, p) => secs[id].top + p * secs[id].range, top = sel => $(sel).getBoundingClientRect().top + scrollY;
+   geht es in einem Zug darüber hinweg. Ab dem Anfang der Fristen (die 21) scrollt
+   die Seite frei. */
+const at = (id, p) => secs[id].top + p * secs[id].range;
 snapScroll({
   skip: insideLiveBrowser,
   stops: () => [
     0, at("story", PILE), at("story", DONE()),                            /* Anfang, der Stapel, alles abgelegt */
-    at("frist", 0), at("frist", .75),                                     /* 21 Tage, dann 7 */
-    at("suche", .75), at("trust", .72),                                   /* gefunden, dein Speicher */
-    top("#web"), top(".keep"), top(".fine"), top(".contact"), 1e9
+    at("frist", 0)                                                        /* 21 Tage — ab hier frei */
   ],
+  open: true,
   pace: () => [
     [secs.story.top, at("story", PILE), 1700],                            /* die Blätter sammeln sich */
     [at("story", PILE), at("story", SORTED), 6600],                       /* lesen und einsortieren */
     [at("story", SORTED), at("story", DONE()), mobile ? 1400 : 500],      /* abgelegt */
     [at("story", DONE()), at("story", 1), 250],                           /* das Kapitel steht still */
-    [at("story", 1), secs.frist.top, 2000],                               /* iPhone wechselt nach links */
-    [secs.frist.top, at("frist", .6), 2400],                              /* 21 Tage werden 7 */
-    [at("frist", .75), at("frist", 1), 150],
-    [at("frist", 1), secs.suche.top, 2000],                               /* und zurück nach rechts */
-    [secs.suche.top, at("suche", .52), 2000],                             /* „Rechnung“ wird getippt */
-    [at("suche", .75), at("suche", 1), 120],
-    [at("suche", 1), secs.trust.top, 1400],
-    [secs.trust.top, at("trust", .66), 2200],                             /* die Worte leuchten auf */
-    [at("trust", .72), at("trust", 1), 120]
+    [at("story", 1), secs.frist.top, 2000]                                /* iPhone wechselt nach links */
   ]
 });
 </script>
