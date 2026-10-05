@@ -59,7 +59,11 @@ a{color:inherit}
 .lede{font-size:clamp(18px,1.6vw,22px); color:var(--ink-2); line-height:1.42; max-width:32ch; margin:22px 0 0; text-wrap:pretty}
 
 /* Bühne: das iPhone und die Briefe, ein WebGL-Bild über der Seite */
-.stage{position:fixed; inset:0; z-index:29; pointer-events:none; width:100vw; height:100vh}
+/* Ebenen über den ganzen Bildschirm stehen in einem festen Halter ohne Fläche (.layer): Safari färbt
+   seit iOS 26 seine Leisten nach festen Elementen am Bildschirmrand, und eine durchsichtige volle
+   Ebene ergab dort mal dunkle Balken, mal keine. Absolut gesetzte Kinder liest Safari nicht. */
+.layer{position:fixed; left:0; top:0; width:0; height:0; pointer-events:none}
+.stage{position:absolute; left:0; top:0; pointer-events:none; width:100vw; height:100vh}
 
 /* Angeheftete Kapitel */
 .chap{position:relative}
