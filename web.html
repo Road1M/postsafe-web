@@ -17,19 +17,36 @@
 .hero__txt{max-width:min(46vw,580px); padding-top:70px}
 .hero h1{font-size:clamp(46px,5.8vw,88px)}
 
-/* Das Codefeld: ein echtes Eingabefeld über vier sichtbaren Kästchen */
-.pair{margin-top:36px; padding:26px; border-radius:32px; background:var(--card); box-shadow:var(--shadow); max-width:480px}
+/* Das Codefeld: ein echtes Eingabefeld über vier sichtbaren Kästchen.
+   Nach der vierten Ziffer geht es von selbst los: die Kästchen fliegen zu einem zusammen, das im
+   Orange des Zeichens wartet, bis der Browser beim iPhone ist. Dort wird dasselbe Kästchen grün. */
+@property --pair-a{syntax:'<angle>'; inherits:false; initial-value:0deg}
+.pair{--acc:#FF473B; --acc-2:#FF8B21; margin-top:36px; padding:26px; border-radius:32px; background:var(--card); box-shadow:var(--shadow); max-width:480px}
+:root[data-theme="dark"] .pair{--acc:#FF8B21; --acc-2:#FF473B}
+@media (prefers-color-scheme:dark){ :root:not([data-theme="light"]) .pair{--acc:#FF8B21; --acc-2:#FF473B} }
 .pair__label{display:block; font-family:var(--mono); font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-3); margin-bottom:14px}
 .code{position:relative; display:grid; grid-template-columns:repeat(4,1fr); gap:10px}
-.code b{height:84px; border-radius:18px; background:var(--card-2); box-shadow:inset 0 0 0 1.5px var(--line); display:grid; place-items:center; font-size:48px; font-weight:600; letter-spacing:-.02em; font-variant-numeric:tabular-nums; color:var(--ink); transition:box-shadow .2s, transform .3s var(--ease)}
+.code b{height:84px; border-radius:20px; background:var(--card-2); box-shadow:inset 0 0 0 1.5px var(--line); display:grid; place-items:center; font-size:48px; font-weight:600; letter-spacing:-.02em; font-variant-numeric:tabular-nums; color:var(--ink); transition:box-shadow .2s, transform .5s var(--ease), opacity .35s}
 .code b:empty::after{content:""; width:14px; height:3px; border-radius:2px; background:var(--line)}
-.code b.cur{box-shadow:inset 0 0 0 2px var(--ink)}
-.code b.cur:empty::after{width:2.5px; height:44px; background:var(--ink); animation:blink 1s steps(1) infinite}
+.code b.voll{box-shadow:inset 0 0 0 1.5px var(--ink)}
+.code b.cur{box-shadow:inset 0 0 0 2px var(--acc), 0 0 0 4px color-mix(in srgb,var(--acc) 16%,transparent)}
+.code b.cur:empty::after{width:2.5px; height:44px; background:var(--acc); animation:blink 1s steps(1) infinite}
 @keyframes blink{50%{opacity:0}}
-.code b.pop{transform:scale(1.06)}
+.code b.pop{animation:ziffer .22s}
+@keyframes ziffer{40%{transform:scale(1.08) translateY(-2px)}}
+.code .eins{position:absolute; left:50%; top:0; width:84px; height:84px; margin-left:-42px; border-radius:22px; background:var(--card-2); box-shadow:inset 0 0 0 1.5px var(--line); display:grid; place-items:center; opacity:0; transform:scale(.7); transition:opacity .3s .35s, transform .45s .35s var(--ease); pointer-events:none}
+.code .eins::before{content:""; position:absolute; inset:-4px; border-radius:26px; padding:2.5px; background:conic-gradient(from var(--pair-a), color-mix(in srgb,var(--acc) 14%,transparent) 0 52%, var(--acc-2) 78%, var(--acc) 100%); -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite:xor; mask-composite:exclude; animation:kreisen 1.1s linear infinite}
+.code .eins::after{content:""; width:8px; height:8px; border-radius:50%; background:var(--acc)}
+@keyframes kreisen{to{--pair-a:360deg}}
+.pair.blitz .code b{box-shadow:inset 0 0 0 2px var(--acc)}
+.pair.fliegt .code b{transform:translateX(var(--dx,0)) rotate(var(--rr,0)) scale(.9); opacity:0; transition-delay:calc(var(--i) * 28ms)}
+.pair.fliegt .code .eins{opacity:1; transform:none}
+.pair.falsch .code{animation:schuetteln .42s}
+@keyframes schuetteln{15%,55%{transform:translateX(-9px)}35%,75%{transform:translateX(9px)}90%{transform:translateX(-3px)}}
 .code input{position:absolute; inset:0; width:100%; height:100%; opacity:0; font-size:16px; border:0; background:transparent; color:transparent; caret-color:transparent; cursor:text}
-.pair__go{margin-top:14px; width:100%; height:58px; border:0; border-radius:999px; background:var(--ink); color:var(--paper); font:inherit; font-size:17px; font-weight:600; cursor:pointer; transition:opacity .2s}
-.pair__hinweis{min-height:1.5em; margin:12px 4px 0; font-size:15px; color:var(--ink-2)}
+.pair__hinweis{min-height:1.5em; margin:14px 4px 0; font-size:15px; color:var(--ink-2)}
+.pair.fliegt .pair__hinweis{color:var(--ink); font-weight:600}
+@media (prefers-reduced-motion:reduce){ .code b, .code .eins{transition:none} .code .eins::before{animation:none} .pair.falsch .code{animation:none} }
 .soon{margin:18px 4px 0; font-size:14px; color:var(--ink-3); max-width:46ch}
 .soon b{color:var(--ink-2)}
 
@@ -59,6 +76,7 @@
   .hero__txt{max-width:none; padding-top:100px; padding-bottom:40px}
   .hero h1{font-size:clamp(40px,10vw,64px)}
   .code b{height:70px; font-size:38px}
+  .code .eins{width:70px; height:70px; margin-left:-35px}
   .steps{margin-top:16px}
   .steps li{padding:10px 12px}
   .steps li:not(.on){display:none}
@@ -93,11 +111,11 @@
       <form class="pair" id="verbinden" novalidate>
         <label class="pair__label" for="code">Code aus der App</label>
         <div class="code" data-cells>
-          <b></b><b></b><b></b><b></b>
+          <b style="--i:0;--rr:-10deg"></b><b style="--i:1;--rr:-4deg"></b><b style="--i:2;--rr:4deg"></b><b style="--i:3;--rr:10deg"></b>
+          <span class="eins" aria-hidden="true"></span>
           <input id="code" name="code" type="text" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" autocomplete="off" spellcheck="false" aria-describedby="pair-hinweis">
         </div>
-        <button class="pair__go" type="submit">Verbinden</button>
-        <p class="pair__hinweis" id="pair-hinweis" role="status"></p>
+        <p class="pair__hinweis" id="pair-hinweis" role="status">Sobald vier Ziffern drin sind, geht es von selbst weiter.</p>
       </form>
       <p class="soon"><b>Noch nicht nutzbar:</b> PostSafe ist noch nicht im App Store. Sobald die App da ist, funktioniert das Feld oben.</p>
     </div></div>
@@ -114,7 +132,7 @@
       </ol>
       <div class="conds">
         <span><svg width="16" height="12" viewBox="0 0 17 12" aria-hidden="true"><path d="M8.5 11.6 5.9 8.9a3.7 3.7 0 0 1 5.2 0zM3.4 6.4a7.3 7.3 0 0 1 10.2 0l1.6-1.6a9.6 9.6 0 0 0-13.4 0zM.1 3.1a12 12 0 0 1 16.8 0" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>Gleiches WLAN</span>
-        <span><svg width="10" height="15" viewBox="0 0 10 15" aria-hidden="true"><rect x=".8" y=".8" width="8.4" height="13.4" rx="2" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>Bildschirm am iPhone bleibt an</span>
+        <span><svg width="10" height="15" viewBox="0 0 10 15" aria-hidden="true"><rect x=".8" y=".8" width="8.4" height="13.4" rx="2" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>PostSafe am iPhone bleibt offen</span>
       </div>
     </div></div></div>
   </section>
@@ -160,7 +178,7 @@
 <div class="dev-fixed" id="device" aria-label="PostSafe auf dem iPhone" role="img"></div>
 
 <!-- Die Logik der echten Seite, unverändert: vier Ziffern werden zu einer Adresse im WLAN. -->
-<script src="web.js?v=2"></script>
+<script src="web.js?v=3"></script>
 <script type="module">
 import { mountDevice } from "./js/screens.js";
 import { mountBrowser } from "./js/browser.js";
@@ -196,8 +214,8 @@ applyTheme(); matchMedia("(prefers-color-scheme: dark)").addEventListener("chang
 const input = $("#code"), cells = $$("[data-cells] b");
 let focused = false, lastLen = 0;
 function paintCells() {
-  const v = input.value; cells.forEach((c, i) => { c.textContent = v[i] || ""; c.classList.toggle("cur", focused && i === Math.min(v.length, 3)); });
-  if (v.length > lastLen && cells[v.length - 1]) { const c = cells[v.length - 1]; c.classList.add("pop"); setTimeout(() => c.classList.remove("pop"), 160); }
+  const v = input.value; cells.forEach((c, i) => { c.textContent = v[i] || ""; c.classList.toggle("voll", !!v[i]); c.classList.toggle("cur", focused && v.length < 4 && i === v.length); });
+  if (v.length > lastLen && cells[v.length - 1]) { const c = cells[v.length - 1]; c.classList.add("pop"); setTimeout(() => c.classList.remove("pop"), 240); }
   lastLen = v.length;
 }
 input.addEventListener("input", () => requestAnimationFrame(paintCells));
