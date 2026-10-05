@@ -4,7 +4,7 @@
    den Beispielbriefen, mit denen die App-Aufnahmen auf dieser Seite entstanden
    sind — derselbe Brief, der hier durchs Bild fliegt, liegt danach im iPhone. */
 
-const PX = 5;                                  /* Pixel je Millimeter */
+const PX = 4;                                  /* Pixel je Millimeter — scharf genug für den nahen Scan, ein Drittel weniger Speicher als 5 */
 const FONT = '"Helvetica Neue", Helvetica, Arial, sans-serif';
 
 function day(offset) {
@@ -180,7 +180,7 @@ function signature(ctx, x, y, w) {
   ctx.stroke(); ctx.restore();
 }
 
-/* Ein DIN-A4-Brief, 1050 × 1485 Pixel */
+/* Ein DIN-A4-Brief, 840 × 1188 Pixel */
 export function drawLetter(L) {
   const W = 210 * PX, H = 297 * PX, c = document.createElement("canvas");
   c.width = W; c.height = H;
@@ -247,14 +247,15 @@ export function drawLetter(L) {
 
 /* Die Rückseite: blankes Papier, durch das die Schrift spiegelverkehrt scheint */
 export function drawBack(front) {
-  const c = document.createElement("canvas"); c.width = front.width; c.height = front.height;
+  /* In halber Auflösung: von hinten scheint die Schrift nur blass durch, schärfer sieht man sie nie */
+  const c = document.createElement("canvas"); c.width = Math.round(front.width / 2); c.height = Math.round(front.height / 2);
   const x = c.getContext("2d");
   paper(x, c.width, c.height, "#F7F6F1");
-  x.save(); x.globalAlpha = .07; x.translate(c.width, 0); x.scale(-1, 1); x.drawImage(front, 0, 0); x.restore();
+  x.save(); x.globalAlpha = .07; x.translate(c.width, 0); x.scale(-1, 1); x.drawImage(front, 0, 0, c.width, c.height); x.restore();
   return c;
 }
 
-/* Ein DIN-lang-Fensterkuvert, 1100 × 550 Pixel */
+/* Ein DIN-lang-Fensterkuvert, 880 × 440 Pixel */
 export function drawEnvelope(sender, legal, addr) {
   const W = 220 * PX, H = 110 * PX, c = document.createElement("canvas"); c.width = W; c.height = H;
   const x = c.getContext("2d"), mm = v => v * PX;

@@ -7,18 +7,24 @@
 const S = 3;                                   /* Pixel je Punkt */
 const FONT = '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Arial, sans-serif';
 export const BEZEL = { w: 1350, h: 2760, sx: 72, sy: 69, sw: 1206, sh: 2622 };
+/* Gerechnet wird weiter in den Pixeln von Apples Bild (1206 × 2622), gemalt in zwei Dritteln davon:
+   das iPhone ist auf der Seite nie breiter als rund 400 Punkte, also 800 Pixel auf einem
+   Retina-Bildschirm — mehr Pixel sieht niemand, sie kosteten nur Arbeitsspeicher. Die
+   App-Aufnahmen in img/ liegen in genau dieser Größe vor (804 × 1748). */
+const K = 2 / 3;
 
 /* Ein Gerät als HTML: Bildschirm-Canvas unter dem Apple-Bild */
 export function mountDevice(el, base = "img/") {
   el.classList.add("device");
-  el.innerHTML = `<canvas width="${BEZEL.sw}" height="${BEZEL.sh}" aria-hidden="true"></canvas><img src="${base}iphone-18-pro-silber.png" alt="" draggable="false">`;
+  el.innerHTML = `<canvas width="${Math.round(BEZEL.sw * K)}" height="${Math.round(BEZEL.sh * K)}" aria-hidden="true"></canvas><img src="${base}iphone-18-pro-silber.png" alt="" draggable="false">`;
   return createScreen(el.querySelector("canvas"), base);
 }
 
 export function createScreen(canvas, base = "img/") {
   /* Im großen Farbraum Display P3 zeichnen — so, wie die App ihre Ordnerfarben malt.
      Im kleinen sRGB-Raum würden sie blasser. */
-  const ctx = canvas.getContext("2d", { colorSpace: "display-p3" }) || canvas.getContext("2d"), W = canvas.width, H = canvas.height;
+  const ctx = canvas.getContext("2d", { colorSpace: "display-p3" }) || canvas.getContext("2d"), W = BEZEL.sw, H = BEZEL.sh;
+  const k = canvas.width / W; ctx.scale(k, canvas.height / H);
   const cache = {};
   let theme = "hell", state = { a: "scan", notif: 0, notifText: null, ring: null }, last = "";
   const icon = new Image(); icon.src = base + "icon.png"; icon.onload = () => { last = ""; };
@@ -49,7 +55,7 @@ export function createScreen(canvas, base = "img/") {
     if (k <= 0) return;
     const y = (-90 + 146 * k) * S, x = 10 * S, w = 382 * S, h = 78 * S, dark = theme === "dunkel";
     ctx.save(); ctx.globalAlpha = Math.min(1, Math.max(0, k) * 1.4);
-    ctx.shadowColor = "rgba(0,0,0,.18)"; ctx.shadowBlur = 30 * S; ctx.shadowOffsetY = 8 * S;
+    ctx.shadowColor = "rgba(0,0,0,.18)"; ctx.shadowBlur = 30 * S * k; ctx.shadowOffsetY = 8 * S * k;
     ctx.fillStyle = dark ? "rgba(44,44,46,.97)" : "rgba(246,246,248,.98)";
     ctx.beginPath(); ctx.roundRect(x, y, w, h, 26 * S); ctx.fill(); ctx.shadowColor = "transparent";
     ctx.save(); ctx.beginPath(); ctx.roundRect(x + 14 * S, y + 19 * S, 40 * S, 40 * S, 9.5 * S); ctx.clip();
@@ -91,7 +97,7 @@ export function createScreen(canvas, base = "img/") {
     ctx.fillStyle = theme === "dunkel" ? "#000" : "#F2F2F0"; ctx.fillRect(0, 0, W, H);
     if (k >= 1 || !prev) frameOf(cur);
     else if (kind === "push") {
-      if (dir > 0) { frameOf(prev, -W * .3 * e, 1, .14 * e); ctx.save(); ctx.shadowColor = "rgba(0,0,0,.18)"; ctx.shadowBlur = 40; frameOf(cur, W * (1 - e)); ctx.restore(); }
+      if (dir > 0) { frameOf(prev, -W * .3 * e, 1, .14 * e); ctx.save(); ctx.shadowColor = "rgba(0,0,0,.18)"; ctx.shadowBlur = 40 * k; frameOf(cur, W * (1 - e)); ctx.restore(); }
       else { frameOf(cur, -W * .3 * (1 - e), 1, .14 * (1 - e)); frameOf(prev, W * e); }
     } else {
       frameOf(prev); ctx.save(); ctx.globalAlpha = e; const sc = .985 + .015 * e;
@@ -101,7 +107,7 @@ export function createScreen(canvas, base = "img/") {
     if (state.notifText && nv > .001) notification(Math.max(0, nv), state.notifText);
     if (state.ring && state.ring.k > 0) {
       const r = state.ring; ctx.save(); ctx.globalAlpha = r.k * (k >= 1 ? 1 : e); ctx.strokeStyle = "#0A84FF"; ctx.lineWidth = 3.5 * S;
-      ctx.shadowColor = "rgba(10,132,255,.5)"; ctx.shadowBlur = 16 * S;
+      ctx.shadowColor = "rgba(10,132,255,.5)"; ctx.shadowBlur = 16 * S * k;
       ctx.beginPath(); ctx.roundRect(r.x - 6, r.y - 6, r.w + 12, r.h + 12, r.r + 6); ctx.stroke(); ctx.restore();
     }
     if (ok(mask)) { ctx.save(); ctx.globalCompositeOperation = "destination-in"; ctx.drawImage(mask, 0, 0, W, H); ctx.restore(); }
