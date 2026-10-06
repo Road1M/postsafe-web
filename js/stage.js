@@ -34,7 +34,18 @@ function buildLetter(frontCanvas, backCanvas, kind) {
   const mb = new THREE.MeshStandardMaterial({ map: bt, roughness: .9, metalness: 0, side: THREE.BackSide, envMapIntensity: .28, emissive: 0xffffff, emissiveMap: bt, emissiveIntensity: .14 });
   mf.toneMapped = mb.toneMapped = false;              /* Papier bleibt weiß */
   g.add(new THREE.Mesh(geo, mf), new THREE.Mesh(geo, mb));
-  return { group: g, geo, w, h, kind, mats: [mf, mb], texW, texH };
+  return { group: g, geo, w, h, kind, mats: [mf, mb], texW, texH, front: frontCanvas, back: backCanvas };
+}
+
+/* Ein Rechteck (w × h) so verzerren, dass seine Ecken auf vier Bildschirmpunkten liegen
+   (links oben, rechts oben, rechts unten, links unten) — eine Projektion, wie sie CSS mit
+   matrix3d kann. Nach Heckbert: erst das Einheitsquadrat aufs Viereck, dann auf w × h skaliert. */
+function quadMatrix(w, h, [[x0, y0], [x1, y1], [x2, y2], [x3, y3]]) {
+  const dx1 = x1 - x2, dx2 = x3 - x2, dx3 = x0 - x1 + x2 - x3, dy1 = y1 - y2, dy2 = y3 - y2, dy3 = y0 - y1 + y2 - y3;
+  let g = 0, k = 0;
+  if (Math.abs(dx3) > 1e-6 || Math.abs(dy3) > 1e-6) { const den = dx1 * dy2 - dx2 * dy1; g = (dx3 * dy2 - dx2 * dy3) / den; k = (dx1 * dy3 - dx3 * dy1) / den; }
+  const a = x1 - x0 + g * x1, b = x3 - x0 + k * x3, d = y1 - y0 + g * y1, e = y3 - y0 + k * y3;
+  return `matrix3d(${a / w},${d / w},0,${g / w},${b / h},${e / h},0,${k / h},0,0,1,0,${x0},${y0},0,1)`;
 }
 
 function studioScene() {
@@ -61,8 +72,12 @@ export function createStage(canvasEl) {
   } catch (e) {
     renderer = null;
   }
-  const off = () => { lost = true; canvasEl.style.display = "none"; };
-  if (!renderer) off();
+  /* Ohne 3D-Grafik (Safari gibt sie manchmal ab, der Blockierungsmodus schaltet sie aus) liegen
+     die Briefe als flache Blätter in der Seite: gleicher Ort, gleiche Bewegung, nur ohne Wölbung
+     und Licht. Die Scan-Ecken rechnen mit denselben Ecken und sitzen deshalb weiter um den Brief. */
+  let flat = null;
+  const off = () => { lost = true; canvasEl.style.display = "none"; goFlat(); };
+  if (!renderer) { lost = true; canvasEl.style.display = "none"; }
   /* Nimmt der Browser die Grafik später zurück (Speicher knapp), verschwinden nur die Briefe. */
   canvasEl.addEventListener("webglcontextlost", e => { e.preventDefault(); off(); });
   const scene = new THREE.Scene();
@@ -70,9 +85,43 @@ export function createStage(canvasEl) {
   const key = new THREE.DirectionalLight(0xffffff, 1.05); key.position.set(-.6, .9, .8); scene.add(key);
   scene.add(new THREE.HemisphereLight(0xffffff, 0xd2d0ca, .7));
   const camera = new THREE.PerspectiveCamera(24, 1, 10, 4000); camera.position.set(0, 0, 620);
+  /* Die Kamera steht still; ihre Lage einmal ausrechnen. Sonst geschieht das erst beim Zeichnen — ohne
+     3D-Grafik nie, und alle Bildschirmpunkte (Scan-Ecken, Schildchen, flache Briefe) lägen falsch. */
+  camera.updateMatrixWorld();
 
   const letters = [];
-  const addLetter = (f, b, kind) => { const l = buildLetter(f, b, kind); scene.add(l.group); letters.push(l); return l; };
+  /* redraw: zeichnet das Blatt neu, falls sein Bild nach dem Hochladen auf die Grafikkarte schon
+     freigegeben war und die Grafik danach verloren geht */
+  const addLetter = (f, b, kind, redraw) => { const l = buildLetter(f, b, kind); l.redraw = redraw; scene.add(l.group); letters.push(l); if (flat) flatLetter(l); return l; };
+  function flatLetter(l) {
+    if (l.front.width <= 1 && l.redraw) [l.front, l.back] = l.redraw();
+    const el = document.createElement("div"), W = l.w * 4, H = l.h * 4;
+    el.className = "flat__l"; el.style.width = W + "px"; el.style.height = H + "px";
+    for (const c of [l.front, l.back]) { c.style.cssText = "position:absolute;inset:0;width:100%;height:100%"; }
+    el.append(l.front);
+    l.flat = { el, W, H, side: 1 };
+    flat.append(el);
+  }
+  function goFlat() {
+    if (flat) return;
+    flat = document.createElement("div"); flat.className = "flat"; flat.setAttribute("aria-hidden", "true");
+    canvasEl.after(flat);
+    letters.forEach(flatLetter);
+  }
+  function drawFlat() {
+    for (const l of letters) {
+      const f = l.flat, o = l.mats[0].opacity;
+      if (!l.group.visible || o < .01) { f.el.style.display = "none"; continue; }
+      const q = corners(l);
+      /* Von hinten gesehen: Rückseite zeigen, links und rechts getauscht */
+      const side = (q[1][0] - q[0][0]) * (q[3][1] - q[0][1]) - (q[1][1] - q[0][1]) * (q[3][0] - q[0][0]) >= 0 ? 1 : -1;
+      if (side !== f.side) { f.el.replaceChildren(side > 0 ? l.front : l.back); f.side = side; }
+      f.el.style.display = "";
+      f.el.style.transform = quadMatrix(f.W, f.H, side > 0 ? q : [q[1], q[0], q[3], q[2]]);
+      f.el.style.opacity = o.toFixed(3);
+      f.el.style.zIndex = Math.round(1000 + l.group.position.z);
+    }
+  }
   /* Die Zeichenfläche bekommt genau die sichtbare Fenstergröße, nicht 100vh: auf dem iPhone ist
      100vh die Höhe ohne Safaris Leiste, das Fenster aber kleiner, solange sie zu sehen ist — die
      Briefe wären gestreckt gemalt und die Scan-Ecken (in Fensterpunkten gerechnet) säßen zu hoch. */
@@ -114,5 +163,5 @@ export function createStage(canvasEl) {
     tmp.set((px / texW - .5) * l.w, (.5 - py / texH) * l.h, 0).applyMatrix4(l.group.matrixWorld).project(camera);
     return [(tmp.x + 1) / 2 * innerWidth, (1 - tmp.y) / 2 * innerHeight];
   }
-  return { THREE, scene, camera, renderer, letters, addLetter, resize, toWorld, corners, fitY, project, bendSheet, render: () => { if (renderer && !lost) renderer.render(scene, camera); } };
+  return { THREE, scene, camera, renderer, letters, addLetter, resize, toWorld, corners, fitY, project, bendSheet, render: () => { if (renderer && !lost) renderer.render(scene, camera); else { goFlat(); drawFlat(); } } };
 }

@@ -34,7 +34,6 @@
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%; background:var(--paper)}   /* auch die Fläche hinter Safaris Leisten */
 body{margin:0; background:var(--paper); color:var(--ink); font-family:var(--sans); font-size:17px; line-height:1.5; -webkit-font-smoothing:antialiased; overflow-x:clip}
-body::before{content:""; position:fixed; inset:0; z-index:-1; pointer-events:none; background:radial-gradient(120% 70% at 50% -10%, var(--paper-hi) 0%, transparent 62%), var(--paper)}
 a{color:inherit}
 :focus-visible{outline:2px solid var(--ink); outline-offset:3px; border-radius:6px}
 .sr{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
@@ -60,6 +59,9 @@ a{color:inherit}
 
 /* Bühne: das iPhone und die Briefe, ein WebGL-Bild über der Seite */
 .stage{position:fixed; inset:0; z-index:29; pointer-events:none; width:100vw; height:100vh}
+/* Briefe ohne 3D-Grafik (js/stage.js): flache Blätter in einem festen Halter ohne Fläche */
+.flat{position:fixed; left:0; top:0; width:0; height:0; z-index:29; pointer-events:none}
+.flat__l{position:absolute; left:0; top:0; transform-origin:0 0; background:#fff; box-shadow:0 1px 2px rgba(0,0,0,.08), 0 8px 24px rgba(0,0,0,.10); will-change:transform}
 
 /* Angeheftete Kapitel */
 .chap{position:relative}
@@ -88,9 +90,14 @@ a{color:inherit}
 @media (min-width:768px){:root{--rundung:32px}}
 main{position:relative; z-index:1; background:var(--paper); border-end-start-radius:var(--rundung); border-end-end-radius:var(--rundung)}
 .site-foot{position:sticky; bottom:0; z-index:0; width:60%; margin:calc(-1 * var(--rundung)) auto 0; color:#F4F4F1; --ink:#F4F4F1; --ink-2:#A4A4A0; --ink-3:#767674; --line:#292928}
-.site-foot__flaeche{width:166.6667%; margin-inline:-33.3333%; background:#0B0B0B; box-shadow:0 3px 0 #0B0B0B}
-@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .site-foot__flaeche{background:#151515; box-shadow:0 3px 0 #151515} }
-:root[data-theme="dark"] .site-foot__flaeche{background:#151515; box-shadow:0 3px 0 #151515}
+.site-foot__flaeche{width:166.6667%; margin-inline:-33.3333%; background:var(--foot); box-shadow:0 3px 0 var(--foot)}
+:root{--foot:#0B0B0B}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){--foot:#151515} }
+:root[data-theme="dark"]{--foot:#151515}
+/* Am Seitenende liegt hinter Safaris Leiste unten kein Inhalt mehr; Safari füllt die Fläche mit der
+   Grundfarbe der Seite — gemessen: der von body, html allein reicht nicht. Ist der dunkle Fuß im
+   Bild, bekommen beide seine Farbe (js/fuss.js). */
+html.fuss, html.fuss body{background:var(--foot)}
 .site-foot__in{max-width:1240px; min-height:36vh; min-height:36svh; margin:0 auto; padding:calc(64px + var(--rundung)) var(--gut) calc(48px + env(safe-area-inset-bottom,0px)); display:grid; gap:34px; align-content:space-between}
 .site-foot__brand{display:flex; align-items:center; gap:10px; font-weight:700; font-size:17px; letter-spacing:-.035em; margin:0}
 .site-foot__note{color:var(--ink-2); font-size:15.5px; margin:12px 0 0; max-width:34ch}

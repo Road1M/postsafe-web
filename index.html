@@ -20,7 +20,7 @@
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="PostSafe — Deine Post kennt ihren Platz.">
 <meta name="twitter:card" content="summary_large_image">
-<link rel="stylesheet" href="seite.css?v=20">
+<link rel="stylesheet" href="seite.css?v=23">
 <style>
 /* Hero */
 .hero{min-height:100svh; display:flex; align-items:center; position:relative}
@@ -347,11 +347,13 @@
 /* ?v= hält Seite und Skripte beisammen: Ein Browser darf sonst eine neue Seite mit einem alten
    Skript aus dem Zwischenspeicher paaren, und dann bleibt alles stehen. Bei jeder Änderung unter
    js/ die Zahl hier, in web.html und in js/browser.js erhöhen. */
-import { createStage } from "./js/stage.js?v=20";
-import { mountDevice } from "./js/screens.js?v=20";
-import { LETTERS, drawLetter, drawBack, drawEnvelope, drawEnvelopeBack } from "./js/letters.js?v=20";
-import { mountBrowser } from "./js/browser.js?v=20";
-import { smoothScroll } from "./js/smooth.js?v=20";
+import { createStage } from "./js/stage.js?v=23";
+import { mountDevice } from "./js/screens.js?v=23";
+import { LETTERS, drawLetter, drawBack, drawEnvelope, drawEnvelopeBack } from "./js/letters.js?v=23";
+import { mountBrowser } from "./js/browser.js?v=23";
+import { smoothScroll } from "./js/smooth.js?v=23";
+import { footBase } from "./js/fuss.js?v=23";
+footBase();
 /* Die Vorschau scrollt selbst, solange sie in Gestenrichtung noch Platz hat */
 const insideLiveBrowser = e => {
   const v = e.target.closest?.(".browser__view.live");
@@ -389,9 +391,9 @@ applyTheme(); matchMedia("(prefers-color-scheme: dark)").addEventListener("chang
 /* ---------------------------------------------------------- Briefe ---- */
 const st = createStage($("#stage"));
 const items = [];
-LETTERS.slice(0, 7).forEach((L, i) => { const f = drawLetter(L); const l = st.addLetter(f, drawBack(f), "sheet"); l.boxes = f.boxes; l.fold = [.32 + (i % 3) * .12, .22 + (i % 2) * .16]; l.curl = .05 + (i % 3) * .02; items.push(l); });
+LETTERS.slice(0, 7).forEach((L, i) => { const f = drawLetter(L); const l = st.addLetter(f, drawBack(f), "sheet", () => { const g = drawLetter(L); return [g, drawBack(g)]; }); l.boxes = f.boxes; l.fold = [.32 + (i % 3) * .12, .22 + (i % 2) * .16]; l.curl = .05 + (i % 3) * .02; items.push(l); });
 [["Mobilfunk", "Mobilfunk GmbH", "Postfach 11 22 · 12342 Musterstadt"]].forEach(([a, b, c]) => {
-  const l = st.addLetter(drawEnvelope(a, b, c), drawEnvelopeBack(), "env"); l.fold = [0, 0]; l.curl = .03; items.push(l);
+  const l = st.addLetter(drawEnvelope(a, b, c), drawEnvelopeBack(), "env", () => [drawEnvelope(a, b, c), drawEnvelopeBack()]); l.fold = [0, 0]; l.curl = .03; items.push(l);
 });
 items.forEach(l => st.bendSheet(l.geo, l.w, l.h, l.fold[0], l.fold[1], l.curl));
 /* Wer im Kapitel „Ein Foto“ gescannt wird, und in welchen Ordner er fliegt */
