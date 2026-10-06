@@ -45,7 +45,11 @@ function studioScene() {
   return s;
 }
 
-export function createStage(canvasEl) {
+/* follow: Die Zeichenfläche ist Teil der Seite statt fest über ihr, und das Skript führt sie
+   beim Scrollen mit. Safari (iOS 26) schneidet alles, was beim Scrollen feststeht, an seinen
+   Leisten oben und unten ab; die Seite selbst läuft darunter weiter. Damit die Briefe das auch
+   tun, ist die Fläche um m Pixel über und unter dem Fenster größer und wandert mit. */
+export function createStage(canvasEl, { follow = false } = {}) {
   /* Sparsam mit dem Speicher: kein Griff nach der starken Grafikkarte, und Kantenglättung nur
      dort, wo die Pixel groß sind — auf einem Retina-Bildschirm glättet die doppelte Auflösung
      schon selbst, und die vierfache Glättung kostete dort über 100 MB.
@@ -69,31 +73,44 @@ export function createStage(canvasEl) {
   if (renderer) scene.environment = new THREE.PMREMGenerator(renderer).fromScene(studioScene(), .02).texture;
   const key = new THREE.DirectionalLight(0xffffff, 1.05); key.position.set(-.6, .9, .8); scene.add(key);
   scene.add(new THREE.HemisphereLight(0xffffff, 0xd2d0ca, .7));
-  const camera = new THREE.PerspectiveCamera(24, 1, 10, 4000); camera.position.set(0, 0, 620);
+  const FOV = 24, camera = new THREE.PerspectiveCamera(FOV, 1, 10, 4000); camera.position.set(0, 0, 620);
+  let m = 0;
 
   const letters = [];
   const addLetter = (f, b, kind) => { const l = buildLetter(f, b, kind); scene.add(l.group); letters.push(l); return l; };
   /* Die Zeichenfläche bekommt genau die sichtbare Fenstergröße, nicht 100vh: auf dem iPhone ist
      100vh die Höhe ohne Safaris Leiste, das Fenster aber kleiner, solange sie zu sehen ist — die
      Briefe wären gestreckt gemalt und die Scan-Ecken (in Fensterpunkten gerechnet) säßen zu hoch. */
-  function resize() { if (renderer) renderer.setSize(innerWidth, innerHeight); camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix(); }
+  function resize() {
+    m = follow ? Math.max(0, Math.min(200, screen.height - innerHeight)) : 0;
+    const H = innerHeight + 2 * m;
+    if (renderer) renderer.setSize(innerWidth, H);
+    /* Der Blickwinkel wächst mit der Fläche — das Fenster selbst zeigt genau dasselbe wie ohne Rand */
+    camera.aspect = innerWidth / H;
+    camera.fov = THREE.MathUtils.radToDeg(2 * Math.atan(Math.tan(THREE.MathUtils.degToRad(FOV / 2)) * H / innerHeight));
+    camera.updateProjectionMatrix();
+  }
   resize();
-  const visH = () => 2 * camera.position.z * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2));
+  const visH = () => 2 * camera.position.z * Math.tan(THREE.MathUtils.degToRad(FOV / 2));   /* Höhe des Fensters, ohne Rand */
   /* Bildschirmanteil (Mitte = 0) → Welt auf Tiefe z */
-  const toWorld = (fx, fy, z = 0) => { const VH = visH() * (camera.position.z - z) / camera.position.z; return new THREE.Vector3(fx * VH * camera.aspect, -fy * VH, z); };
+  const toWorld = (fx, fy, z = 0) => { const VH = visH() * (camera.position.z - z) / camera.position.z; return new THREE.Vector3(fx * VH * innerWidth / innerHeight, -fy * VH, z); };
   /* Die vier Ecken eines Briefs auf dem Bildschirm, in Pixeln */
   const tmp = new THREE.Vector3();
   function corners(l) {
     l.group.updateMatrixWorld(true);
     return [[-1, 1], [1, 1], [1, -1], [-1, -1]].map(([sx, sy]) => {
       tmp.set(sx * l.w / 2, sy * l.h / 2, 0).applyMatrix4(l.group.matrixWorld).project(camera);
-      return [(tmp.x + 1) / 2 * innerWidth, (1 - tmp.y) / 2 * innerHeight];
+      return [(tmp.x + 1) / 2 * innerWidth, (1 - tmp.y) / 2 * (innerHeight + 2 * m) - m];
     });
   }
   /* Ein Punkt auf dem Papier (Pixel der Brief-Zeichnung) → Bildschirm */
   function project(l, px, py, texW = l.texW, texH = l.texH) {
     tmp.set((px / texW - .5) * l.w, (.5 - py / texH) * l.h, 0).applyMatrix4(l.group.matrixWorld).project(camera);
-    return [(tmp.x + 1) / 2 * innerWidth, (1 - tmp.y) / 2 * innerHeight];
+    return [(tmp.x + 1) / 2 * innerWidth, (1 - tmp.y) / 2 * (innerHeight + 2 * m) - m];
   }
-  return { THREE, scene, camera, renderer, letters, addLetter, resize, toWorld, corners, project, bendSheet, render: () => { if (renderer && !lost) renderer.render(scene, camera); } };
+  return { THREE, scene, camera, renderer, letters, addLetter, resize, toWorld, corners, project, bendSheet, render: () => {
+    if (!renderer || lost) return;
+    if (follow) canvasEl.style.transform = `translate3d(0, ${scrollY - m}px, 0)`;
+    renderer.render(scene, camera);
+  } };
 }
