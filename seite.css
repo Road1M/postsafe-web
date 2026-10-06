@@ -98,6 +98,10 @@ main{position:relative; z-index:1; background:var(--paper); border-end-start-rad
    Grundfarbe der Seite — gemessen: der von body, html allein reicht nicht. Ist der dunkle Fuß im
    Bild, bekommen beide seine Farbe (js/fuss.js). */
 html.fuss, html.fuss body{background:var(--foot)}
+/* Farbvorgabe für Safaris Leisten oben und unten (js/kanten.js): fest, volle Breite, am Rand,
+   hinter der ganzen Seite und deshalb nirgends zu sehen */
+.kante{position:fixed; left:0; right:0; height:4px; z-index:-1; pointer-events:none; background:var(--paper)}
+.kante--oben{top:0} .kante--unten{bottom:0}
 .site-foot__in{max-width:1240px; min-height:36vh; min-height:36svh; margin:0 auto; padding:calc(64px + var(--rundung)) var(--gut) calc(48px + env(safe-area-inset-bottom,0px)); display:grid; gap:34px; align-content:space-between}
 .site-foot__brand{display:flex; align-items:center; gap:10px; font-weight:700; font-size:17px; letter-spacing:-.035em; margin:0}
 .site-foot__note{color:var(--ink-2); font-size:15.5px; margin:12px 0 0; max-width:34ch}

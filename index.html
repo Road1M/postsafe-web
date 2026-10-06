@@ -20,7 +20,7 @@
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="PostSafe — Deine Post kennt ihren Platz.">
 <meta name="twitter:card" content="summary_large_image">
-<link rel="stylesheet" href="seite.css?v=23">
+<link rel="stylesheet" href="seite.css?v=24">
 <style>
 /* Hero */
 .hero{min-height:100svh; display:flex; align-items:center; position:relative}
@@ -347,13 +347,15 @@
 /* ?v= hält Seite und Skripte beisammen: Ein Browser darf sonst eine neue Seite mit einem alten
    Skript aus dem Zwischenspeicher paaren, und dann bleibt alles stehen. Bei jeder Änderung unter
    js/ die Zahl hier, in web.html und in js/browser.js erhöhen. */
-import { createStage } from "./js/stage.js?v=23";
-import { mountDevice } from "./js/screens.js?v=23";
-import { LETTERS, drawLetter, drawBack, drawEnvelope, drawEnvelopeBack } from "./js/letters.js?v=23";
-import { mountBrowser } from "./js/browser.js?v=23";
-import { smoothScroll } from "./js/smooth.js?v=23";
-import { footBase } from "./js/fuss.js?v=23";
+import { createStage } from "./js/stage.js?v=24";
+import { mountDevice } from "./js/screens.js?v=24";
+import { LETTERS, drawLetter, drawBack, drawEnvelope, drawEnvelopeBack } from "./js/letters.js?v=24";
+import { mountBrowser } from "./js/browser.js?v=24";
+import { smoothScroll } from "./js/smooth.js?v=24";
+import { footBase } from "./js/fuss.js?v=24";
 footBase();
+import { edges } from "./js/kanten.js?v=24";
+edges();
 /* Die Vorschau scrollt selbst, solange sie in Gestenrichtung noch Platz hat */
 const insideLiveBrowser = e => {
   const v = e.target.closest?.(".browser__view.live");
