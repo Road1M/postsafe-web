@@ -9,7 +9,7 @@
 <meta name="theme-color" content="#070707" media="(prefers-color-scheme: dark)">
 <link rel="icon" href="favicon.svg?v=2" type="image/svg+xml">
 <link rel="canonical" href="https://postsafe.eu/web.html">
-<link rel="stylesheet" href="seite.css?v=16">
+<link rel="stylesheet" href="seite.css?v=17">
 <style>
 .dev-fixed{position:fixed; z-index:30; left:0; top:0; pointer-events:none; will-change:transform}
 .hero{min-height:100svh; display:flex; align-items:center}
@@ -180,8 +180,8 @@
 <!-- Die Logik der echten Seite, unverändert: vier Ziffern werden zu einer Adresse im WLAN. -->
 <script src="web.js?v=3"></script>
 <script type="module">
-import { mountDevice } from "./js/screens.js";
-import { mountBrowser } from "./js/browser.js";
+import { mountDevice } from "./js/screens.js?v=17";
+import { mountBrowser } from "./js/browser.js?v=17";
 /* Die Animationen folgen einem geglätteten Scrollwert — auch Trackpad, Tasten und Scrollbalken wirken so weich */
 let ys = scrollY;
 const smoothY = () => { const d = scrollY - ys; ys = Math.abs(d) < .3 ? scrollY : ys + d * .3; return ys; };
@@ -253,7 +253,7 @@ function tick(now) {
   devEl.style.opacity = ie.toFixed(3);
   devEl.style.transform = `translate3d(${dev.x.toFixed(1)}px, ${(dev.y + dy).toFixed(1)}px, 0)`;
 }
-function frame(now) { tick(now); requestAnimationFrame(frame); }
+function frame(now) { requestAnimationFrame(frame); tick(now); }   /* ein Fehler in einem Bild hält die Seite nicht an */
 let rt; addEventListener("resize", () => { clearTimeout(rt); rt = setTimeout(measure, 150); });
 addEventListener("load", () => { measure(); const at = Q.get("at"); if (at) { const [id, p] = at.split(":"); scrollTo(0, id === "after" ? document.querySelector(".after").offsetTop - 40 : secs[id].top + (+p) * secs[id].range); } });
 measure(); requestAnimationFrame(frame);

@@ -20,7 +20,7 @@
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="PostSafe — Deine Post kennt ihren Platz.">
 <meta name="twitter:card" content="summary_large_image">
-<link rel="stylesheet" href="seite.css?v=16">
+<link rel="stylesheet" href="seite.css?v=17">
 <style>
 /* Hero */
 .hero{min-height:100svh; display:flex; align-items:center; position:relative}
@@ -344,10 +344,13 @@
 <div class="layer" style="z-index:31"><svg class="scanframe" aria-hidden="true"><defs><linearGradient id="scang" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff8b1f"/><stop offset="1" stop-color="#ff2d3e"/></linearGradient><linearGradient id="band" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1D1D1F" stop-opacity="0"/><stop offset="1" stop-color="#1D1D1F" stop-opacity=".2"/></linearGradient><filter id="glow" x="-10%" y="-400%" width="120%" height="900%"><feGaussianBlur stdDeviation="3"/></filter></defs><g data-frame></g></svg></div>
 
 <script type="module">
-import { createStage } from "./js/stage.js";
-import { mountDevice } from "./js/screens.js";
-import { LETTERS, drawLetter, drawBack, drawEnvelope, drawEnvelopeBack } from "./js/letters.js";
-import { mountBrowser } from "./js/browser.js";
+/* ?v= hält Seite und Skripte beisammen: Ein Browser darf sonst eine neue Seite mit einem alten
+   Skript aus dem Zwischenspeicher paaren, und dann bleibt alles stehen. Bei jeder Änderung unter
+   js/ die Zahl hier, in web.html und in js/browser.js erhöhen. */
+import { createStage } from "./js/stage.js?v=17";
+import { mountDevice } from "./js/screens.js?v=17";
+import { LETTERS, drawLetter, drawBack, drawEnvelope, drawEnvelopeBack } from "./js/letters.js?v=17";
+import { mountBrowser } from "./js/browser.js?v=17";
 /* Die Animationen folgen einem geglätteten Scrollwert — auch Trackpad, Tasten und Scrollbalken wirken so weich */
 let ys = scrollY;
 const smoothY = () => { const d = scrollY - ys; ys = Math.abs(d) < .3 ? scrollY : ys + d * .3; return ys; };
@@ -652,7 +655,7 @@ function tick_(now) {
   screen.draw(now); webDev.draw(now);
   st.render();
 }
-function frame(now) { tick_(now); requestAnimationFrame(frame); }
+function frame(now) { requestAnimationFrame(frame); tick_(now); }   /* ein Fehler in einem Bild hält die Seite nicht an */
 
 (() => {
   const rot = $("[data-rot]"), list = [...rot.children]; let i = 0;

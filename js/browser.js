@@ -4,7 +4,7 @@
    aufs iPhone schicken würde (Hochladen, Export, PDF, Signatur), sagt hier nur,
    was es täte.                                                               */
 
-import { LETTERS, drawLetter } from "./letters.js";
+import { LETTERS, drawLetter } from "./letters.js?v=17";   /* gleiche Fassung wie in index.html, sonst zweimal geladen */
 
 const W = 1180;                                 /* Breite, in der die Seite gesetzt wird */
 
