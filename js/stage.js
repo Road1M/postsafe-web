@@ -76,7 +76,13 @@ export function createStage(canvasEl) {
   /* Die Zeichenfläche bekommt genau die sichtbare Fenstergröße, nicht 100vh: auf dem iPhone ist
      100vh die Höhe ohne Safaris Leiste, das Fenster aber kleiner, solange sie zu sehen ist — die
      Briefe wären gestreckt gemalt und die Scan-Ecken (in Fensterpunkten gerechnet) säßen zu hoch. */
-  function resize() { if (renderer) renderer.setSize(innerWidth, innerHeight); camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix(); }
+  /* Höchstens 6 Millionen Pixel, so viel wie ein Retina-Laptop: Auf einem großen Bildschirm
+     (5120 × 2160, doppelt scharf) wären es über 40 Millionen — mehr, als der Browser zeichnen
+     kann. Safari verlor dann die Grafik mal, mal nicht, und die Seite ruckelte. */
+  function resize() {
+    if (renderer) { renderer.setPixelRatio(Math.min(dpr, Math.sqrt(6e6 / (innerWidth * innerHeight)))); renderer.setSize(innerWidth, innerHeight); }
+    camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix();
+  }
   resize();
   const visH = () => 2 * camera.position.z * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2));
   /* Bildschirmanteil (Mitte = 0) → Welt auf Tiefe z */

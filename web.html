@@ -9,7 +9,7 @@
 <meta name="theme-color" content="#070707" media="(prefers-color-scheme: dark)">
 <link rel="icon" href="favicon.svg?v=2" type="image/svg+xml">
 <link rel="canonical" href="https://postsafe.eu/web.html">
-<link rel="stylesheet" href="seite.css?v=18">
+<link rel="stylesheet" href="seite.css?v=19">
 <style>
 .dev-fixed{position:fixed; z-index:30; left:0; top:0; pointer-events:none; will-change:transform}
 .hero{min-height:100svh; display:flex; align-items:center}
@@ -180,8 +180,8 @@
 <!-- Die Logik der echten Seite, unverändert: vier Ziffern werden zu einer Adresse im WLAN. -->
 <script src="web.js?v=3"></script>
 <script type="module">
-import { mountDevice } from "./js/screens.js?v=18";
-import { mountBrowser } from "./js/browser.js?v=18";
+import { mountDevice } from "./js/screens.js?v=19";
+import { mountBrowser } from "./js/browser.js?v=19";
 /* Die Animationen folgen einem geglätteten Scrollwert — auch Trackpad, Tasten und Scrollbalken wirken so weich */
 let ys = scrollY;
 const smoothY = () => { const d = scrollY - ys; ys = Math.abs(d) < .3 ? scrollY : ys + d * .3; return ys; };
