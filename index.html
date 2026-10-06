@@ -531,6 +531,12 @@ function lettersAt(y, ps, now) {
     const f = F[i], t = now / 1000 + i * 1.7;
     let p = st.toWorld(f.x, f.y, f.z), rx = f.rx, ry = f.ry, rz = f.rz, s = sc, o = 1, fold = 1, glow = 0, lit = 0;
     if (!reduce) { p.y += Math.sin(t * .6) * 5; rz += Math.sin(t * .45) * 4; ry += Math.cos(t * .38) * 7; }
+    /* Am Handy liegt die Ruhelage oben und unten ganz im Bild (zur Seite darf ein Brief hinaus):
+       Safari schneidet feste Ebenen an seinen Leisten ab. Von dort fliegt er wie gehabt weiter. */
+    if (mobile) {
+      eTmp.set(rx * d2r, ry * d2r, rz * d2r); l.group.quaternion.setFromEuler(eTmp); l.group.position.copy(p); l.group.scale.setScalar(sc);
+      st.fitY(l, 10, vh - 10); p.y = l.group.position.y;
+    }
     const fly = FLY.findIndex(x => x.i === i);
     /* Auf den Stapel: wer zuletzt gelesen wird, liegt zuunterst und kommt zuerst an */
     const tp = y < secs.story.top ? 0 : ease(clamp((ps - (fly < 0 ? 0 : (n - 1 - fly) * .022)) / .075, 0, 1));
@@ -574,7 +580,6 @@ function lettersAt(y, ps, now) {
     }
     l.group.position.copy(p); l.group.quaternion.copy(qTmp); l.group.scale.setScalar(s);
     l.group.visible = o > .01;
-    if (l.group.visible) st.fitY(l, 10, vh - 10);
     l.mats.forEach(m => { m.transparent = o < .999; m.opacity = o; });
     l.mats[0].emissiveIntensity = .16 + lit * .2 + glow;               /* Papier leuchtet leicht aus sich heraus — heller, nie grau */
     if (Math.abs((l._fold ?? 1) - fold) > .02) { st.bendSheet(l.geo, l.w, l.h, l.fold[0] * fold, l.fold[1] * fold, l.curl * (.4 + .6 * fold)); l._fold = fold; }
