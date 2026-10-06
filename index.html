@@ -20,7 +20,7 @@
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="PostSafe — Deine Post kennt ihren Platz.">
 <meta name="twitter:card" content="summary_large_image">
-<link rel="stylesheet" href="seite.css?v=17">
+<link rel="stylesheet" href="seite.css?v=18">
 <style>
 /* Hero */
 .hero{min-height:100svh; display:flex; align-items:center; position:relative}
@@ -67,7 +67,7 @@
 .tag{position:fixed; z-index:32; left:0; top:0; display:flex; align-items:center; gap:10px; padding:12px 22px 12px 16px; border-radius:999px; background:var(--card); color:var(--ink); font-size:clamp(17px,1.35vw,21px); letter-spacing:-.01em; white-space:nowrap; pointer-events:none; transform-origin:center; will-change:transform, opacity; box-shadow:0 1px 2px rgba(0,0,0,.08), 0 10px 26px rgba(0,0,0,.16)}
 .tag i{width:.7em; height:.7em; border-radius:50%; background:var(--c)}
 .tag span{color:var(--ink-2)}
-.scanframe{position:absolute; left:0; top:0; width:100vw; height:100vh; pointer-events:none; overflow:visible}
+.scanframe{position:fixed; z-index:31; left:0; top:0; width:100vw; height:100vh; pointer-events:none; overflow:visible}
 /* Der Scan ist für jeden Brief gleich: neutral, in der Farbe der Schrift. Welcher
    Ordner es wird, zeigt erst das Schildchen — wenn der Brief gelesen ist. */
 .scanframe .br{fill:none; stroke:var(--ink); stroke-width:5; stroke-linecap:round; stroke-linejoin:round}
@@ -338,19 +338,19 @@
 
 <div class="dock" id="dock"><img src="img/icon.png" alt=""><p><b>PostSafe</b><small>Bald im App Store · für iPhone</small></p><a class="chip" href="web.html">PostSafe Web</a></div>
 
-<div class="layer" style="z-index:29"><canvas class="stage" id="stage" aria-hidden="true"></canvas></div>
+<canvas class="stage" id="stage" aria-hidden="true"></canvas>
 <div class="dev-fixed" id="device" aria-label="PostSafe auf dem iPhone" role="img"></div>
 <div class="tag" data-tag aria-hidden="true" style="opacity:0"></div>
-<div class="layer" style="z-index:31"><svg class="scanframe" aria-hidden="true"><defs><linearGradient id="scang" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff8b1f"/><stop offset="1" stop-color="#ff2d3e"/></linearGradient><linearGradient id="band" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1D1D1F" stop-opacity="0"/><stop offset="1" stop-color="#1D1D1F" stop-opacity=".2"/></linearGradient><filter id="glow" x="-10%" y="-400%" width="120%" height="900%"><feGaussianBlur stdDeviation="3"/></filter></defs><g data-frame></g></svg></div>
+<svg class="scanframe" aria-hidden="true"><defs><linearGradient id="scang" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff8b1f"/><stop offset="1" stop-color="#ff2d3e"/></linearGradient><linearGradient id="band" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1D1D1F" stop-opacity="0"/><stop offset="1" stop-color="#1D1D1F" stop-opacity=".2"/></linearGradient><filter id="glow" x="-10%" y="-400%" width="120%" height="900%"><feGaussianBlur stdDeviation="3"/></filter></defs><g data-frame></g></svg>
 
 <script type="module">
 /* ?v= hält Seite und Skripte beisammen: Ein Browser darf sonst eine neue Seite mit einem alten
    Skript aus dem Zwischenspeicher paaren, und dann bleibt alles stehen. Bei jeder Änderung unter
    js/ die Zahl hier, in web.html und in js/browser.js erhöhen. */
-import { createStage } from "./js/stage.js?v=17";
-import { mountDevice } from "./js/screens.js?v=17";
-import { LETTERS, drawLetter, drawBack, drawEnvelope, drawEnvelopeBack } from "./js/letters.js?v=17";
-import { mountBrowser } from "./js/browser.js?v=17";
+import { createStage } from "./js/stage.js?v=18";
+import { mountDevice } from "./js/screens.js?v=18";
+import { LETTERS, drawLetter, drawBack, drawEnvelope, drawEnvelopeBack } from "./js/letters.js?v=18";
+import { mountBrowser } from "./js/browser.js?v=18";
 /* Die Animationen folgen einem geglätteten Scrollwert — auch Trackpad, Tasten und Scrollbalken wirken so weich */
 let ys = scrollY;
 const smoothY = () => { const d = scrollY - ys; ys = Math.abs(d) < .3 ? scrollY : ys + d * .3; return ys; };
