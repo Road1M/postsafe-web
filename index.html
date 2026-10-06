@@ -67,8 +67,6 @@
 .tag{position:fixed; z-index:32; left:0; top:0; display:flex; align-items:center; gap:10px; padding:12px 22px 12px 16px; border-radius:999px; background:var(--card); color:var(--ink); font-size:clamp(17px,1.35vw,21px); letter-spacing:-.01em; white-space:nowrap; pointer-events:none; transform-origin:center; will-change:transform, opacity; box-shadow:0 1px 2px rgba(0,0,0,.08), 0 10px 26px rgba(0,0,0,.16)}
 .tag i{width:.7em; height:.7em; border-radius:50%; background:var(--c)}
 .tag span{color:var(--ink-2)}
-body.follow{position:relative}
-.layer--doc{position:absolute; left:0; top:0; width:100%; height:100%; overflow:clip}
 .scanframe{position:absolute; left:0; top:0; width:100vw; height:100vh; pointer-events:none; overflow:visible}
 /* Der Scan ist für jeden Brief gleich: neutral, in der Farbe der Schrift. Welcher
    Ordner es wird, zeigt erst das Schildchen — wenn der Brief gelesen ist. */
@@ -378,10 +376,7 @@ function applyTheme() { const d = isDark(); barColor(d); screen.setTheme("hell")
 applyTheme(); matchMedia("(prefers-color-scheme: dark)").addEventListener("change", applyTheme);
 
 /* ---------------------------------------------------------- Briefe ---- */
-/* Am Handy ist die Fläche der Briefe Teil der Seite (siehe createStage), damit Safari sie nicht an seinen Leisten abschneidet */
-const touch = matchMedia("(hover: none) and (pointer: coarse)").matches;
-if (touch) { document.body.classList.add("follow"); $("#stage").parentElement.classList.add("layer--doc"); }
-const st = createStage($("#stage"), { follow: touch });
+const st = createStage($("#stage"));
 const items = [];
 LETTERS.slice(0, 7).forEach((L, i) => { const f = drawLetter(L); const l = st.addLetter(f, drawBack(f), "sheet"); l.boxes = f.boxes; l.fold = [.32 + (i % 3) * .12, .22 + (i % 2) * .16]; l.curl = .05 + (i % 3) * .02; items.push(l); });
 [["Mobilfunk", "Mobilfunk GmbH", "Postfach 11 22 · 12342 Musterstadt"]].forEach(([a, b, c]) => {
@@ -579,6 +574,7 @@ function lettersAt(y, ps, now) {
     }
     l.group.position.copy(p); l.group.quaternion.copy(qTmp); l.group.scale.setScalar(s);
     l.group.visible = o > .01;
+    if (l.group.visible) st.fitY(l, 10, vh - 10);
     l.mats.forEach(m => { m.transparent = o < .999; m.opacity = o; });
     l.mats[0].emissiveIntensity = .16 + lit * .2 + glow;               /* Papier leuchtet leicht aus sich heraus — heller, nie grau */
     if (Math.abs((l._fold ?? 1) - fold) > .02) { st.bendSheet(l.geo, l.w, l.h, l.fold[0] * fold, l.fold[1] * fold, l.curl * (.4 + .6 * fold)); l._fold = fold; }
