@@ -20,7 +20,7 @@
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="PostSafe — Deine Post kennt ihren Platz.">
 <meta name="twitter:card" content="summary_large_image">
-<link rel="stylesheet" href="seite.css?v=19">
+<link rel="stylesheet" href="seite.css?v=20">
 <style>
 /* Hero */
 .hero{min-height:100svh; display:flex; align-items:center; position:relative}
@@ -347,10 +347,18 @@
 /* ?v= hält Seite und Skripte beisammen: Ein Browser darf sonst eine neue Seite mit einem alten
    Skript aus dem Zwischenspeicher paaren, und dann bleibt alles stehen. Bei jeder Änderung unter
    js/ die Zahl hier, in web.html und in js/browser.js erhöhen. */
-import { createStage } from "./js/stage.js?v=19";
-import { mountDevice } from "./js/screens.js?v=19";
-import { LETTERS, drawLetter, drawBack, drawEnvelope, drawEnvelopeBack } from "./js/letters.js?v=19";
-import { mountBrowser } from "./js/browser.js?v=19";
+import { createStage } from "./js/stage.js?v=20";
+import { mountDevice } from "./js/screens.js?v=20";
+import { LETTERS, drawLetter, drawBack, drawEnvelope, drawEnvelopeBack } from "./js/letters.js?v=20";
+import { mountBrowser } from "./js/browser.js?v=20";
+import { smoothScroll } from "./js/smooth.js?v=20";
+/* Die Vorschau scrollt selbst, solange sie in Gestenrichtung noch Platz hat */
+const insideLiveBrowser = e => {
+  const v = e.target.closest?.(".browser__view.live");
+  if (!v) return false;
+  return e.deltaY > 0 ? v.scrollTop + v.clientHeight < v.scrollHeight - 1 : v.scrollTop > 0;
+};
+smoothScroll({ skip: insideLiveBrowser });
 /* Die Animationen folgen einem geglätteten Scrollwert — auch Trackpad, Tasten und Scrollbalken wirken so weich */
 let ys = scrollY;
 const smoothY = () => { const d = scrollY - ys; ys = Math.abs(d) < .3 ? scrollY : ys + d * .3; return ys; };
