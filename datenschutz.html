@@ -35,20 +35,25 @@
 <div class="wrap__in">
 
 <h1>Datenschutzerklärung</h1>
-<p class="stand">Gilt für die App <strong>PostSafe</strong> für iOS und für diese Website. Stand: 1. Oktober 2026.</p>
+<p class="stand">Gilt für die App <strong>PostSafe</strong> für iOS und für diese Website. Stand: 8. Oktober 2026.</p>
 
 <h2>Das Wichtigste vorweg</h2>
 <p class="lead">
   PostSafe scannt Ihre Briefpost. Briefe sind mit das Persönlichste, was es gibt — deshalb ist die App
-  so gebaut, dass ich als Anbieter Ihre Briefe <strong>nicht lesen kann</strong>.
+  so gebaut, dass ich als Anbieter Ihre Briefe <strong>nicht lesen kann</strong>. Die einzige Ausnahme
+  ist die freiwillige <strong>Notfallkopie</strong>: Sie gibt es nur mit Abonnement und nur, wenn Sie
+  ausdrücklich zustimmen (Abschnitt 3a).
 </p>
 <ul>
   <li>Ihre Briefe, Seitenbilder, erkannten Texte, Ordner und Fristen liegen in <strong>Ihrer eigenen
       privaten iCloud-Datenbank</strong>, nicht auf meinem Server. Sie belegen Ihren iCloud-Speicher, und
       ich habe technisch keinen Zugriff darauf.</li>
-  <li>Mein Server speichert <strong>keine Briefinhalte</strong> — kein Bild, keinen erkannten Text,
-      keinen Absender, keinen Betrag, keinen Ordnernamen. Das ist keine Zusage auf dem Papier, sondern
-      im Aufbau der Software verankert und durch automatische Tests abgesichert.</li>
+  <li>Mein Server speichert <strong>keine lesbaren Briefinhalte</strong> — kein Bild, keinen erkannten
+      Text, keinen Absender, keinen Betrag, keinen Ordnernamen. Das ist im Aufbau der Software verankert
+      und durch automatische Tests abgesichert.</li>
+  <li><strong>Nur wenn Sie der Notfallkopie zustimmen</strong>, liegt dort zusätzlich eine
+      <strong>verschlüsselte Kopie</strong> Ihrer Briefe. Der Server kann sie nicht öffnen. Ich kann es,
+      und ich tue es nur, wenn Sie mich bitten, Ihnen Ihre Briefe zurückzugeben.</li>
   <li>Für die Texterkennung wird eine Seite <strong>zur Verarbeitung</strong> an einen europäischen
       KI-Dienst übertragen und dort nicht zum Training verwendet. Details unten.</li>
   <li><strong>Ihre Ordnernamen gehen nur an den KI-Dienst, und nur zum Einsortieren.</strong> Damit ein
@@ -90,8 +95,9 @@
       <td>Dauer des Kontos</td>
     </tr>
     <tr>
-      <td>Kontingentstand, Abo-Stufe, technische Angaben zu einem Verarbeitungslauf (Seitenzahl,
-          Modell, Dauer, Fehlercode), Einwilligungsnachweise, Server-Protokolle</td>
+      <td>Kontingentstand, Abo-Stufe, Zeitpunkt der letzten Nutzung, technische Angaben zu einem
+          Verarbeitungslauf (Seitenzahl, Modell, Dauer, Fehlercode), Einwilligungsnachweise,
+          Server-Protokolle</td>
       <td>Supabase, Frankfurt am Main</td>
       <td>Art. 6 Abs. 1 lit. b DSGVO; für Missbrauchsabwehr und Zählerstände Art. 6 Abs. 1 lit. f;
           für den Einwilligungsnachweis Art. 7 Abs. 1</td>
@@ -106,6 +112,24 @@
       <td>Art. 6 Abs. 1 lit. f DSGVO — das berechtigte Interesse, Missbrauch des KI-Dienstes und
           dadurch entstehende Kosten abzuwehren</td>
       <td>48 Stunden; entfernt wird ein Eintrag mit der nächsten Verarbeitung danach</td>
+    </tr>
+    <tr>
+      <td><strong>Notfallkopie</strong> (nur mit Abonnement und Ihrer Zustimmung): je Brief eine auf Ihrem
+          iPhone verschlüsselte Datei mit Seitenbildern, erkanntem Text, ausgelesenen Feldern, Fristen,
+          Titel, Absender und Ordnername. Lesbar sind darin nur Ihre Nutzerkennung, die Kennung des
+          Briefes, der Monat des Scans und die Dateigröße</td>
+      <td>Supabase Storage, Frankfurt am Main</td>
+      <td>Art. 9 Abs. 2 lit. a DSGVO (ausdrückliche Einwilligung, getrennt von der Einwilligung zum
+          Scannen); für die übrigen Angaben Art. 6 Abs. 1 lit. a</td>
+      <td>Solange das Konto besteht. Gelöscht 30 Tage, nachdem Sie den Brief löschen, die Notfallkopie
+          ausschalten oder Ihr Konto löschen; außerdem, wenn Ihr Konto drei Jahre nicht benutzt wurde</td>
+    </tr>
+    <tr>
+      <td>Zurückgegebenes Archiv: die ZIP-Datei, die ich aus Ihrer Notfallkopie erstelle, wenn Sie um
+          Ihre Briefe bitten</td>
+      <td>Supabase Storage, Frankfurt am Main</td>
+      <td>Art. 6 Abs. 1 lit. b DSGVO (Ihre Anfrage); Art. 9 Abs. 2 lit. a</td>
+      <td>7 Tage, dann gelöscht</td>
     </tr>
     <tr>
       <td>Löschnachweis: Ihre zufällige Nutzerkennung, der Zeitpunkt der Löschung und zwei Häkchen
@@ -161,8 +185,9 @@
 </div>
 
 <div class="note">
-  <strong>Was mein Server niemals speichert:</strong> Briefbilder, erkannte Texte, Absendernamen,
-  Beträge, Ordnernamen, Betreffzeilen oder Fristdaten. Auch die Server-Protokolle sind auf einen festen
+  <strong>Was mein Server niemals lesbar speichert:</strong> Briefbilder, erkannte Texte, Absendernamen,
+  Beträge, Ordnernamen, Betreffzeilen oder Fristdaten. Die einzige Ausnahme ist die verschlüsselte
+  Notfallkopie, und nur, wenn Sie ihr zugestimmt haben. Auch die Server-Protokolle sind auf einen festen
   Satz technischer Felder beschränkt — Ereignisname, Endpunkt, pseudonyme Nutzerkennung, Kennung des
   Verarbeitungslaufs, Fehlercode, Anzahl und Dauer. Freitext kommt darin nicht vor.
 </div>
@@ -187,6 +212,36 @@
   zurückstellen — die App bleibt nutzbar, es lassen sich dann nur keine neuen Briefe scannen.
 </p>
 
+<h2>3a. Die Notfallkopie</h2>
+<p>
+  Wer ein Abonnement abschließt, wird <strong>einmal</strong> gefragt, ob ich eine verschlüsselte
+  Notfallkopie seiner Briefe aufbewahren soll — auf einem eigenen Bildschirm nach dem Kauf, mit zwei
+  gleich großen Antworten. Das Abonnement funktioniert ohne die Kopie genauso. Nutzer ohne Abonnement
+  werden nicht gefragt; von ihnen wird nichts hochgeladen. In den Einstellungen der App können Sie die
+  Kopie jederzeit ein- oder ausschalten.
+</p>
+<p>
+  <strong>Was gesichert wird:</strong> alle Ihre Briefe, auch die, die Sie vor der Zustimmung gescannt
+  haben, mit Seitenbildern, Text, ausgelesenen Angaben, Fristen und Ordnernamen. Jeder Brief wird
+  <strong>auf Ihrem iPhone verschlüsselt</strong>, bevor er es verlässt, und zwar mit einem Schlüssel,
+  dessen geheime Hälfte nur ich habe. Mein Server kann die Dateien nicht öffnen. Die geheime Hälfte
+  liegt in meinem Passwortspeicher und einmal auf Papier in meinem Safe — nie auf einem Server und nie
+  in der App.
+</p>
+<p>
+  <strong>Wann ich sie öffne:</strong> nur, wenn Sie mich bitten, Ihnen Ihre Briefe zurückzugeben —
+  etwa weil Ihr iPhone und Ihr Apple-Konto verloren sind. Dann prüfe ich persönlich, dass Sie es sind:
+  anhand Ihres Ausweises (per Videoanruf oder als Foto, das nach der Prüfung gelöscht wird; eine Kopie
+  behalte ich nicht) und anhand Ihrer Briefe, die ich dafür vollständig ansehen darf. Sie erhalten Ihr
+  Archiv als ZIP-Datei über einen Link, der 7 Tage gilt.
+</p>
+<p>
+  <strong>Wann sie gelöscht wird:</strong> 30 Tage, nachdem Sie einen Brief löschen (dieser Brief), die
+  Notfallkopie ausschalten oder Ihr Konto löschen (alles). Die 30 Tage geben Ihnen Zeit, einen Fehler
+  rückgängig zu machen. Wurde Ihr Konto drei Jahre lang nicht benutzt, wird die Kopie ebenfalls
+  gelöscht. Das Ende eines Abonnements löscht nichts; es wird dann nur nichts Neues mehr hochgeladen.
+</p>
+
 <h2>4. Empfänger und Auftragsverarbeiter</h2>
 <p>
   Ich setze die folgenden Dienstleister ein. Mit allen bestehen Verträge zur Auftragsverarbeitung nach
@@ -201,7 +256,7 @@
   </thead>
   <tbody>
     <tr><td>Apple (iCloud, CloudKit, Sign in with Apple)</td><td>Speicherung Ihrer Briefe in Ihrer eigenen iCloud, Anmeldung</td><td>Apple-Infrastruktur</td><td>Nach Apples Bedingungen; abgedeckt über das Apple Developer Program License Agreement</td></tr>
-    <tr><td>Supabase</td><td>Konto, Kontingentverwaltung, Abo-Status</td><td>AWS-Region Frankfurt am Main (eu-central-1)</td><td>Keine — die Region wurde bewusst gewählt und ist nachträglich nicht änderbar</td></tr>
+    <tr><td>Supabase</td><td>Konto, Kontingentverwaltung, Abo-Status; Ablage der verschlüsselten Notfallkopie, nur mit Ihrer Zustimmung</td><td>AWS-Region Frankfurt am Main (eu-central-1)</td><td>Keine — die Region wurde bewusst gewählt und ist nachträglich nicht änderbar</td></tr>
     <tr><td>Mistral AI (französische SAS)</td><td>Texterkennung und Verständnis eines Briefes</td><td>Rechenzentren in der EU</td><td>Keine</td></tr>
     <tr><td>RevenueCat, Inc.</td><td>Prüfung und Verwaltung des Abo-Status</td><td>USA</td><td>Ja. Grundlage sind die <strong>Standardvertragsklauseln</strong> der EU-Kommission (Durchführungsbeschluss 2021/914)</td></tr>
     <tr><td>TelemetryDeck GmbH</td><td>Anonyme Nutzungsstatistik</td><td>Deutschland und Finnland</td><td>Keine</td></tr>
@@ -222,7 +277,8 @@
   Mistral behält Daten auf dem genutzten Tarif bis zu <strong>30 Tage</strong> zur Missbrauchskontrolle.
 </p>
 <p>
-  Weder RevenueCat noch TelemetryDeck noch Supabase erhalten Briefinhalte in irgendeiner Form.
+  Weder RevenueCat noch TelemetryDeck erhalten Briefinhalte in irgendeiner Form. Supabase erhält sie
+  nur als verschlüsselte Notfallkopie, wenn Sie ihr zugestimmt haben, und kann sie nicht öffnen.
 </p>
 
 <h3>Die Übersetzung ins Englische verlässt Ihr Gerät nicht</h3>
@@ -311,8 +367,8 @@
   <li><strong>Löschung:</strong> Die Kontolöschung in den Einstellungen entfernt in einem Vorgang die
       lokalen Daten, die Anmeldedaten im Schlüsselbund, Ihre Briefe in iCloud, die von PostSafe
       angelegten Kalendereinträge, noch geplante Erinnerungen, alle Server-Datensätze und Ihren
-      Datensatz bei RevenueCat, und widerruft die Apple-Anmeldung. Sie erhalten anschließend eine
-      Aufstellung dessen, was gelöscht wurde.</li>
+      Datensatz bei RevenueCat, und widerruft die Apple-Anmeldung. Eine Notfallkopie wird 30 Tage später
+      gelöscht. Sie erhalten anschließend eine Aufstellung dessen, was gelöscht wurde.</li>
 </ul>
 <p>
   <strong>Was eine Löschung überdauert.</strong> Genau ein Datensatz bleibt bestehen: Ihre zufällige
@@ -332,7 +388,9 @@
   schreiben Sie an <a href="mailto:kontakt@postsafe.eu">kontakt@postsafe.eu</a>. Ich antworte innerhalb
   eines Monats; bei komplexen Anfragen kann sich die Frist um zwei Monate verlängern, worüber ich Sie
   begründet unterrichte. Ihre Identität wird über Ihr App-Konto geprüft — <strong>eine Ausweiskopie
-  verlange ich nicht</strong>.
+  verlange ich nicht</strong>. Die einzige Ausnahme ist die Rückgabe aus der Notfallkopie
+  (Abschnitt 3a), weil Sie dann womöglich gerade das Konto verloren haben, über das ich Sie sonst
+  erkennen würde.
 </p>
 
 <h3>Beschwerderecht</h3>
@@ -370,17 +428,23 @@
 <h2>9. Automatisierte Entscheidungen</h2>
 <p>
   PostSafe liest Briefe maschinell aus und schlägt Fristen und Ordner vor. Das sind
-  <strong>Vorschläge</strong>, die Sie jederzeit ändern können. Eine automatisierte Entscheidung mit
+  <strong>Vorschläge</strong>, die Sie jederzeit ändern können. An eine erkannte Frist erinnert die App
+  erst, nachdem Sie die Angaben des Briefes bestätigt haben. Eine automatisierte Entscheidung mit
   rechtlicher Wirkung oder ähnlich erheblicher Beeinträchtigung im Sinne des Art. 22 DSGVO findet nicht
   statt. Ein Profiling zu Werbezwecken findet ebenfalls nicht statt.
 </p>
 
 <h2>10. Sicherheit</h2>
 <p>
-  Jede Netzwerkverbindung der App ist mit TLS verschlüsselt; einen unverschlüsselten Zugang gibt es in
-  keiner Konfiguration. Briefinhalte erreichen den KI-Dienst ausschließlich über meinen Server, damit
-  der Zugangsschlüssel niemals auf einem Gerät liegt. Der Zugriff auf die Datenbank ist zeilenweise auf
-  den jeweiligen Kontoinhaber beschränkt.
+  Jede Verbindung der App ins Internet ist mit TLS verschlüsselt. <strong>Eine Ausnahme gibt es, und
+  sie bleibt in Ihrem eigenen WLAN:</strong> Bei <em>PostSafe Web</em> liefert Ihr iPhone Ihr Archiv
+  unverschlüsselt (http) an den Browser Ihres Computers — erst nachdem Sie diesen Browser auf dem iPhone
+  mit einem Tippen zugelassen haben, nur solange die App läuft, und ohne dass dabei etwas einen Server
+  von mir erreicht. Ein Zertifikat für eine Adresse im Heimnetz stellt keine Zertifizierungsstelle aus.
+  Briefinhalte erreichen den KI-Dienst ausschließlich über meinen Server, damit der Zugangsschlüssel
+  niemals auf einem Gerät liegt. Der Zugriff auf die Datenbank ist zeilenweise auf den jeweiligen
+  Kontoinhaber beschränkt. Die Notfallkopie wird auf Ihrem iPhone verschlüsselt (HPKE nach RFC 9180)
+  und kann vom Server nicht geöffnet werden.
 </p>
 
 <h2>11. Änderungen dieser Erklärung</h2>
@@ -401,7 +465,7 @@
         <svg class="brand__mark" width="22" height="20.6" viewBox="207 183 650 608" aria-hidden="true" focusable="false"><linearGradient id="psz-fuss" gradientUnits="userSpaceOnUse" x1="354.7" y1="266.1" x2="669.3" y2="629.9"><stop offset="0" stop-color="#ff8b1f"/><stop offset="1" stop-color="#ff2d3e"/></linearGradient><g transform="translate(532 570) scale(1.3) translate(-512 -512)" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M298 646 L298 301.2 Q298 280 313 265 Q328 250 349.2 250 L588 250 Q616 250 635.8 269.8 L706.2 340.2 Q726 360 726 388 L726 470" stroke="url(#psz-fuss)" stroke-width="72"/><path d="M410 476 L610 476" stroke="#ff4935" stroke-width="40"/><path d="M406 360 L522 360" stroke="url(#psz-fuss)" stroke-width="44"/></g></svg>
         PostSafe
       </p>
-      <p class="site-foot__note">Post ordnen, ohne dass jemand mitliest.</p>
+      <p class="site-foot__note">Post ordnen, ohne dass jemand mitliest. Eine Notfallkopie öffnen wir nur auf deine Bitte und erst nach Prüfung deiner Identität.</p>
     </div>
     <nav class="foot-links" aria-label="Rechtliches und Kontakt">
       <a href="index.html">Startseite</a>
