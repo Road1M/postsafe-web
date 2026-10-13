@@ -1,0 +1,13 @@
+{
+  "applinks": {
+    "details": [
+      {
+        "appIDs": ["25K5KHRBJ6.de.postsafe.app"],
+        "components": [
+          { "/": "/einladung", "comment": "Einladung eines Freundes, der Code steht in ?code=" },
+          { "/": "/einladung.html" }
+        ]
+      }
+    ]
+  }
+}

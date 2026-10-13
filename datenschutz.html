@@ -35,7 +35,7 @@
 <div class="wrap__in">
 
 <h1>Datenschutzerklärung</h1>
-<p class="stand">Gilt für die App <strong>PostSafe</strong> für iOS und für diese Website. Stand: 8. Oktober 2026.</p>
+<p class="stand">Gilt für die App <strong>PostSafe</strong> für iOS und für diese Website. Stand: 13. Oktober 2026.</p>
 
 <h2>Das Wichtigste vorweg</h2>
 <p class="lead">
@@ -140,6 +140,22 @@
       <td>Drei Jahre ab der Löschung, dann wird auch dieser Datensatz automatisch entfernt</td>
     </tr>
     <tr>
+      <td><strong>Einladungen:</strong> Ihr Einladungscode und, wenn Sie den Code eines Freundes eingeben,
+          welches Konto welches eingeladen hat. Ihr Freund sieht nicht, wer Sie sind, und Sie sehen nur,
+          wie viele Ihrer Freunde mitmachen — keine Namen</td>
+      <td>Supabase, Frankfurt am Main</td>
+      <td>Art. 6 Abs. 1 lit. b DSGVO (Sie nutzen die Einladungsfunktion)</td>
+      <td>Dauer des Kontos, gelöscht mit Ihrem Konto</td>
+    </tr>
+    <tr>
+      <td><strong>Feedback</strong>, das Sie selbst über „Feedback senden“ schreiben: Ihr Text, Ihre
+          Nutzerkennung, die App-Version und der Zeitpunkt. Höchstens ein Feedback am Tag</td>
+      <td>Supabase, Frankfurt am Main</td>
+      <td>Art. 6 Abs. 1 lit. f DSGVO — das berechtigte Interesse, PostSafe mit Ihren Hinweisen zu
+          verbessern; Sie entscheiden selbst, ob und was Sie schreiben</td>
+      <td>Gelöscht mit Ihrem Konto</td>
+    </tr>
+    <tr>
       <td>Briefinhalt <strong>während der Verarbeitung</strong> (Seitenbild, erkannter Text) und die
           Namen Ihrer Ordner, damit der Brief einem davon zugeordnet werden kann</td>
       <td>Mistral AI, Rechenzentren in der EU</td>
@@ -187,7 +203,8 @@
 <div class="note">
   <strong>Was mein Server niemals lesbar speichert:</strong> Briefbilder, erkannte Texte, Absendernamen,
   Beträge, Ordnernamen, Betreffzeilen oder Fristdaten. Die einzige Ausnahme ist die verschlüsselte
-  Notfallkopie, und nur, wenn Sie ihr zugestimmt haben. Auch die Server-Protokolle sind auf einen festen
+  Notfallkopie, und nur, wenn Sie ihr zugestimmt haben. Lesbar gespeichert wird nur Text, den Sie selbst
+  über „Feedback senden“ schicken. Auch die Server-Protokolle sind auf einen festen
   Satz technischer Felder beschränkt — Ereignisname, Endpunkt, pseudonyme Nutzerkennung, Kennung des
   Verarbeitungslaufs, Fehlercode, Anzahl und Dauer. Freitext kommt darin nicht vor.
 </div>
@@ -256,7 +273,7 @@
   </thead>
   <tbody>
     <tr><td>Apple (iCloud, CloudKit, Sign in with Apple)</td><td>Speicherung Ihrer Briefe in Ihrer eigenen iCloud, Anmeldung</td><td>Apple-Infrastruktur</td><td>Nach Apples Bedingungen; abgedeckt über das Apple Developer Program License Agreement</td></tr>
-    <tr><td>Supabase</td><td>Konto, Kontingentverwaltung, Abo-Status; Ablage der verschlüsselten Notfallkopie, nur mit Ihrer Zustimmung</td><td>AWS-Region Frankfurt am Main (eu-central-1)</td><td>Keine — die Region wurde bewusst gewählt und ist nachträglich nicht änderbar</td></tr>
+    <tr><td>Supabase</td><td>Konto, Kontingentverwaltung, Abo-Status, Einladungscodes, Feedback; Ablage der verschlüsselten Notfallkopie, nur mit Ihrer Zustimmung</td><td>AWS-Region Frankfurt am Main (eu-central-1)</td><td>Keine — die Region wurde bewusst gewählt und ist nachträglich nicht änderbar</td></tr>
     <tr><td>Mistral AI (französische SAS)</td><td>Texterkennung und Verständnis eines Briefes</td><td>Rechenzentren in der EU</td><td>Keine</td></tr>
     <tr><td>RevenueCat, Inc.</td><td>Prüfung und Verwaltung des Abo-Status</td><td>USA</td><td>Ja. Grundlage sind die <strong>Standardvertragsklauseln</strong> der EU-Kommission (Durchführungsbeschluss 2021/914)</td></tr>
     <tr><td>TelemetryDeck GmbH</td><td>Anonyme Nutzungsstatistik</td><td>Deutschland und Finnland</td><td>Keine</td></tr>

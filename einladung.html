@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Einladung — PostSafe</title>
+<meta name="robots" content="noindex, follow">
+<meta name="theme-color" content="#F1F1EF" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#070707" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="favicon.svg?v=2" type="image/svg+xml">
+<link rel="stylesheet" href="style.css?v=10">
+</head>
+<body>
+
+<header class="site-head">
+  <div class="site-head__in">
+    <a class="brand" href="index.html">
+      <svg class="brand__mark" width="24" height="22.4" viewBox="207 183 650 608" aria-hidden="true" focusable="false"><linearGradient id="psz-kopf" gradientUnits="userSpaceOnUse" x1="354.7" y1="266.1" x2="669.3" y2="629.9"><stop offset="0" stop-color="#ff8b1f"/><stop offset="1" stop-color="#ff2d3e"/></linearGradient><g transform="translate(532 570) scale(1.3) translate(-512 -512)" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M298 646 L298 301.2 Q298 280 313 265 Q328 250 349.2 250 L588 250 Q616 250 635.8 269.8 L706.2 340.2 Q726 360 726 388 L726 470" stroke="url(#psz-kopf)" stroke-width="72"/><path d="M410 476 L610 476" stroke="#ff4935" stroke-width="40"/><path d="M406 360 L522 360" stroke="url(#psz-kopf)" stroke-width="44"/></g></svg>
+      PostSafe
+    </a>
+    <a class="head-web ps-chip" href="web.html">
+      <svg width="15" height="15" viewBox="0 0 15 15" aria-hidden="true"><path d="M1.2 1.2h4.4v4.4H1.2zM9.4 1.2h4.4v4.4H9.4zM1.2 9.4h4.4v4.4H1.2z" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M9.4 9.4h2v2h-2zM11.8 11.8h2v2h-2z" fill="currentColor"/></svg>
+      <span class="head-web__long">PostSafe </span>Web
+    </a>
+    <nav class="site-nav" aria-label="Rechtliches">
+      <a href="datenschutz.html">Datenschutz</a>
+      <a href="agb.html">Nutzungsbedingungen</a>
+      <a href="impressum.html">Impressum</a>
+    </nav>
+    <a class="head-back" href="#recht">Rechtliches</a>
+  </div>
+</header>
+
+<main class="wrap">
+<div class="wrap__in">
+
+<h1>Du wurdest eingeladen</h1>
+<p class="stand">Ein Freund nutzt PostSafe und möchte, dass du es auch ausprobierst.</p>
+
+<div class="einladung" id="einladung" hidden>
+  <p class="einladung__label">Sein Code</p>
+  <p class="einladung__code" id="code"></p>
+  <button class="einladung__kopieren" id="kopieren" type="button">Code kopieren</button>
+</div>
+
+<h2>So geht es</h2>
+<ol>
+  <li>Lade PostSafe aus dem App Store.</li>
+  <li>Melde dich in der App an.</li>
+  <li>Öffne <strong>Du</strong>, dann unter <strong>Mitmachen</strong> die Zeile <strong>Einladungscode eingeben</strong>, und gib den Code ein. Das geht in den ersten 14 Tagen nach der Anmeldung.</li>
+</ol>
+<p>Sobald du deinen ersten Brief ablegst, bekommt dein Freund dafür Punkte in der App. Er erfährt dabei nicht, wer du bist, nur dass jemand mit seinem Code dabei ist.</p>
+
+<p class="einladung__store">
+  <a href="https://apps.apple.com/app/id6798171772"><img src="marken/appstore.svg" alt="Laden im App Store" width="180" height="60"></a>
+</p>
+
+</div>
+</main>
+
+<style>
+  .einladung { margin: 28px 0 8px; padding: 26px 22px; border-radius: 28px; background: rgba(127,127,127,.1); text-align: center; }
+  .einladung__label { margin: 0; font-size: 13px; letter-spacing: .08em; text-transform: uppercase; opacity: .65; }
+  .einladung__code { margin: 6px 0 14px; font: 700 40px/1.1 ui-monospace, "SF Mono", Menlo, monospace; letter-spacing: .16em; }
+  .einladung__kopieren { font: 600 16px -apple-system, BlinkMacSystemFont, sans-serif; border: 0; border-radius: 999px; padding: 12px 22px; background: currentColor; cursor: pointer; }
+  .einladung__kopieren span { color: Canvas; }
+  .einladung__store { margin-top: 26px; }
+</style>
+<script>
+  (function () {
+    var raw = new URLSearchParams(location.search).get("code") || "";
+    var code = raw.toUpperCase().replace(/[^A-HJKMNP-Z2-9]/g, "").slice(0, 6);
+    if (code.length !== 6) return;
+    document.getElementById("code").textContent = code;
+    document.getElementById("einladung").hidden = false;
+    var button = document.getElementById("kopieren");
+    button.innerHTML = "<span>Code kopieren</span>";
+    button.addEventListener("click", function () {
+      if (!navigator.clipboard) return;
+      navigator.clipboard.writeText(code).then(function () { button.innerHTML = "<span>Kopiert</span>"; });
+    });
+  })();
+</script>
+
+<footer class="site-foot" id="recht">
+  <div class="site-foot__flaeche">
+  <div class="site-foot__in">
+    <div>
+      <p class="site-foot__brand">
+        <svg class="brand__mark" width="22" height="20.6" viewBox="207 183 650 608" aria-hidden="true" focusable="false"><linearGradient id="psz-fuss" gradientUnits="userSpaceOnUse" x1="354.7" y1="266.1" x2="669.3" y2="629.9"><stop offset="0" stop-color="#ff8b1f"/><stop offset="1" stop-color="#ff2d3e"/></linearGradient><g transform="translate(532 570) scale(1.3) translate(-512 -512)" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M298 646 L298 301.2 Q298 280 313 265 Q328 250 349.2 250 L588 250 Q616 250 635.8 269.8 L706.2 340.2 Q726 360 726 388 L726 470" stroke="url(#psz-fuss)" stroke-width="72"/><path d="M410 476 L610 476" stroke="#ff4935" stroke-width="40"/><path d="M406 360 L522 360" stroke="url(#psz-fuss)" stroke-width="44"/></g></svg>
+        PostSafe
+      </p>
+      <p class="site-foot__note">Post ordnen, ohne dass jemand mitliest. Eine Notfallkopie öffnen wir nur auf deine Bitte und erst nach Prüfung deiner Identität.</p>
+    </div>
+    <nav class="foot-links" aria-label="Rechtliches und Kontakt">
+      <a href="index.html">Startseite</a>
+      <a href="web.html">PostSafe Web</a>
+      <a href="datenschutz.html">Datenschutz</a>
+      <a href="agb.html">Nutzungsbedingungen</a>
+      <a href="impressum.html">Impressum</a>
+      <a href="mailto:kontakt@postsafe.eu">kontakt@postsafe.eu</a>
+    </nav>
+    <p class="site-foot__legal">© 2026 Josef Werner</p>
+  </div>
+  </div>
+</footer>
+
+</body>
+</html>
