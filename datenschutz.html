@@ -35,21 +35,22 @@
 <div class="wrap__in">
 
 <h1>Datenschutzerklärung</h1>
-<p class="stand">Gilt für die App <strong>PostSafe</strong> für iOS und für diese Website. Stand: 18. Oktober 2026.</p>
+<p class="stand">Gilt für die App <strong>PostSafe</strong> für iOS und für diese Website. Stand: 20. Oktober 2026.</p>
 
 <h2>Das Wichtigste vorweg</h2>
 <p class="lead">
-  PostSafe scannt Ihre Briefpost. Briefe sind mit das Persönlichste, was es gibt — deshalb ist die App
-  so gebaut, dass ich als Anbieter Ihre Briefe <strong>nicht lesen kann</strong>. Die einzige Ausnahme
-  ist die freiwillige <strong>Notfallkopie</strong>: Sie gibt es nur mit Abonnement und nur, wenn Sie
-  ausdrücklich zustimmen (Abschnitt 3a).
+  PostSafe scannt Ihre Briefpost. Briefe sind mit das Persönlichste, was es gibt — deshalb
+  <strong>bewahre ich Ihre Briefe nicht auf</strong>: Sie liegen in Ihrer eigenen iCloud. Die einzige
+  Ausnahme ist die freiwillige <strong>Notfallkopie</strong>: Sie gibt es nur mit Abonnement und nur,
+  wenn Sie ausdrücklich zustimmen, und ich kann sie öffnen (Abschnitt 3a).
 </p>
 <ul>
   <li>Ihre Briefe, Seitenbilder, erkannten Texte, Ordner und Fristen liegen in <strong>Ihrer eigenen
       privaten iCloud-Datenbank</strong>, nicht auf meinem Server. Sie belegen Ihren iCloud-Speicher, und
       ich habe technisch keinen Zugriff darauf.</li>
-  <li>Mein Server speichert <strong>keine lesbaren Briefinhalte</strong> — kein Bild, keinen erkannten
-      Text, keinen Absender, keinen Betrag, keinen Ordnernamen. Das ist im Aufbau der Software verankert
+  <li>Ohne Notfallkopie <strong>speichert mein Server keine Briefinhalte</strong> — kein Bild, keinen
+      erkannten Text, keinen Absender, keinen Betrag, keinen Ordnernamen. Zum Auslesen reicht er jede
+      Seite nur an den KI-Dienst weiter, ohne sie aufzubewahren. Das ist im Aufbau der Software verankert
       und durch automatische Tests abgesichert.</li>
   <li><strong>Nur wenn Sie der Notfallkopie zustimmen</strong>, liegt dort zusätzlich eine
       <strong>verschlüsselte Kopie</strong> Ihrer Briefe. Der Server kann sie nicht öffnen. Ich kann es,
@@ -60,7 +61,8 @@
       Brief in einem Ihrer vorhandenen Ordner landet, statt dass die App einen neuen anlegt, werden die
       Namen Ihrer Ordner zusammen mit dem Brief zur Verarbeitung übertragen — nur die Namen, ohne Farbe,
       Reihenfolge oder Zahl der Briefe darin. Mein Server reicht sie nur durch und speichert sie nicht;
-      an niemanden sonst gehen sie.</li>
+      an niemanden sonst gehen sie — außer verschlüsselt in Ihre Notfallkopie, wenn Sie ihr zugestimmt
+      haben.</li>
 </ul>
 
 <h2>1. Verantwortlicher</h2>
@@ -91,7 +93,8 @@
           früher von Ihrem Gerät, sobald Ihre iCloud sie sicher hat, und lädt sie beim Öffnen wieder.</td>
     </tr>
     <tr>
-      <td>Kontokennung: Nutzer-ID, Apple-Kennung, ggf. weitergeleitete E-Mail-Adresse</td>
+      <td>Kontokennung: Nutzer-ID, Apple-Kennung und die E-Mail-Adresse, die Apple übermittelt — Ihre
+          echte oder, wenn Sie sie verbergen, eine Weiterleitungsadresse von Apple</td>
       <td>Supabase, Rechenzentrum Frankfurt am Main</td>
       <td>Art. 6 Abs. 1 lit. b DSGVO</td>
       <td>Dauer des Kontos</td>
@@ -116,6 +119,25 @@
       <td>48 Stunden; entfernt wird ein Eintrag mit der nächsten Verarbeitung danach</td>
     </tr>
     <tr>
+      <td><strong>Credits:</strong> je Kauf die Transaktionsnummer des App Store, das Paket, die Menge,
+          ob es ein Testkauf war, und der Zeitpunkt; je Scan, wie viele Credits er verbraucht hat; Ihr
+          Guthaben. Kein Preis und keine Zahlungsdaten</td>
+      <td>Supabase, Frankfurt am Main</td>
+      <td>Art. 6 Abs. 1 lit. b DSGVO (Sie haben Scans gekauft)</td>
+      <td>Dauer des Kontos; übrige Credits verfallen mit dem Konto</td>
+    </tr>
+    <tr>
+      <td><strong>Geräteprüfung für die kostenlosen Scans</strong> (App Attest): Damit die kostenlosen
+          Scans nur die echte PostSafe-App auf einem echten iPhone oder iPad bekommt, lässt die App von
+          Apple einmal je Konto und Gerät einen Schlüssel bestätigen. Gespeichert werden die Kennung und
+          der öffentliche Teil dieses Schlüssels, die Umgebung und der Zeitpunkt — nichts über Ihre
+          Briefe</td>
+      <td>Supabase, Frankfurt am Main; die Bestätigung selbst gibt Apple</td>
+      <td>Art. 6 Abs. 1 lit. f DSGVO — das berechtigte Interesse, die kostenlosen Scans vor
+          massenhaft angelegten Konten zu schützen</td>
+      <td>Dauer des Kontos, gelöscht mit Ihrem Konto</td>
+    </tr>
+    <tr>
       <td><strong>Notfallkopie</strong> (nur mit Abonnement und Ihrer Zustimmung): je Brief eine auf Ihrem
           iPhone verschlüsselte Datei mit Seitenbildern, erkanntem Text, ausgelesenen Feldern, Fristen,
           Titel, Absender und Ordnername. Lesbar sind darin nur Ihre Nutzerkennung, die Kennung des
@@ -123,7 +145,8 @@
       <td>Supabase Storage, Frankfurt am Main</td>
       <td>Art. 9 Abs. 2 lit. a DSGVO (ausdrückliche Einwilligung, getrennt von der Einwilligung zum
           Scannen); für die übrigen Angaben Art. 6 Abs. 1 lit. a</td>
-      <td>Solange das Konto besteht. Gelöscht 30 Tage, nachdem Sie den Brief löschen, die Notfallkopie
+      <td>Solange das Konto besteht. Gelöscht 30 Tage, nachdem Sie den Brief endgültig (aus dem
+          Papierkorb) löschen, die Notfallkopie
           ausschalten oder Ihr Konto löschen; sofort, wenn Sie in der App „Notfallkopie löschen“
           wählen; außerdem, wenn Ihr Konto drei Jahre nicht benutzt wurde</td>
     </tr>
@@ -167,7 +190,7 @@
           (Null-Datenspeicherung)</td>
     </tr>
     <tr>
-      <td>Abo-Status: pseudonyme Nutzerkennung, Produkt, Status, Ablaufdatum</td>
+      <td>Abo-Status und Käufe von Credits: pseudonyme Nutzerkennung, Produkt, Status, Ablaufdatum</td>
       <td>RevenueCat, Inc., USA</td>
       <td>Art. 6 Abs. 1 lit. b DSGVO</td>
       <td>Dauer der Abo-Beziehung</td>
@@ -179,7 +202,8 @@
       <td>Nach Apples Vorgaben. <strong>Ich sehe Ihre Zahlungsdaten nie</strong></td>
     </tr>
     <tr>
-      <td>Anonyme Nutzungsstatistik (fester Ereigniskatalog)</td>
+      <td>Anonyme Nutzungsstatistik (fester Ereigniskatalog, dazu technische Angaben zum Gerät, siehe
+          Abschnitt 5). Abschaltbar in der App</td>
       <td>TelemetryDeck GmbH, Server in Deutschland und Finnland</td>
       <td>Nach Auffassung des Anbieters keine personenbezogenen Daten; hilfsweise Art. 6 Abs. 1
           lit. f DSGVO</td>
@@ -221,7 +245,8 @@
 </p>
 <p>
   Die Verarbeitung stützt sich deshalb auf Ihre <strong>ausdrückliche Einwilligung</strong> nach Art. 9
-  Abs. 2 lit. a DSGVO. Diese wird im Einrichtungsdialog vor dem ersten Scan eingeholt, getrennt von der
+  Abs. 2 lit. a DSGVO. Diese wird vor dem ersten Scan eingeholt, in dem Moment, in dem Sie scannen
+  wollen, getrennt von der
   Zustimmung zu den Nutzungsbedingungen, in klarem Deutsch und mit ausdrücklicher Nennung der
   Übertragung von Briefinhalten an Mistral.
 </p>
@@ -256,7 +281,8 @@
   Archiv als ZIP-Datei über einen Link, der 7 Tage gilt.
 </p>
 <p>
-  <strong>Wann sie gelöscht wird:</strong> 30 Tage, nachdem Sie einen Brief löschen (dieser Brief), die
+  <strong>Wann sie gelöscht wird:</strong> 30 Tage, nachdem Sie einen Brief endgültig löschen, also aus
+  dem Papierkorb (dieser Brief), die
   Notfallkopie ausschalten oder Ihr Konto löschen (alles). Die 30 Tage geben Ihnen Zeit, einen Fehler
   rückgängig zu machen. Ohne diese Wartezeit geht es auch: In der App unter Einstellungen →
   Datenschutz → Notfallkopie löscht „Notfallkopie löschen“ alle Kopien sofort und schaltet die
@@ -268,8 +294,8 @@
 <h2>4. Empfänger und Auftragsverarbeiter</h2>
 <p>
   Ich setze die folgenden Dienstleister ein. Mit allen bestehen Verträge zur Auftragsverarbeitung nach
-  Art. 28 DSGVO; sie sind jeweils Bestandteil der Nutzungsbedingungen, denen bei der Anmeldung
-  zugestimmt wurde.
+  Art. 28 DSGVO; sie sind jeweils Bestandteil der Bedingungen, die ich mit dem jeweiligen Anbieter
+  geschlossen habe.
 </p>
 
 <div class="scroll-x">
@@ -278,10 +304,10 @@
     <tr><th>Dienst</th><th>Zweck</th><th>Ort</th><th>Übermittlung in Drittländer</th></tr>
   </thead>
   <tbody>
-    <tr><td>Apple (iCloud, CloudKit, Sign in with Apple)</td><td>Speicherung Ihrer Briefe in Ihrer eigenen iCloud, Anmeldung</td><td>Apple-Infrastruktur</td><td>Nach Apples Bedingungen; abgedeckt über das Apple Developer Program License Agreement</td></tr>
-    <tr><td>Supabase</td><td>Konto, Kontingentverwaltung, Abo-Status, Einladungscodes, Feedback; Ablage der verschlüsselten Notfallkopie, nur mit Ihrer Zustimmung</td><td>AWS-Region Frankfurt am Main (eu-central-1)</td><td>Keine — die Region wurde bewusst gewählt und ist nachträglich nicht änderbar</td></tr>
+    <tr><td>Apple (iCloud, CloudKit, Sign in with Apple, App Attest)</td><td>Speicherung Ihrer Briefe in Ihrer eigenen iCloud, Anmeldung, Bestätigung der echten App für die kostenlosen Scans</td><td>Apple-Infrastruktur</td><td>Nach Apples Bedingungen; abgedeckt über das Apple Developer Program License Agreement</td></tr>
+    <tr><td>Supabase</td><td>Konto, Kontingentverwaltung, Abo-Status, Credits, Einladungscodes, Feedback; Weiterleitung der Seiten an den KI-Dienst, ohne sie aufzubewahren; Ablage der verschlüsselten Notfallkopie, nur mit Ihrer Zustimmung</td><td>AWS-Region Frankfurt am Main (eu-central-1)</td><td>Keine — die Region wurde bewusst gewählt und ist nachträglich nicht änderbar</td></tr>
     <tr><td>Mistral AI (französische SAS)</td><td>Texterkennung und Verständnis eines Briefes</td><td>Rechenzentren in der EU</td><td>Keine</td></tr>
-    <tr><td>RevenueCat, Inc.</td><td>Prüfung und Verwaltung des Abo-Status</td><td>USA</td><td>Ja. Grundlage sind die <strong>Standardvertragsklauseln</strong> der EU-Kommission (Durchführungsbeschluss 2021/914)</td></tr>
+    <tr><td>RevenueCat, Inc.</td><td>Prüfung und Verwaltung des Abo-Status und der Käufe von Credits</td><td>USA</td><td>Ja. Grundlage sind die <strong>Standardvertragsklauseln</strong> der EU-Kommission (Durchführungsbeschluss 2021/914)</td></tr>
     <tr><td>TelemetryDeck GmbH</td><td>Anonyme Nutzungsstatistik</td><td>Deutschland und Finnland</td><td>Keine</td></tr>
     <tr><td>GitHub, Inc.</td><td>Auslieferung <em>dieser Website</em></td><td>USA</td><td>Ja, siehe Abschnitt 8</td></tr>
   </tbody>
@@ -302,13 +328,19 @@
   auch nicht zur Missbrauchskontrolle.
 </p>
 <p>
-  Weder RevenueCat noch TelemetryDeck erhalten Briefinhalte in irgendeiner Form. Supabase erhält sie
-  nur als verschlüsselte Notfallkopie, wenn Sie ihr zugestimmt haben, und kann sie nicht öffnen.
+  Weder RevenueCat noch TelemetryDeck erhalten Briefinhalte in irgendeiner Form. Über die Server bei
+  Supabase laufen Briefinhalte nur auf dem Weg zum KI-Dienst, ohne gespeichert zu werden; aufbewahrt
+  werden sie dort nur als verschlüsselte Notfallkopie, wenn Sie ihr zugestimmt haben.
 </p>
 
-<h3>Die Übersetzung ins Englische verlässt Ihr Gerät nicht</h3>
+<h3>Sprache der Auswertung und Übersetzung</h3>
 <p>
-  Sie können sich die Zusammenfassung eines Briefes auf Englisch anzeigen lassen. Dafür wird
+  Ist Ihr iPhone auf Englisch eingestellt, bittet die App den KI-Dienst, die Auswertung eines Briefes
+  auf Englisch zu schreiben. Dafür wird nur die Sprache mitgeschickt, sonst nichts.
+</p>
+<p>
+  Sie können sich die Zusammenfassung eines Briefes außerdem in die jeweils andere Sprache
+  (Deutsch oder Englisch) übersetzen lassen. Dafür wird
   <strong>kein weiterer Dienst eingeschaltet und kein Text übertragen</strong>: Die Übersetzung
   erledigt die in iOS eingebaute Übersetzungsfunktion von Apple, und zwar
   <strong>auf Ihrem Gerät</strong>. Der Brieftext geht dabei an niemanden — auch nicht an Apple und
@@ -323,9 +355,10 @@
 <h2>5. Anonyme Nutzungsstatistik</h2>
 <p>
   Um zu verstehen, welche Funktionen genutzt werden und wo Abläufe klemmen, sendet die App eine
-  <strong>abschließend festgelegte Liste von Ereignissen</strong> an TelemetryDeck. Die Nutzerkennung
-  wird bereits auf Ihrem Gerät mit einem Zufallswert versehen und verschlüsselt, auf dem Server ein
-  zweites Mal — weder TelemetryDeck noch ich können daraus eine Person zurückrechnen.
+  <strong>abschließend festgelegte Liste von Ereignissen</strong> an TelemetryDeck. Jedes Ereignis trägt
+  eine Kennung, die aus einer Gerätekennung gebildet wird: Sie wird bereits auf Ihrem Gerät mit einem
+  Zufallswert versehen und verschlüsselt, auf dem Server ein zweites Mal — weder TelemetryDeck noch ich
+  können daraus eine Person zurückrechnen.
 </p>
 <p>
   <strong>Niemals übertragen werden:</strong> Briefinhalte, erkannter Text, Seitenbilder, Absendernamen,
@@ -341,16 +374,21 @@
   verbessert hat oder ob im betreffenden Monat einfach andere Leute installiert haben.
 </p>
 <p>
-  Die Zahl der Tage ist auf <strong>400</strong> begrenzt und wird ohne jede Kennung übertragen: Sie
-  sagt, wie lange <em>diese Installation</em> existiert, nicht wer sie benutzt. Eine Woche fasst
-  tausende Installationen zusammen. <strong>Es gibt weiterhin keine Kennung, mit der sich Ereignisse zu
-  einer Person zusammenführen ließen</strong> — weder Ihr Konto, noch ein Brief, noch ein Gerät wird je
-  mitgeschickt.
+  Die Zahl der Tage ist auf <strong>400</strong> begrenzt: Sie sagt, wie lange <em>diese
+  Installation</em> existiert, nicht wer sie benutzt. Weder Ihr Konto noch ein Brief wird je
+  mitgeschickt, und nichts davon lässt sich mit Ihrem PostSafe-Konto verbinden.
+</p>
+<p>
+  <strong>Technische Angaben, die die Statistik-Software selbst mitschickt:</strong> Gerätemodell,
+  iOS- und App-Version, Sprache, Region und Zeitzone, Bildschirmgröße, ob Bedienungshilfen wie größere
+  Schrift eingeschaltet sind, das Datum der ersten Nutzung und wie oft und wie lange die App benutzt
+  wird.
 </p>
 <p>
   Weil die Daten das Gerät bereits anonymisiert verlassen, ist nach Auffassung des Anbieters weder ein
-  Einwilligungsbanner noch eine Abschaltmöglichkeit erforderlich. Die App hat deshalb keine eigene
-  Einstellung dafür.
+  Einwilligungsbanner noch eine Abschaltmöglichkeit erforderlich. Die Statistik ist ab Werk
+  eingeschaltet; <strong>Sie können sie jederzeit in der App abschalten</strong>, unter Einstellungen →
+  Datenschutz → Statistik. Dann sendet die App keine Ereignisse mehr.
 </p>
 <p>
   Google Analytics, Firebase und andere Google-Dienste werden bewusst nicht eingesetzt, ebenso wenig ein
@@ -359,8 +397,9 @@
 
 <h2>6. Anmeldung mit Apple</h2>
 <p>
-  Die Anmeldung erfolgt über <em>Sign in with Apple</em>. Dauerhaft gespeichert wird nur die von Apple
-  vergebene Kennung. Wenn Sie „E-Mail-Adresse verbergen" wählen, erhalte ich lediglich eine
+  Die Anmeldung erfolgt über <em>Sign in with Apple</em>. Gespeichert werden die von Apple vergebene
+  Kennung und die E-Mail-Adresse, die Apple übermittelt. Ihren Namen bewahrt nur die App auf, auf Ihrem
+  Gerät und in Ihrer eigenen iCloud. Wenn Sie „E-Mail-Adresse verbergen" wählen, erhalte ich lediglich eine
   Weiterleitungsadresse von Apple — das ist der vollwertige Normalfall und führt zu keinerlei
   Einschränkung. Name und E-Mail-Adresse übermittelt Apple ohnehin nur bei der ersten Anmeldung und
   nur, wenn Sie es zulassen; beides ist für die Nutzung nicht erforderlich.
@@ -385,7 +424,9 @@
 <ul>
   <li><strong>Auskunft und Datenübertragbarkeit:</strong> Der Export in den Einstellungen erzeugt eine
       ZIP-Datei mit Ihrem <em>vollständigen</em> Archiv — allen Metadaten als JSON und jeder
-      Originalseite als Bilddatei. Kein Ticket, keine Wartezeit. <strong>Der Export ist nie an ein Abo
+      Originalseite als Bilddatei; Seitenbilder älterer Briefe holt die App dafür aus Ihrer iCloud, und
+      eine Seite, die sich nicht laden lässt, ist im Archiv als fehlend vermerkt. Kein Ticket, keine
+      Wartezeit. <strong>Der Export ist nie an ein Abo
       gebunden.</strong></li>
   <li><strong>Berichtigung:</strong> Jedes ausgelesene Feld lässt sich bearbeiten; Ihre Korrektur hat
       dauerhaft Vorrang vor der maschinellen Erkennung.</li>
@@ -393,12 +434,15 @@
       lokalen Daten, die Anmeldedaten im Schlüsselbund, Ihre Briefe in iCloud, die von PostSafe
       angelegten Kalendereinträge, noch geplante Erinnerungen, alle Server-Datensätze und Ihren
       Datensatz bei RevenueCat, und widerruft die Apple-Anmeldung. Eine Notfallkopie wird 30 Tage später
-      gelöscht. Sie erhalten anschließend eine Aufstellung dessen, was gelöscht wurde.</li>
+      gelöscht. Übrige Credits verfallen mit dem Konto; erstatten kann sie nur Apple. Die App nennt
+      beides vor dem Löschen. Sie erhalten anschließend eine Aufstellung dessen, was gelöscht wurde.</li>
 </ul>
 <p>
-  <strong>Was eine Löschung überdauert.</strong> Genau ein Datensatz bleibt bestehen: Ihre zufällige
+  <strong>Was eine Löschung überdauert.</strong> Ein Löschnachweis: Ihre zufällige
   Nutzerkennung, der Zeitpunkt der Löschung und zwei Häkchen dafür, dass die Apple-Anmeldung widerrufen
-  und der Datensatz bei RevenueCat entfernt wurde. Er belegt, dass Ihre Löschung tatsächlich ausgeführt
+  und der Datensatz bei RevenueCat entfernt wurde. Daneben bleiben technische Protokollzeilen des Servers
+  und der Eingangsstempel einer Kaufmeldung, beide ohne Bezug zu Ihrer Person, und bis zu 30 Tage
+  lang eine Notfallkopie samt dem Auftrag, sie zu löschen. Er belegt, dass Ihre Löschung tatsächlich ausgeführt
   wurde — dazu bin ich nach Art. 5 Abs. 2 DSGVO verpflichtet. Auf eine Person führt er nicht mehr zurück:
   Name, E-Mail-Adresse, Apple-Kennung, Briefe, Zählerstände und Einwilligungsnachweise sind zu diesem
   Zeitpunkt bereits fort. Nach drei Jahren wird auch dieser Datensatz automatisch entfernt.
@@ -443,6 +487,10 @@
   dabei nicht an diesen Server übertragen.
 </p>
 <p>
+  Öffnen Sie einen <strong>Einladungslink</strong>, steht der Einladungscode in der Adresse. GitHub
+  verarbeitet ihn dabei als Teil der Verbindungsdaten.
+</p>
+<p>
   Gehostet wird sie über GitHub Pages, einen Dienst der GitHub, Inc., 88 Colin P. Kelly Jr. Street, San
   Francisco, CA 94107, USA. Beim Abruf verarbeitet GitHub technisch notwendige Verbindungsdaten
   einschließlich Ihrer IP-Adresse. Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO — das berechtigte
@@ -463,7 +511,8 @@
 <p>
   Jede Verbindung der App ins Internet ist mit TLS verschlüsselt. <strong>Eine Ausnahme gibt es, und
   sie bleibt in Ihrem eigenen WLAN:</strong> Bei <em>PostSafe Web</em> liefert Ihr iPhone Ihr Archiv
-  unverschlüsselt (http) an den Browser Ihres Computers — erst nachdem Sie diesen Browser auf dem iPhone
+  unverschlüsselt (http) an den Browser Ihres Computers, und in die andere Richtung Dateien, die Sie vom
+  Computer auf das iPhone legen, sowie eine Unterschrift, die Sie dort zeichnen — erst nachdem Sie diesen Browser auf dem iPhone
   mit einem Tippen zugelassen haben, nur solange die App läuft, und ohne dass dabei etwas einen Server
   von mir erreicht. Ein Zertifikat für eine Adresse im Heimnetz stellt keine Zertifizierungsstelle aus.
   Briefinhalte erreichen den KI-Dienst ausschließlich über meinen Server, damit der Zugangsschlüssel
@@ -490,7 +539,7 @@
         <svg class="brand__mark" width="22" height="20.6" viewBox="207 183 650 608" aria-hidden="true" focusable="false"><linearGradient id="psz-fuss" gradientUnits="userSpaceOnUse" x1="354.7" y1="266.1" x2="669.3" y2="629.9"><stop offset="0" stop-color="#ff8b1f"/><stop offset="1" stop-color="#ff2d3e"/></linearGradient><g transform="translate(532 570) scale(1.3) translate(-512 -512)" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M298 646 L298 301.2 Q298 280 313 265 Q328 250 349.2 250 L588 250 Q616 250 635.8 269.8 L706.2 340.2 Q726 360 726 388 L726 470" stroke="url(#psz-fuss)" stroke-width="72"/><path d="M410 476 L610 476" stroke="#ff4935" stroke-width="40"/><path d="M406 360 L522 360" stroke="url(#psz-fuss)" stroke-width="44"/></g></svg>
         PostSafe
       </p>
-      <p class="site-foot__note">Post ordnen, ohne dass jemand mitliest. Eine Notfallkopie öffnen wir nur auf deine Bitte und erst nach Prüfung deiner Identität.</p>
+      <p class="site-foot__note">Post ordnen. Gespeichert in deiner iCloud. Eine Notfallkopie öffnen wir nur auf deine Bitte und erst nach Prüfung deiner Identität.</p>
     </div>
     <nav class="foot-links" aria-label="Rechtliches und Kontakt">
       <a href="index.html">Startseite</a>
