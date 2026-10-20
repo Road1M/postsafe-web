@@ -10,7 +10,7 @@
 <link rel="icon" href="favicon.png?v=3" type="image/png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=3">
 <link rel="canonical" href="https://postsafe.eu/web.html">
-<link rel="stylesheet" href="seite.css?v=24">
+<link rel="stylesheet" href="seite.css?v=25">
 <style>
 .dev-fixed{position:fixed; z-index:30; left:0; top:0; pointer-events:none; will-change:transform}
 .hero{min-height:100svh; display:flex; align-items:center}
@@ -20,11 +20,10 @@
 
 /* Das Codefeld: ein echtes Eingabefeld über vier sichtbaren Kästchen.
    Nach der vierten Ziffer geht es von selbst los: die Kästchen fliegen zu einem zusammen, das im
-   Orange des Zeichens wartet, bis der Browser beim iPhone ist. Dort wird dasselbe Kästchen grün. */
+   Orange der App wartet, bis der Browser beim iPhone ist. Dort wird dasselbe Kästchen grün.
+   Das Orange ist das des orangen Ordners (FolderPalette.orange, Mitte, Display P3), hell wie dunkel. */
 @property --pair-a{syntax:'<angle>'; inherits:false; initial-value:0deg}
-.pair{--acc:#FF473B; --acc-2:#FF8B21; margin-top:36px; padding:26px; border-radius:32px; background:var(--card); box-shadow:var(--shadow); max-width:480px}
-:root[data-theme="dark"] .pair{--acc:#FF8B21; --acc-2:#FF473B}
-@media (prefers-color-scheme:dark){ :root:not([data-theme="light"]) .pair{--acc:#FF8B21; --acc-2:#FF473B} }
+.pair{--acc:color(display-p3 1 .4 0); --acc-2:color(display-p3 1 .4 0); margin-top:36px; padding:26px; border-radius:32px; background:var(--card); box-shadow:var(--shadow); max-width:480px}
 .pair__label{display:block; font-family:var(--mono); font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-3); margin-bottom:14px}
 .code{position:relative; display:grid; grid-template-columns:repeat(4,1fr); gap:10px}
 .code b{height:84px; border-radius:20px; background:var(--card-2); box-shadow:inset 0 0 0 1.5px var(--line); display:grid; place-items:center; font-size:48px; font-weight:600; letter-spacing:-.02em; font-variant-numeric:tabular-nums; color:var(--ink); transition:box-shadow .2s, transform .5s var(--ease), opacity .35s}
@@ -181,7 +180,7 @@
 <!-- Die Logik der echten Seite, unverändert: vier Ziffern werden zu einer Adresse im WLAN. -->
 <script src="web.js?v=3"></script>
 <script type="module">
-import { mountDevice } from "./js/screens.js?v=25";
+import { mountDevice } from "./js/screens.js?v=26";
 import { mountBrowser } from "./js/browser.js?v=24";
 import { smoothScroll } from "./js/smooth.js?v=24";
 import { footBase } from "./js/fuss.js?v=24";
@@ -210,13 +209,14 @@ const isDark = () => root.getAttribute("data-theme") === "dark" || (!root.hasAtt
 $("#theme").addEventListener("click", () => { const n = isDark() ? "light" : "dark"; root.setAttribute("data-theme", n); applyTheme(); });
 
 const devEl = $("#device"), screen = mountDevice(devEl);
+screen.setTheme("dunkel");   /* das iPhone zeigt die App immer dunkel (Josef, 2026-10-20) */
 screen.preload(["web", "einst"]);
 let browser = null;
 mountBrowser($("[data-browser]"), { height: 680 }).then(b => { browser = b; applyTheme(); });
 /* Safari färbt seine Leisten oben und unten nach der Seite. Wer am dunklen iPhone auf hell
    schaltet, bekäme sonst weiter die dunkle Leistenfarbe aus theme-color. */
 const barColor = d => $$('meta[name="theme-color"]').forEach(m => m.content = d ? "#070707" : "#F1F1EF");
-function applyTheme() { const d = isDark(); barColor(d); screen.setTheme("hell");   /* das iPhone zeigt die App immer hell */ if (browser) browser.setDark(d); }
+function applyTheme() { const d = isDark(); barColor(d); if (browser) browser.setDark(d); }
 applyTheme(); matchMedia("(prefers-color-scheme: dark)").addEventListener("change", applyTheme);
 
 /* Vier Kästchen, die zeigen, was im echten Feld steht */
@@ -233,7 +233,7 @@ input.addEventListener("blur", () => { focused = false; paintCells(); });
 paintCells();
 
 /* Wo es in der App steht — in Pixeln der Aufnahme (Punkte × 3) */
-const RING = { row: { x: 52, y: 1846, w: 1102, h: 152, r: 40 }, code: { x: 50, y: 620, w: 1106, h: 440, r: 90 }, step3: { x: 50, y: 2268, w: 1106, h: 210, r: 40 } };
+const RING = { row: { x: 52, y: 1846, w: 1102, h: 152, r: 40 }, code: { x: 41, y: 671, w: 1123, h: 826, r: 98 }, step3: { x: 50, y: 2268, w: 1106, h: 210, r: 40 } };
 
 let vw, vh, mobile, secs = {}, dev = {};
 function measure() {

@@ -9,7 +9,7 @@
 <meta name="theme-color" content="#070707" media="(prefers-color-scheme: dark)">
 <link rel="icon" href="favicon.png?v=3" type="image/png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=3">
-<link rel="stylesheet" href="style.css?v=10">
+<link rel="stylesheet" href="style.css?v=11">
 </head>
 <body>
 
@@ -60,11 +60,13 @@
 </main>
 
 <style>
-  .einladung { margin: 28px 0 8px; padding: 26px 22px; border-radius: 28px; background: rgba(127,127,127,.1); text-align: center; }
+  .einladung { margin: 28px 0 8px; padding: 26px 22px; border-radius: 28px; background: var(--card); text-align: center; }
   .einladung__label { margin: 0; font-size: 13px; letter-spacing: .08em; text-transform: uppercase; opacity: .65; }
   .einladung__code { margin: 6px 0 14px; font: 700 40px/1.1 ui-monospace, "SF Mono", Menlo, monospace; letter-spacing: .16em; }
   .einladung__kopieren { font: 600 16px -apple-system, BlinkMacSystemFont, sans-serif; border: 0; border-radius: 999px; padding: 12px 22px; background: currentColor; cursor: pointer; }
-  .einladung__kopieren span { color: Canvas; }
+  .einladung__kopieren span { color: #FFFFFF; }   /* Schrift auf Tinte, wie in der App (onInk) */
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .einladung__kopieren span { color: #0D0D0F; } }
+  :root[data-theme="dark"] .einladung__kopieren span { color: #0D0D0F; }
   .einladung__store { margin-top: 26px; }
 </style>
 <script>

@@ -11,10 +11,10 @@
 
   --paper:  #F1F1EF;   /* Seitenhintergrund             */
   --card:   #FFFFFF;   /* Flächen, Karten, Eingaben     */
-  --card-2: #F7F7F5;   /* gefüllte Felder, Rundknöpfe   */
+  --card-2: #F4F4F2;   /* gefüllte Felder, Rundknöpfe   */
   --ink:    #0D0D0F;   /* Schrift, Knöpfe, Haken        */
   --ink-2:  #5C5C63;   /* Fließtext zweiter Ordnung     */
-  --ink-3:  #93939A;   /* Etiketten, Hilfstext          */
+  --ink-3:  #6B6B72;   /* Etiketten, Hilfstext          */
   --line:   #E7E7E3;   /* Trennlinien, Rahmen           */
   --signal: #FF3B18;   /* NUR Fristen. Sonst nichts.    */
 
@@ -37,12 +37,13 @@
 @media (prefers-color-scheme: dark) {
   :root {
     --paper:  #070707;
-    --card:   #131313;
-    --card-2: #1A1A1A;
+    --card:   #181817;
+    --card-2: #1F1F1E;
     --ink:    #F4F4F1;
-    --ink-2:  #A4A4A0;
-    --ink-3:  #767674;
-    --line:   #262625;
+    --ink-2:  #A5A5A1;
+    --ink-3:  #8B8B87;
+    --line:   #2A2A28;
+    --signal: #FF6A4D;
     --shadow-s: 0 1px 2px rgba(0, 0, 0, .5);
     --shadow-m: 0 2px 6px rgba(0, 0, 0, .5), 0 22px 52px rgba(0, 0, 0, .55);
   }
@@ -50,12 +51,13 @@
 
 :root[data-theme="dark"] {
   --paper:  #070707;
-  --card:   #131313;
-  --card-2: #1A1A1A;
+  --card:   #181817;
+  --card-2: #1F1F1E;
   --ink:    #F4F4F1;
-  --ink-2:  #A4A4A0;
-  --ink-3:  #767674;
-  --line:   #262625;
+  --ink-2:  #A5A5A1;
+  --ink-3:  #8B8B87;
+  --line:   #2A2A28;
+  --signal: #FF6A4D;
   --shadow-s: 0 1px 2px rgba(0, 0, 0, .5);
   --shadow-m: 0 2px 6px rgba(0, 0, 0, .5), 0 22px 52px rgba(0, 0, 0, .55);
 }
@@ -63,11 +65,12 @@
 :root[data-theme="light"] {
   --paper:  #F1F1EF;
   --card:   #FFFFFF;
-  --card-2: #F7F7F5;
+  --card-2: #F4F4F2;
   --ink:    #0D0D0F;
   --ink-2:  #5C5C63;
-  --ink-3:  #93939A;
+  --ink-3:  #6B6B72;
   --line:   #E7E7E3;
+  --signal: #FF3B18;
   --shadow-s: 0 1px 2px rgba(13, 13, 15, .05);
   --shadow-m: 0 2px 6px rgba(13, 13, 15, .05), 0 18px 46px rgba(13, 13, 15, .08);
 }
@@ -361,12 +364,12 @@ main {
   margin: calc(-1 * var(--rundung)) auto 0;
   color: #F4F4F1;
   --ink:    #F4F4F1;
-  --ink-2:  #A4A4A0;
-  --ink-3:  #767674;
-  --card:   #161616;
-  --card-2: #1D1D1D;
-  --line:   #292928;
-  --paper:  #0B0B0B;
+  --ink-2:  #A5A5A1;
+  --ink-3:  #8B8B87;
+  --card:   #181817;
+  --card-2: #1F1F1E;
+  --line:   #2A2A28;
+  --paper:  #0D0D0F;
 }
 
 /* Die dunkle Fläche. Klebt nicht, geht über die volle Breite.
@@ -375,13 +378,13 @@ main {
 .site-foot__flaeche {
   width: 166.6667%;
   margin-inline: -33.3333%;
-  background: #0B0B0B;
-  box-shadow: 0 3px 0 #0B0B0B;
+  background: #0D0D0F;
+  box-shadow: 0 3px 0 #0D0D0F;
 }
 
 @media (prefers-color-scheme: dark) {
-  .site-foot { --paper: #151515; }
-  .site-foot__flaeche { background: #151515; box-shadow: 0 3px 0 #151515; }
+  .site-foot { --paper: #181817; }
+  .site-foot__flaeche { background: #181817; box-shadow: 0 3px 0 #181817; }
 }
 
 .site-foot__in {

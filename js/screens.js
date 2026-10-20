@@ -33,7 +33,7 @@ export function createScreen(canvas, base = "img/") {
 
   function img(name) {
     const key = name + "-" + theme;
-    if (!cache[key]) { const i = new Image(); i.decoding = "async"; i.src = base + key + ".webp?v=3"; i.onload = () => { last = ""; }; cache[key] = i; }
+    if (!cache[key]) { const i = new Image(); i.decoding = "async"; i.src = base + key + ".webp?v=4"; i.onload = () => { last = ""; }; cache[key] = i; }
     return cache[key];
   }
   const ok = i => i && i.complete && i.naturalWidth;
@@ -94,7 +94,7 @@ export function createScreen(canvas, base = "img/") {
     const ready = ok(img(cur)) && (!prev || k >= 1 || ok(img(prev)));
     if (!ready || (!busy && key === last)) return false;
     last = key;
-    ctx.fillStyle = theme === "dunkel" ? "#000" : "#F2F2F0"; ctx.fillRect(0, 0, W, H);
+    ctx.fillStyle = theme === "dunkel" ? "#0F0F0F" : "#FFFFFF"; ctx.fillRect(0, 0, W, H);   /* der Grund der App (canvasBase) */
     if (k >= 1 || !prev) frameOf(cur);
     else if (kind === "push") {
       if (dir > 0) { frameOf(prev, -W * .3 * e, 1, .14 * e); ctx.save(); ctx.shadowColor = "rgba(0,0,0,.18)"; ctx.shadowBlur = 40 * k; frameOf(cur, W * (1 - e)); ctx.restore(); }
@@ -106,8 +106,8 @@ export function createScreen(canvas, base = "img/") {
     statusBar(theme === "dunkel");
     if (state.notifText && nv > .001) notification(Math.max(0, nv), state.notifText);
     if (state.ring && state.ring.k > 0) {
-      const r = state.ring; ctx.save(); ctx.globalAlpha = r.k * (k >= 1 ? 1 : e); ctx.strokeStyle = "#0A84FF"; ctx.lineWidth = 3.5 * S;
-      ctx.shadowColor = "rgba(10,132,255,.5)"; ctx.shadowBlur = 16 * S * k;
+      const r = state.ring; ctx.save(); ctx.globalAlpha = r.k * (k >= 1 ? 1 : e); ctx.strokeStyle = "color(display-p3 0 .4157 1)";   /* das Blau der App */ ctx.lineWidth = 3.5 * S;
+      ctx.shadowColor = "color(display-p3 0 .4157 1 / .5)"; ctx.shadowBlur = 16 * S * k;
       ctx.beginPath(); ctx.roundRect(r.x - 6, r.y - 6, r.w + 12, r.h + 12, r.r + 6); ctx.stroke(); ctx.restore();
     }
     if (ok(mask)) { ctx.save(); ctx.globalCompositeOperation = "destination-in"; ctx.drawImage(mask, 0, 0, W, H); ctx.restore(); }

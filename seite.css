@@ -2,11 +2,11 @@
    Papier, Tinte, ein Signalrot nur für Fristen. Farbe steckt im Bild. */
 :root{
   color-scheme: light;
-  --paper:#F1F1EF; --paper-hi:#FCFCFB; --card:#FFFFFF; --card-2:#F7F7F5;
-  --ink:#0D0D0F; --ink-2:#5C5C63; --ink-3:#8E8E95; --line:#E2E2DE;
+  --paper:#F1F1EF; --card:#FFFFFF; --card-2:#F4F4F2;
+  --ink:#0D0D0F; --ink-2:#5C5C63; --ink-3:#6B6B72; --line:#E7E7E3;
   --signal:#FF3B18;
   --glass:rgba(255,255,255,.66); --glass-line:rgba(13,13,15,.08);
-  --inv-bg:#0D0D0F; --inv-ink:#F4F4F1; --inv-dim:rgba(244,244,241,.2); --inv-2:#8E8E8A;
+  --inv-bg:#0D0D0F; --inv-ink:#F4F4F1; --inv-dim:rgba(244,244,241,.2); --inv-2:#8B8B87;
   --shadow:0 2px 6px rgba(13,13,15,.05),0 18px 46px rgba(13,13,15,.08);
   --sans:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text","Helvetica Neue","Inter",Helvetica,Arial,sans-serif;
   --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
@@ -16,19 +16,21 @@
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
     color-scheme: dark;
-    --paper:#070707; --paper-hi:#161616; --card:#131313; --card-2:#1A1A1A;
-    --ink:#F4F4F1; --ink-2:#A4A4A0; --ink-3:#6E6E6C; --line:#242423;
+    --paper:#070707; --card:#181817; --card-2:#1F1F1E;
+    --ink:#F4F4F1; --ink-2:#A5A5A1; --ink-3:#8B8B87; --line:#2A2A28;
+    --signal:#FF6A4D;
     --glass:rgba(24,24,24,.62); --glass-line:rgba(255,255,255,.08);
-    --inv-bg:#F1F1EF; --inv-ink:#0D0D0F; --inv-dim:rgba(13,13,15,.16); --inv-2:#6C6C72;
+    --inv-bg:#F1F1EF; --inv-ink:#0D0D0F; --inv-dim:rgba(13,13,15,.16); --inv-2:#6B6B72;
     --shadow:0 2px 6px rgba(0,0,0,.5),0 22px 52px rgba(0,0,0,.55);
   }
 }
 :root[data-theme="dark"]{
   color-scheme: dark;
-  --paper:#070707; --paper-hi:#161616; --card:#131313; --card-2:#1A1A1A;
-  --ink:#F4F4F1; --ink-2:#A4A4A0; --ink-3:#6E6E6C; --line:#242423;
+  --paper:#070707; --card:#181817; --card-2:#1F1F1E;
+  --ink:#F4F4F1; --ink-2:#A5A5A1; --ink-3:#8B8B87; --line:#2A2A28;
+  --signal:#FF6A4D;
   --glass:rgba(24,24,24,.62); --glass-line:rgba(255,255,255,.08);
-  --inv-bg:#F1F1EF; --inv-ink:#0D0D0F; --inv-dim:rgba(13,13,15,.16); --inv-2:#6C6C72;
+  --inv-bg:#F1F1EF; --inv-ink:#0D0D0F; --inv-dim:rgba(13,13,15,.16); --inv-2:#6B6B72;
   --shadow:0 2px 6px rgba(0,0,0,.5),0 22px 52px rgba(0,0,0,.55);
 }
 *{box-sizing:border-box}
@@ -80,8 +82,6 @@ a{color:inherit}
 .store{display:inline-flex; align-items:center; gap:10px; height:52px; padding:0 22px 0 16px; border-radius:999px; background:var(--ink); color:var(--paper)}
 .store small{display:block; font-size:10.5px; letter-spacing:.06em; text-transform:uppercase; opacity:.62; line-height:1.1}
 .store span{display:block; font-size:17px; font-weight:600; line-height:1.15; letter-spacing:-.01em}
-.btn-q{display:inline-flex; align-items:center; gap:8px; height:52px; padding:0 22px; border-radius:999px; border:1px solid var(--line); color:var(--ink); text-decoration:none; font-weight:600; font-size:16px; background:var(--card)}
-.btn-q:hover{border-color:var(--ink-3)}
 
 /* Fuß — wie auf der echten Seite: Die Seite ist eine Karte mit runder Unterkante,
    der dunkle Fuß klebt dahinter und wird am Ende freigelegt. Das klebende Element
@@ -89,11 +89,11 @@ a{color:inherit}
 :root{--rundung:24px}
 @media (min-width:768px){:root{--rundung:32px}}
 main{position:relative; z-index:1; background:var(--paper); border-end-start-radius:var(--rundung); border-end-end-radius:var(--rundung)}
-.site-foot{position:sticky; bottom:0; z-index:0; width:60%; margin:calc(-1 * var(--rundung)) auto 0; color:#F4F4F1; --ink:#F4F4F1; --ink-2:#A4A4A0; --ink-3:#767674; --line:#292928}
+.site-foot{position:sticky; bottom:0; z-index:0; width:60%; margin:calc(-1 * var(--rundung)) auto 0; color:#F4F4F1; --ink:#F4F4F1; --ink-2:#A5A5A1; --ink-3:#8B8B87; --line:#2A2A28}
 .site-foot__flaeche{width:166.6667%; margin-inline:-33.3333%; background:var(--foot); box-shadow:0 3px 0 var(--foot)}
-:root{--foot:#0B0B0B}
-@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){--foot:#151515} }
-:root[data-theme="dark"]{--foot:#151515}
+:root{--foot:#0D0D0F}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){--foot:#181817} }
+:root[data-theme="dark"]{--foot:#181817}
 /* Am Seitenende liegt hinter Safaris Leiste unten kein Inhalt mehr; Safari füllt die Fläche mit der
    Grundfarbe der Seite — gemessen: der von body, html allein reicht nicht. Ist der dunkle Fuß im
    Bild, bekommen beide seine Farbe (js/fuss.js). */

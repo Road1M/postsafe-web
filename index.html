@@ -16,12 +16,12 @@
 <meta property="og:url" content="https://postsafe.eu/">
 <meta property="og:title" content="PostSafe — Deine Post kennt ihren Platz">
 <meta property="og:description" content="Du fotografierst den Brief. PostSafe liest ihn, legt ihn in den passenden Ordner und erinnert an Fristen. Die Briefe bleiben in deiner eigenen iCloud.">
-<meta property="og:image" content="https://postsafe.eu/og.png?v=12">
+<meta property="og:image" content="https://postsafe.eu/og.png?v=13">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="PostSafe — Deine Post kennt ihren Platz.">
 <meta name="twitter:card" content="summary_large_image">
-<link rel="stylesheet" href="seite.css?v=24">
+<link rel="stylesheet" href="seite.css?v=25">
 <style>
 /* Hero */
 .hero{min-height:100svh; display:flex; align-items:center; position:relative}
@@ -36,7 +36,6 @@
 .rot .out .c{opacity:0; transform:translateY(-.25em); filter:blur(8px)}
 .rot .pre .c{opacity:0; transform:translateY(.35em); filter:blur(10px); transition:none}
 .cta{display:flex; flex-wrap:wrap; align-items:flex-end; gap:22px 28px; margin-top:34px}
-.btn-q{height:48px}
 .hint{position:absolute; left:var(--gut); bottom:28px; font-family:var(--mono); font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:var(--ink-3); display:flex; align-items:center; gap:12px}
 .hint i{width:34px; height:1px; background:var(--ink-3); transform-origin:left; animation:drip 2.4s var(--ease) infinite}
 @keyframes drip{0%{transform:scaleX(0)}50%{transform:scaleX(1)}100%{transform:scaleX(1);opacity:0}}
@@ -72,10 +71,10 @@
 /* Der Scan ist für jeden Brief gleich: neutral, in der Farbe der Schrift. Welcher
    Ordner es wird, zeigt erst das Schildchen — wenn der Brief gelesen ist. */
 .scanframe .br{fill:none; stroke:var(--ink); stroke-width:5; stroke-linecap:round; stroke-linejoin:round}
-.scanframe .hl{fill:rgba(29,29,31,.07); stroke:rgba(29,29,31,.55); stroke-width:1.5}
+.scanframe .hl{fill:rgba(13,13,15,.07); stroke:rgba(13,13,15,.55); stroke-width:1.5}
 .scanframe .band{fill:url(#band)}
-.scanframe .line{fill:#1D1D1F}
-.scanframe .glow{fill:#1D1D1F; opacity:.35; filter:url(#glow)}
+.scanframe .line{fill:#0D0D0F}
+.scanframe .glow{fill:#0D0D0F; opacity:.35; filter:url(#glow)}
 
 /* Kapitel 2: Fristen */
 #frist .tx h2{font-size:clamp(34px,3.8vw,58px)}
@@ -159,7 +158,6 @@
   .lede{font-size:18px}
   .cta{margin-top:22px; gap:14px}
   .badges img{height:52px}
-  .hero .btn-q{display:none}
   .hint{display:none}
   #story .cap{top:96px; right:0}
   .sort{display:grid; grid-template-columns:1fr 1fr; gap:8px; width:auto}
@@ -220,7 +218,6 @@
         <p class="badges" aria-label="Bald erhältlich"><small>Bald im App Store</small>
           <img src="marken/appstore.svg" alt="Laden im App Store" width="180" height="60">
         </p>
-        <a class="btn-q" href="web.html">PostSafe Web</a>
       </div>
     </div></div>
     <div class="hint" aria-hidden="true"><i></i>Scrollen</div>
@@ -262,8 +259,8 @@
   <section class="chap" id="trust" style="height:240vh">
     <div class="pin"><div class="wrap"><div class="tx">
       <p class="eyebrow">Dein Speicher</p>
-      <p class="reveal" data-reveal>Deine Briefe liegen in deiner iCloud, in deinem eigenen Speicher. Ohne dein Ja zur Notfallkopie bewahren wir nichts davon auf.</p>
-      <div class="vault"><span><i></i>Dein iPhone</span><span><i></i>Deine iCloud</span><span class="empty"><i></i>Unser Server: verschlüsselt, nur mit deinem Ja</span></div>
+      <p class="reveal" data-reveal>Deine Briefe liegen in deiner eigenen iCloud. Neues iPhone? Anmelden, und deine Ordner sind wieder da.</p>
+      <div class="vault"><span><i></i>Dein iPhone</span><span><i></i>Deine iCloud</span><span class="empty"><i></i>Dein nächstes iPhone</span></div>
     </div></div></div>
   </section>
 
@@ -287,8 +284,8 @@
       <h2 class="display">Was einmal drin ist, <b>bleibt dir.</b></h2>
       <p>Auch wenn du eines Tages aufhörst: Deine Briefe bleiben lesbar, durchsuchbar und exportierbar.</p>
       <div class="fan" tabindex="0" aria-label="Zwei deiner Ordner, aufgefächert">
-        <img src="img/karte-wohnen.webp?v=3" alt="Ordner Wohnen" style="--i:0">
-        <img src="img/karte-behoerde.webp?v=3" alt="Ordner Behörde" style="--i:1">
+        <img src="img/karte-wohnen.webp?v=4" alt="Ordner Wohnen" style="--i:0">
+        <img src="img/karte-behoerde.webp?v=4" alt="Ordner Behörde" style="--i:1">
       </div>
       <p class="fan-note">Abo beendet — neue Scans pausieren. Deine Ordner bleiben.</p>
     </div>
@@ -342,14 +339,14 @@
 <canvas class="stage" id="stage" aria-hidden="true"></canvas>
 <div class="dev-fixed" id="device" aria-label="PostSafe auf dem iPhone" role="img"></div>
 <div class="tag" data-tag aria-hidden="true" style="opacity:0"></div>
-<svg class="scanframe" aria-hidden="true"><defs><linearGradient id="scang" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff8b1f"/><stop offset="1" stop-color="#ff2d3e"/></linearGradient><linearGradient id="band" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1D1D1F" stop-opacity="0"/><stop offset="1" stop-color="#1D1D1F" stop-opacity=".2"/></linearGradient><filter id="glow" x="-10%" y="-400%" width="120%" height="900%"><feGaussianBlur stdDeviation="3"/></filter></defs><g data-frame></g></svg>
+<svg class="scanframe" aria-hidden="true"><defs><linearGradient id="band" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0D0D0F" stop-opacity="0"/><stop offset="1" stop-color="#0D0D0F" stop-opacity=".2"/></linearGradient><filter id="glow" x="-10%" y="-400%" width="120%" height="900%"><feGaussianBlur stdDeviation="3"/></filter></defs><g data-frame></g></svg>
 
 <script type="module">
 /* ?v= hält Seite und Skripte beisammen: Ein Browser darf sonst eine neue Seite mit einem alten
    Skript aus dem Zwischenspeicher paaren, und dann bleibt alles stehen. Bei jeder Änderung unter
    js/ die Zahl hier, in web.html und in js/browser.js erhöhen. */
 import { createStage } from "./js/stage.js?v=24";
-import { mountDevice } from "./js/screens.js?v=25";
+import { mountDevice } from "./js/screens.js?v=26";
 import { LETTERS, drawLetter, drawBack, drawEnvelope, drawEnvelopeBack } from "./js/letters.js?v=24";
 import { mountBrowser } from "./js/browser.js?v=24";
 import { smoothScroll } from "./js/smooth.js?v=24";
@@ -381,14 +378,15 @@ $("#theme").addEventListener("click", () => { const n = isDark() ? "light" : "da
 
 /* ---------------------------------------------------------- iPhone ---- */
 const devEl = $("#device"), screen = mountDevice(devEl);
+screen.setTheme("dunkel");   /* das iPhone zeigt die App immer dunkel (Josef, 2026-10-20) */
 screen.preload(["scan", "archiv", "brief", "suche0", "suche1", "einst"]);
-const webDev = mountDevice($("[data-webdevice]")); webDev.set({ a: "web" });
+const webDev = mountDevice($("[data-webdevice]")); webDev.setTheme("dunkel"); webDev.set({ a: "web" });
 let browser = null;
 mountBrowser($("[data-browser]"), { height: 640 }).then(b => { browser = b; applyTheme(); });
 /* Safari färbt seine Leisten oben und unten nach der Seite. Wer am dunklen iPhone auf hell
    schaltet, bekäme sonst weiter die dunkle Leistenfarbe aus theme-color. */
 const barColor = d => $$('meta[name="theme-color"]').forEach(m => m.content = d ? "#070707" : "#F1F1EF");
-function applyTheme() { const d = isDark(); barColor(d); screen.setTheme("hell");   /* das iPhone zeigt die App immer hell */ webDev.setTheme("hell"); if (browser) browser.setDark(d); }
+function applyTheme() { const d = isDark(); barColor(d); if (browser) browser.setDark(d); }
 applyTheme(); matchMedia("(prefers-color-scheme: dark)").addEventListener("change", applyTheme);
 
 /* ---------------------------------------------------------- Briefe ---- */
