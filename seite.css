@@ -110,7 +110,7 @@ html.fuss, html.fuss body{background:var(--foot)}
 .foot-links a:hover{color:var(--ink)}
 .site-foot__legal{color:var(--ink-3); font-size:13px; border-top:1px solid var(--line); padding-top:26px; margin:0}
 @media (min-width:800px){ .site-foot__in{grid-template-columns:1fr auto; align-items:start} .site-foot__legal{grid-column:1 / -1; align-self:end} }
-.site-foot__brand{font-size:22px} .site-foot__brand svg{width:28px; height:26px}
+.site-foot__brand{font-size:22px} .site-foot__brand .brand__mark{width:28px; height:28px}
 
 /* Fuß (alt) */
 .foot{padding:0 var(--gut) calc(120px + env(safe-area-inset-bottom,0px)); max-width:1240px; margin:0 auto; display:flex; flex-wrap:wrap; gap:18px 40px; align-items:center; font-size:14px; color:var(--ink-3)}

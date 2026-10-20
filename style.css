@@ -264,9 +264,9 @@ img, svg { max-width: 100%; }
   min-height: 44px;
 }
 
-/* Das Zeichen ist jetzt der blosse Strichzug aus der App-Kachel,
-   ohne Hintergrund — deshalb auch kein Radius mehr. */
-.brand__mark { flex: none; }
+/* Das Zeichen ist seit 21.10.2026 das App-Symbol selbst (die drei Ordner),
+   als Bild mit seiner eigenen Rundung. */
+.brand__mark { flex: none; display: block; }
 
 .site-nav { display: none; gap: 26px; }
 

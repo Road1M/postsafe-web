@@ -27,13 +27,13 @@ export function createScreen(canvas, base = "img/") {
   const k = canvas.width / W; ctx.scale(k, canvas.height / H);
   const cache = {};
   let theme = "hell", state = { a: "scan", notif: 0, notifText: null, ring: null }, last = "";
-  const icon = new Image(); icon.src = base + "icon.png"; icon.onload = () => { last = ""; };
+  const icon = new Image(); icon.src = base + "icon.png?v=3"; icon.onload = () => { last = ""; };
   /* Die Form des Bildschirms, pixelgenau aus Apples Bild gerechnet */
   const mask = new Image(); mask.src = base + "screen-mask.png"; mask.onload = () => { last = ""; };
 
   function img(name) {
     const key = name + "-" + theme;
-    if (!cache[key]) { const i = new Image(); i.decoding = "async"; i.src = base + key + ".webp"; i.onload = () => { last = ""; }; cache[key] = i; }
+    if (!cache[key]) { const i = new Image(); i.decoding = "async"; i.src = base + key + ".webp?v=3"; i.onload = () => { last = ""; }; cache[key] = i; }
     return cache[key];
   }
   const ok = i => i && i.complete && i.naturalWidth;
