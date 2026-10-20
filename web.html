@@ -126,7 +126,7 @@
       <p class="eyebrow">So geht's</p>
       <h2 class="display">In drei Schritten <b>verbunden.</b></h2>
       <ol class="steps">
-        <li class="on" data-step><i>1</i><div><b>PostSafe auf dem iPhone öffnen.</b><span>In den Einstellungen „PostSafe Web“ antippen.</span></div></li>
+        <li class="on" data-step><i>1</i><div><b>PostSafe auf dem iPhone öffnen.</b><span>Unter „Du“ auf „Am Computer ansehen“ tippen.</span></div></li>
         <li data-step><i>2</i><div><b>Den vierstelligen Code hier eintippen.</b><span>Er steht groß auf dem iPhone.</span></div></li>
         <li data-step><i>3</i><div><b>Am iPhone auf „Verbinden“ tippen.</b><span>Du entscheidest, welcher Browser dein Archiv zu sehen bekommt.</span></div></li>
       </ol>
@@ -180,8 +180,8 @@
 <!-- Die Logik der echten Seite, unverändert: vier Ziffern werden zu einer Adresse im WLAN. -->
 <script src="web.js?v=3"></script>
 <script type="module">
-import { mountDevice } from "./js/screens.js?v=26";
-import { mountBrowser } from "./js/browser.js?v=24";
+import { mountDevice } from "./js/screens.js?v=27";
+import { mountBrowser } from "./js/browser.js?v=25";
 import { smoothScroll } from "./js/smooth.js?v=24";
 import { footBase } from "./js/fuss.js?v=24";
 footBase();
@@ -210,7 +210,7 @@ $("#theme").addEventListener("click", () => { const n = isDark() ? "light" : "da
 
 const devEl = $("#device"), screen = mountDevice(devEl);
 screen.setTheme("dunkel");   /* das iPhone zeigt die App immer dunkel (Josef, 2026-10-20) */
-screen.preload(["web", "einst"]);
+screen.preload(["web", "du", "anfrage"]);
 let browser = null;
 mountBrowser($("[data-browser]"), { height: 680 }).then(b => { browser = b; applyTheme(); });
 /* Safari färbt seine Leisten oben und unten nach der Seite. Wer am dunklen iPhone auf hell
@@ -233,7 +233,7 @@ input.addEventListener("blur", () => { focused = false; paintCells(); });
 paintCells();
 
 /* Wo es in der App steht — in Pixeln der Aufnahme (Punkte × 3) */
-const RING = { row: { x: 52, y: 1846, w: 1102, h: 152, r: 40 }, code: { x: 41, y: 671, w: 1123, h: 826, r: 98 }, step3: { x: 50, y: 2268, w: 1106, h: 210, r: 40 } };
+const RING = { row: { x: 90, y: 1650, w: 1028, h: 130, r: 44 }, code: { x: 41, y: 671, w: 1123, h: 826, r: 98 }, step3: { x: 622, y: 1588, w: 476, h: 134, r: 67 } };
 
 let vw, vh, mobile, secs = {}, dev = {};
 function measure() {
@@ -252,9 +252,9 @@ function tick(now) {
   if (step !== lastStep) { steps.forEach((s, i) => s.classList.toggle("on", i === Math.max(0, step))); lastStep = step; }
   const pulse = reduce ? 1 : .6 + .4 * Math.sin(now / 320);
   let a = "web", ring = null;
-  if (step === 0) { a = "einst"; ring = { ...RING.row, k: pulse }; }
+  if (step === 0) { a = "du"; ring = { ...RING.row, k: pulse }; }
   else if (step === 1 || (!inSteps && focused)) ring = { ...RING.code, k: pulse };
-  else if (step === 2) ring = { ...RING.step3, k: pulse };
+  else if (step === 2) { a = "anfrage"; ring = { ...RING.step3, k: pulse }; }
   screen.set({ a, ring }); screen.draw(now);
   /* Auf dem Handy liegt das iPhone erst bei den Schritten im Bild; am Ende geht es mit der Seite nach oben */
   let dy = mobile ? (1 - clamp((y - (secs.schritte.top - vh * .6)) / (vh * .6), 0, 1)) * (vh - dev.y + 20) : 0;

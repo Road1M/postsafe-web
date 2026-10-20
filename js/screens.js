@@ -69,7 +69,7 @@ export function createScreen(canvas, base = "img/") {
 
   /* Übergänge wie in iOS: ein neuer Bildschirm schiebt sich von rechts herein
      (zurück: nach rechts hinaus), ein Tab-Wechsel blendet weich über. */
-  const ORDER = ["scan", "archiv", "brief", "suche0", "suche1", "einst", "web"];
+  const ORDER = ["scan", "archiv", "brief", "suche0", "suche1", "einst", "du", "web", "anfrage"];
   const KIND = { brief: "push", web: "push" };
   let cur = state.a, prev = null, t0 = -1e9, kind = "fade", dir = 1, notifOn = false, nT0 = -1e9;
   const ease = t => 1 - Math.pow(1 - t, 3);

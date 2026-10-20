@@ -19,7 +19,7 @@ export async function mountBrowser(el, { height = 620 } = {}) {
     <div class="browser__view" tabindex="0"><div class="browser__page"></div><p class="browser__toast" role="status"></p></div>`;
   const view = el.querySelector(".browser__view"), page = el.querySelector(".browser__page"), toast = el.querySelector(".browser__toast");
   const back = el.querySelector("[data-back]"), fwd = el.querySelector("[data-fwd]");
-  const [pages, css] = await Promise.all([fetch("vorschau/seiten.json").then(r => r.json()), fetch("vorschau/stil.css").then(r => r.text())]);
+  const [pages, css] = await Promise.all([fetch("vorschau/seiten.json?v=2").then(r => r.json()), fetch("vorschau/stil.css?v=2").then(r => r.text())]);
   const host = document.createElement("div"); host.style.width = W + "px"; host.style.transformOrigin = "0 0";
   const root = host.attachShadow({ mode: "open" });
   page.appendChild(host);
