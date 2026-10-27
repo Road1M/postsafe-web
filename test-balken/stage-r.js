@@ -2,7 +2,7 @@
    Das iPhone ist hier bewusst nicht: es ist Apples Produktbild und liegt als
    Bild über dieser Ebene. Briefe fliegen nie über oder in das Gerät.         */
 
-import * as THREE from "./three.module.js";   /* liegt auf postsafe.eu selbst, kein fremder Server */
+import * as THREE from "../js/three.module.js";   /* liegt auf postsafe.eu selbst, kein fremder Server */
 
 /* Ein Blatt mit Knickfalten (Drittel, wie für ein DIN-lang-Kuvert) und leichter Wölbung */
 export function bendSheet(geo, w, h, foldTop, foldBottom, curl) {
