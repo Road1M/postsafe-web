@@ -10,7 +10,7 @@
 <link rel="icon" href="favicon.png?v=3" type="image/png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=3">
 <link rel="canonical" href="https://postsafe.eu/web.html">
-<link rel="stylesheet" href="seite.css?v=25">
+<link rel="stylesheet" href="seite.css?v=26">
 <style>
 .dev-fixed{position:fixed; z-index:30; left:0; top:0; pointer-events:none; will-change:transform}
 .hero{min-height:100svh; display:flex; align-items:center}
@@ -48,7 +48,7 @@
 .pair.fliegt .pair__hinweis{color:var(--ink); font-weight:600}
 @media (prefers-reduced-motion:reduce){ .code b, .code .eins{transition:none} .code .eins::before{animation:none} .pair.falsch .code{animation:none} }
 .soon{margin:18px 4px 0; font-size:14px; color:var(--ink-3); max-width:46ch}
-.soon b{color:var(--ink-2)}
+.soon a{color:var(--ink-2); font-weight:600; white-space:nowrap}
 
 /* Drei Schritte */
 #schritte .tx h2{font-size:clamp(36px,4vw,62px)}
@@ -117,7 +117,7 @@
         </div>
         <p class="pair__hinweis" id="pair-hinweis" role="status">Sobald vier Ziffern drin sind, geht es von selbst weiter.</p>
       </form>
-      <p class="soon"><b>Noch nicht nutzbar:</b> PostSafe ist noch nicht im App Store. Sobald die App da ist, funktioniert das Feld oben.</p>
+      <p class="soon">PostSafe noch nicht auf dem iPhone? <a href="https://apps.apple.com/de/app/postsafe-briefe-scannen/id6798171772">Im App Store laden</a></p>
     </div></div>
   </section>
 

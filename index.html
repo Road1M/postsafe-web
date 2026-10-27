@@ -21,7 +21,7 @@
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="PostSafe — Deine Post kennt ihren Platz.">
 <meta name="twitter:card" content="summary_large_image">
-<link rel="stylesheet" href="seite.css?v=25">
+<link rel="stylesheet" href="seite.css?v=26">
 <style>
 /* Hero */
 .hero{min-height:100svh; display:flex; align-items:center; position:relative}
@@ -146,7 +146,8 @@
 
 .dock{position:fixed; z-index:40; left:50%; bottom:calc(env(safe-area-inset-bottom,0px) + 16px); transform:translate(-50%,140%); transition:transform .7s var(--ease); display:flex; align-items:center; gap:14px; padding:8px; border-radius:999px; background:var(--glass); border:1px solid var(--glass-line); backdrop-filter:blur(22px) saturate(1.6); -webkit-backdrop-filter:blur(22px) saturate(1.6); box-shadow:0 10px 40px rgba(0,0,0,.12); white-space:nowrap; max-width:calc(100vw - 32px)}
 .dock.on{transform:translate(-50%,0)}
-.dock > img{width:40px; height:40px; border-radius:10px; box-shadow:0 0 0 1px rgba(0,0,0,.06)}
+.dock__app{display:flex; align-items:center; gap:14px; text-decoration:none; border-radius:999px}
+.dock__app img{width:40px; height:40px; border-radius:10px; box-shadow:0 0 0 1px rgba(0,0,0,.06)}
 .dock p{margin:0; font-size:14px; line-height:1.2}
 .dock p small{display:block; color:var(--ink-3); font-size:12px}
 .dock .chip{height:42px; padding:0 18px}
@@ -215,8 +216,8 @@
       </h1>
       <p class="lede">Du fotografierst den Brief. Mehr musst du nicht tun.</p>
       <div class="cta">
-        <p class="badges" aria-label="Bald erhältlich"><small>Bald im App Store</small>
-          <img src="marken/appstore.svg" alt="Laden im App Store" width="180" height="60">
+        <p class="badges">
+          <a href="https://apps.apple.com/de/app/postsafe-briefe-scannen/id6798171772"><img src="marken/appstore.svg" alt="Laden im App Store" width="180" height="60"></a>
         </p>
       </div>
     </div></div>
@@ -334,7 +335,7 @@
   </div>
 </footer>
 
-<div class="dock" id="dock"><img src="img/icon.png?v=3" alt=""><p><b>PostSafe</b><small>Bald im App Store · für iPhone</small></p><a class="chip" href="web.html">PostSafe Web</a></div>
+<div class="dock" id="dock"><a class="dock__app" href="https://apps.apple.com/de/app/postsafe-briefe-scannen/id6798171772"><img src="img/icon.png?v=3" alt=""><p><b>PostSafe</b><small>Im App Store · für iPhone</small></p></a><a class="chip" href="web.html">PostSafe Web</a></div>
 
 <canvas class="stage" id="stage" aria-hidden="true"></canvas>
 <div class="dev-fixed" id="device" aria-label="PostSafe auf dem iPhone" role="img"></div>
