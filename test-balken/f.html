@@ -696,5 +696,6 @@ requestAnimationFrame(frame);
 <script>addEventListener("load",()=>{const p=document.querySelector(".pin"),c=p?getComputedStyle(p):null;
 document.querySelectorAll("[data-stand]").forEach(e=>e.textContent=e.dataset.stand+(c?" · angeheftet: "+c.position+" "+c.top:""))});</script>
 <script>addEventListener("load",()=>{const q=new URLSearchParams(location.search),a=q.get("an"),y=+(q.get("y")||0);if(a)setTimeout(()=>scrollTo(0,document.getElementById(a).getBoundingClientRect().top+scrollY+y),500)});</script>
+
 </body>
 </html>
