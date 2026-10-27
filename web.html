@@ -180,8 +180,8 @@
 <!-- Die Logik der echten Seite, unverändert: vier Ziffern werden zu einer Adresse im WLAN. -->
 <script src="web.js?v=3"></script>
 <script type="module">
-import { mountDevice } from "./js/screens.js?v=27";
-import { mountBrowser } from "./js/browser.js?v=25";
+import { mountDevice } from "./js/screens.js?v=28";
+import { mountBrowser } from "./js/browser.js?v=26";
 import { smoothScroll } from "./js/smooth.js?v=24";
 import { footBase } from "./js/fuss.js?v=25";
 footBase();
@@ -233,14 +233,36 @@ paintCells();
 /* Wo es in der App steht — in Pixeln der Aufnahme (Punkte × 3) */
 const RING = { row: { x: 90, y: 1650, w: 1028, h: 130, r: 44 }, code: { x: 41, y: 671, w: 1123, h: 826, r: 98 }, step3: { x: 622, y: 1588, w: 476, h: 134, r: 67 } };
 
+/* Eine feste Höhe (100svh): Safaris Leiste unten wird am iPhone beim Wischen klein und groß, und mit der
+   wechselnden Fensterhöhe sprang das iPhone jedes Mal auf eine neue Größe (siehe index.html). */
+const svhProbe = Object.assign(document.createElement("div"), { ariaHidden: "true" });
+svhProbe.style.cssText = "position:absolute; left:0; top:0; width:1px; height:100vh; height:100svh; visibility:hidden; pointer-events:none";
+document.body.append(svhProbe);
+const stableH = () => svhProbe.offsetHeight || innerHeight;
 let vw, vh, mobile, secs = {}, dev = {};
 function measure() {
-  vw = innerWidth; vh = innerHeight; mobile = vw <= 820 || vw / vh < .9;
+  vw = innerWidth; vh = stableH(); mobile = vw <= 820 || vw / vh < .9;
   for (const id of ["hero", "schritte"]) { const el = document.getElementById(id); secs[id] = { top: el.getBoundingClientRect().top + scrollY, h: el.offsetHeight, range: Math.max(1, el.offsetHeight - vh) }; }
   if (mobile) { dev.h = vh * .46; dev.w = dev.h * 1350 / 2760; dev.x = (vw - dev.w) / 2; dev.y = vh - dev.h - 18; }
   else { dev.h = Math.min(vh * .82, 780); dev.w = dev.h * 1350 / 2760; dev.x = Math.min(vw * .72, vw - dev.w * .5 - 60) - dev.w / 2; dev.y = (vh - dev.h) / 2 + 12; }
   devEl.style.width = dev.w + "px";
   measureFade();
+  texte = $$("main h1, main h2, main .lede, main .pair, main .soon, main .tx > p, main .steps li.on, main .after > .wrap > p");
+}
+/* Am Handy fährt nie Schrift über das iPhone: kommt ein Text in seine Nähe, blendet es aus (siehe index.html). */
+const NAEHE = 16;
+let texte = [];
+function clearOfText(x, top) {
+  const bottom = top + dev.h, left = x, right = x + dev.w;
+  let f = 1;
+  for (const el of texte) {
+    const r = el.getBoundingClientRect();
+    if (!r.height || r.right <= left || r.left >= right) continue;
+    const gap = Math.max(r.top - bottom, top - r.bottom);
+    if (gap >= 0 || parseFloat(el.style.opacity || 1) < .05) continue;
+    f = Math.min(f, clamp(1 + gap / NAEHE, 0, 1));
+  }
+  return f;
 }
 /* Safari am iPhone schneidet Festes und Klebendes scharf an den Fensterkanten ab, die übrige Seite
    läuft weich unter den Leisten weiter (siehe index.html, edgeFade). Darum blenden die angehefteten
@@ -259,14 +281,14 @@ function edgeFade() {
   for (const b of blenden) {
     let p = tops.get(b.pin);
     if (p === undefined) tops.set(b.pin, p = b.pin.getBoundingClientRect().top);
-    const top = p + b.off, o = mobile ? Math.min(clamp(top / KANTE, 0, 1), clamp((vh - top - b.h) / KANTE, 0, 1)) : 1;
+    const top = p + b.off, o = mobile ? Math.min(clamp(top / KANTE, 0, 1), clamp((innerHeight - top - b.h) / KANTE, 0, 1)) : 1;   /* unten zählt die Kante, wie sie gerade ist */
     if (Math.abs(o - b.o) > .005) { b.o = o; b.el.style.opacity = o > .995 ? "" : o.toFixed(3); }
   }
 }
 let lastStep = -1;
 const steps = $$("[data-step]");
 function tick(now) {
-  if (innerHeight !== vh || innerWidth !== vw) measure();   /* Safaris Leiste unten wird klein oder groß — nicht immer mit „resize“ */
+  if (innerWidth !== vw || stableH() !== vh) measure();   /* gedreht oder Fenster verändert — Safaris Leiste allein ändert nichts */
   edgeFade();
   const y = smoothY(), ps = clamp((y - secs.schritte.top) / secs.schritte.range, 0, 1);
   const inSteps = y > secs.schritte.top - vh * .5;
@@ -287,6 +309,7 @@ function tick(now) {
   dy += (1 - ie) * (mobile ? 16 : vh * .35); op *= ie;
   const leave = secs.schritte.top + secs.schritte.h - vh;
   if (y > leave) { dy -= (y - leave); if (mobile) op *= 1 - clamp((y - leave) / (vh * .35), 0, 1); }
+  if (mobile && op > .005) op *= clearOfText(dev.x, dev.y + dy);
   devEl.style.opacity = op.toFixed(3);
   devEl.style.visibility = op < .005 ? "hidden" : "";
   devEl.style.transform = `translate3d(${dev.x.toFixed(1)}px, ${(dev.y + dy).toFixed(1)}px, 0)`;

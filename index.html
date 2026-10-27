@@ -123,9 +123,12 @@
 .keep{padding-block:14vh 12vh; position:relative; z-index:31}
 .keep h2{font-size:clamp(44px,7.4vw,124px)}
 .keep p{font-size:clamp(18px,1.6vw,22px); color:var(--ink-2); max-width:40ch; margin:26px 0 0}
-.fan{display:flex; margin-top:64px; perspective:1400px}
-.fan img{flex:0 0 min(380px,64vw); width:min(380px,64vw); height:auto; margin-right:-170px; filter:drop-shadow(0 20px 30px rgba(0,0,0,.18)); transform:rotateY(18deg) rotateZ(calc(var(--i) * -3deg)) translateY(calc(var(--i) * 12px)); transition:transform .9s var(--ease), margin .9s var(--ease)}
-.fan:hover img, .fan:focus-within img{margin-right:16px; transform:none}
+/* Zwei Ordnerkarten aus der App, flach übereinander wie ein Stapel Ordner: oben sieht man noch den
+   Namen der hinteren. Sie bewegen sich nicht und klappen nicht auf — am Handy ging das nur per Tippen
+   und machte die Seite breiter (Josef, 27.10.2026). */
+.fan{display:grid; width:min(420px,100%); margin-top:56px}
+.fan img{grid-area:1/1; width:100%; height:auto; filter:drop-shadow(0 18px 28px rgba(0,0,0,.22))}
+.fan img + img{margin-top:24%}
 .fan-note{font-family:var(--mono); font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--ink-3); margin-top:26px}
 .fine{padding-block:4vh 12vh; position:relative; z-index:31}
 .fine h3{font-size:clamp(26px,2.6vw,36px); font-weight:600; letter-spacing:-.03em; margin:0 0 34px; max-width:22ch}
@@ -178,7 +181,6 @@
   #trust{border-radius:30px; margin-inline:0}   /* am Handy bis an den Rand, sonst stehen links und rechts dunkle Streifen */
   .webs__row{flex-direction:column; align-items:stretch}
   .webs__row .device{display:none}
-  .fan img{margin-right:-240px}
   .dock{display:none}   /* am Handy kann die Leiste oben dasselbe */
 }
 @media (prefers-reduced-motion: reduce){ .rot .c{transition:none} .hint i{animation:none} }
@@ -232,7 +234,7 @@
       <div class="sort" data-sort aria-hidden="true">
         <div class="row" data-row="behoerde" style="--c:color(display-p3 0 .4157 1)"><i class="row__fill"></i><span class="row__sw"><svg viewBox="0 0 18 15" aria-hidden="true"><path d="M1 3.2A1.7 1.7 0 0 1 2.7 1.5h3.4l1.6 2h7.6A1.7 1.7 0 0 1 17 5.2v7.1a1.7 1.7 0 0 1-1.7 1.7H2.7A1.7 1.7 0 0 1 1 12.3z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg></span><span class="row__tx"><b>Behörde</b><small data-note></small></span><span class="row__n" data-n>0</span></div>
         <div class="row" data-row="wohnen" style="--c:color(display-p3 1 .4 0)"><i class="row__fill"></i><span class="row__sw"><svg viewBox="0 0 18 15" aria-hidden="true"><path d="M1 3.2A1.7 1.7 0 0 1 2.7 1.5h3.4l1.6 2h7.6A1.7 1.7 0 0 1 17 5.2v7.1a1.7 1.7 0 0 1-1.7 1.7H2.7A1.7 1.7 0 0 1 1 12.3z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg></span><span class="row__tx"><b>Wohnen</b><small data-note></small></span><span class="row__n" data-n>0</span></div>
-        <div class="row" data-row="gesundheit" style="--c:color(display-p3 1 .2353 .549)"><i class="row__fill"></i><span class="row__sw"><svg viewBox="0 0 18 15" aria-hidden="true"><path d="M1 3.2A1.7 1.7 0 0 1 2.7 1.5h3.4l1.6 2h7.6A1.7 1.7 0 0 1 17 5.2v7.1a1.7 1.7 0 0 1-1.7 1.7H2.7A1.7 1.7 0 0 1 1 12.3z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg></span><span class="row__tx"><b>Gesundheit</b><small data-note></small></span><span class="row__n" data-n>0</span></div>
+        <div class="row" data-row="rechnungen" style="--c:color(display-p3 1 .2353 .549)"><i class="row__fill"></i><span class="row__sw"><svg viewBox="0 0 18 15" aria-hidden="true"><path d="M1 3.2A1.7 1.7 0 0 1 2.7 1.5h3.4l1.6 2h7.6A1.7 1.7 0 0 1 17 5.2v7.1a1.7 1.7 0 0 1-1.7 1.7H2.7A1.7 1.7 0 0 1 1 12.3z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg></span><span class="row__tx"><b>Rechnungen</b><small data-note></small></span><span class="row__n" data-n>0</span></div>
         <div class="row" data-row="bank" style="--c:color(display-p3 .1098 .7451 .3608)"><i class="row__fill"></i><span class="row__sw"><svg viewBox="0 0 18 15" aria-hidden="true"><path d="M1 3.2A1.7 1.7 0 0 1 2.7 1.5h3.4l1.6 2h7.6A1.7 1.7 0 0 1 17 5.2v7.1a1.7 1.7 0 0 1-1.7 1.7H2.7A1.7 1.7 0 0 1 1 12.3z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg></span><span class="row__tx"><b>Bank</b><small data-note></small></span><span class="row__n" data-n>0</span></div>
       </div>
     </div></div></div>
@@ -284,9 +286,9 @@
       <p class="eyebrow">Ohne Ablaufdatum</p>
       <h2 class="display">Was einmal drin ist, <b>bleibt dir.</b></h2>
       <p>Auch wenn du eines Tages aufhörst: Deine Briefe bleiben lesbar, durchsuchbar und exportierbar.</p>
-      <div class="fan" tabindex="0" aria-label="Zwei deiner Ordner, aufgefächert">
-        <img src="img/karte-wohnen.webp?v=4" alt="Ordner Wohnen" style="--i:0">
-        <img src="img/karte-behoerde.webp?v=4" alt="Ordner Behörde" style="--i:1">
+      <div class="fan" role="img" aria-label="Zwei deiner Ordner, aufgefächert">
+        <img src="img/karte-wohnen.png?v=5" alt="Ordner Wohnen">
+        <img src="img/karte-behoerde.png?v=5" alt="Ordner Behörde">
       </div>
       <p class="fan-note">Abo beendet — neue Scans pausieren. Deine Ordner bleiben.</p>
     </div>
@@ -346,10 +348,10 @@
 /* ?v= hält Seite und Skripte beisammen: Ein Browser darf sonst eine neue Seite mit einem alten
    Skript aus dem Zwischenspeicher paaren, und dann bleibt alles stehen. Bei jeder Änderung unter
    js/ die Zahl hier, in web.html und in js/browser.js erhöhen. */
-import { createStage } from "./js/stage.js?v=24";
-import { mountDevice } from "./js/screens.js?v=27";
-import { LETTERS, drawLetter, drawBack, drawEnvelope, drawEnvelopeBack } from "./js/letters.js?v=24";
-import { mountBrowser } from "./js/browser.js?v=25";
+import { createStage } from "./js/stage.js?v=25";
+import { mountDevice } from "./js/screens.js?v=28";
+import { LETTERS, drawLetter, drawBack, drawEnvelope, drawEnvelopeBack } from "./js/letters.js?v=25";
+import { mountBrowser } from "./js/browser.js?v=26";
 import { smoothScroll } from "./js/smooth.js?v=24";
 import { footBase } from "./js/fuss.js?v=25";
 footBase();
@@ -389,24 +391,33 @@ function applyTheme() { const d = isDark(); barColor(d); if (browser) browser.se
 applyTheme(); matchMedia("(prefers-color-scheme: dark)").addEventListener("change", applyTheme);
 
 /* ---------------------------------------------------------- Briefe ---- */
-const st = createStage($("#stage"));
+/* Eine feste Höhe für alles, was die Seite selbst ausrechnet (100svh): Safaris Leiste unten wird am
+   iPhone beim Wischen klein und groß, und mit der wechselnden Fensterhöhe sprangen iPhone und Briefe
+   jedes Mal auf eine neue Größe (Josefs Video, 27.10.2026). Am Rechner ist sie gleich innerHeight. */
+const svhProbe = Object.assign(document.createElement("div"), { ariaHidden: "true" });
+svhProbe.style.cssText = "position:absolute; left:0; top:0; width:1px; height:100vh; height:100svh; visibility:hidden; pointer-events:none";
+document.body.append(svhProbe);
+const stableH = () => svhProbe.offsetHeight || innerHeight;
+const st = createStage($("#stage"), { height: stableH });
 const items = [];
-LETTERS.slice(0, 7).forEach((L, i) => { const f = drawLetter(L); const l = st.addLetter(f, drawBack(f), "sheet", () => { const g = drawLetter(L); return [g, drawBack(g)]; }); l.boxes = f.boxes; l.fold = [.32 + (i % 3) * .12, .22 + (i % 2) * .16]; l.curl = .05 + (i % 3) * .02; items.push(l); });
-[["Mobilfunk", "Mobilfunk GmbH", "Postfach 11 22 · 12342 Musterstadt"]].forEach(([a, b, c]) => {
+/* Die Briefe der Seite; an dritter Stelle die Mobilfunk-Rechnung, die auch in der App liegt (Ordner Rechnungen) */
+[0, 1, 7, 3, 4, 5, 6].map(n => LETTERS[n]).forEach((L, i) => { const f = drawLetter(L); const l = st.addLetter(f, drawBack(f), "sheet", () => { const g = drawLetter(L); return [g, drawBack(g)]; }); l.boxes = f.boxes; l.fold = [.32 + (i % 3) * .12, .22 + (i % 2) * .16]; l.curl = .05 + (i % 3) * .02; items.push(l); });
+[["Krankenkasse", "Krankenkasse Musterstadt", "Gesundheitsweg 28 · 12341 Musterstadt"]].forEach(([a, b, c]) => {
   const l = st.addLetter(drawEnvelope(a, b, c), drawEnvelopeBack(), "env", () => [drawEnvelope(a, b, c), drawEnvelopeBack()]); l.fold = [0, 0]; l.curl = .03; items.push(l);
 });
 items.forEach(l => st.bendSheet(l.geo, l.w, l.h, l.fold[0], l.fold[1], l.curl));
 /* Wer im Kapitel „Ein Foto“ gescannt wird, und in welchen Ordner er fliegt */
-/* Stichtag der App-Aufnahmen (siehe js/letters.js) — alle Daten dieser Seite gehen von ihm aus */
-const STICHTAG = () => new Date(2026, 8, 23, 9);
+/* Stichtag der App-Aufnahmen (siehe js/letters.js) — alle Daten dieser Seite gehen von ihm aus.
+   Die Bildschirme im iPhone sind am 27.10.2026 aufgenommen (App 1.0.1, Build 12). */
+const STICHTAG = () => new Date(2026, 9, 27, 9);
 const dd = n => { const d = STICHTAG(); d.setDate(d.getDate() + n); return d.toLocaleDateString("de-DE", { day: "numeric", month: "long" }); };
 /* Vier Briefe, einer je Ordner — in der Reihenfolge der App: Behörde, Wohnen,
-   Gesundheit, Bank. Was PostSafe liest, wird markiert; ein Schildchen nennt das
+   Rechnungen, Bank. Was PostSafe liest, wird markiert; ein Schildchen nennt das
    Wichtigste, und die Ordnerzeile merkt es sich. */
 const FLY = [
   { i: 0, to: "wohnen", tag: "84,20 €", note: "Stadtwerke · 84,20 €", boxes: ["sender", "subject", "amount"] },
-  { i: 1, to: "behoerde", tag: "Frist " + dd(5), note: "Finanzamt · bis " + dd(5), boxes: ["sender", "subject", "due"] },
-  { i: 2, to: "gesundheit", tag: "412,60 €", note: "Krankenkasse · 412,60 €", boxes: ["sender", "subject", "amount"] },
+  { i: 1, to: "behoerde", tag: "Frist " + dd(13), note: "Finanzamt · bis " + dd(13), boxes: ["sender", "subject", "due"] },
+  { i: 2, to: "rechnungen", tag: "49,95 €", note: "Mobilfunk · 49,95 €", boxes: ["sender", "subject", "amount"] },
   { i: 5, to: "bank", tag: "Neue Entgelte", note: "Hausbank · neue Entgelte", boxes: ["sender", "subject"] }
 ];
 /* Der Ablauf im Kapitel (Anteil des Kapitels): in einem Zug alle vier Briefe. Jeder braucht
@@ -428,7 +439,7 @@ const FLOAT_M = [
 /* ---------------------------------------------------------- Maße ------ */
 let vw, vh, mobile, secs = {}, dev = { w: 0, h: 0, x: 0, y: 0 };
 function measure() {
-  vw = innerWidth; vh = innerHeight; mobile = vw <= 820 || vw / vh < .9;
+  vw = innerWidth; vh = stableH(); mobile = vw <= 820 || vw / vh < .9;
   for (const id of ["hero", "story", "frist", "suche", "trust", "web"]) {
     const el = document.getElementById(id), top = el.getBoundingClientRect().top + scrollY;
     secs[id] = { top, h: el.offsetHeight, range: Math.max(1, el.offsetHeight - vh) };
@@ -440,6 +451,7 @@ function measure() {
   st.resize();
   measureScan();
   measureFade();
+  texte = $$("main h1, main h2, main .lede, main .badges, main .cap > p, main .tx > p, main .big, main .q, main .vault, main .go, main .webs__hint");
 }
 /* Der Scan-Bereich richtet sich nach dem freien Platz zwischen Überschrift und
    Ordnerkarten — mit Luft nach oben und unten. So liegt auf einem kleineren
@@ -468,7 +480,8 @@ const caps = $$("[data-cap]"), sortEl = $("[data-sort]");
 const rowEl = Object.fromEntries($$("[data-row]").map(r => [r.dataset.row, r]));
 const tick = $("[data-tick]"); for (let i = 0; i < 22; i++) tick.appendChild(document.createElement("i"));
 const ticks = [...tick.children];
-const due = STICHTAG(); due.setDate(due.getDate() + 7);
+/* Fällig am 9. November: derselbe Bescheid (1.284,00 €), den das iPhone im Kapitel Fristen zeigt */
+const due = STICHTAG(); due.setDate(due.getDate() + 13);
 const d21 = new Date(due); d21.setDate(d21.getDate() - 21); const d7 = new Date(due); d7.setDate(d7.getDate() - 7);
 const fmt = d => d.toLocaleDateString("de-DE", { day: "numeric", month: "short" });
 $("[data-t0]").textContent = fmt(d21); $("[data-t1]").textContent = fmt(d7) + " · Erinnerung"; $("[data-t2]").textContent = fmt(due) + " · Frist";
@@ -530,9 +543,32 @@ function placeDevice(y, ps, now) {
   }
   const leave = secs.trust.top + secs.trust.h - vh;
   if (y > leave) { dy -= (y - leave); if (mobile) op *= 1 - clamp((y - leave) / (vh * .35), 0, 1); }
+  if (mobile && op > .005) op *= clearOfText(x, dev.y + dy);
   devEl.style.opacity = op.toFixed(3);
   devEl.style.visibility = op < .005 ? "hidden" : "";
   devEl.style.transform = `translate3d(${x.toFixed(1)}px, ${(dev.y + dy).toFixed(1)}px, 0)`;
+}
+
+/* Am Handy steht das iPhone fest unten, und die Seite läuft darunter durch. Kommt eine Überschrift oder ein
+   Text heran, blendet es aus: Schrift fährt nie über den Bildschirm des iPhones (Josef, 27.10.2026). Es
+   beginnt, sobald Schrift das Gerät berührt, und ist nach NAEHE Punkten fertig — das ist noch Rahmen und
+   Statusleiste. Vorher nicht: In der Startansicht liegt der App-Store-Knopf nur 2 Punkte über dem iPhone. */
+const NAEHE = 16;
+let texte = [];
+function clearOfText(x, top) {
+  const bottom = top + dev.h, left = x, right = x + dev.w;
+  let f = 1;
+  for (const el of texte) {
+    const r = el.getBoundingClientRect();
+    if (!r.height || r.right <= left || r.left >= right) continue;
+    const gap = Math.max(r.top - bottom, top - r.bottom);
+    if (gap >= 0) continue;
+    const cap = el.closest(".cap");
+    if (cap && !cap.classList.contains("on")) continue;
+    if (parseFloat(el.style.opacity || 1) < .05) continue;
+    f = Math.min(f, clamp(1 + gap / NAEHE, 0, 1));
+  }
+  return f;
 }
 
 /* Safari am iPhone (iOS 26/27) schneidet alles Feste und Klebende scharf an den Fensterkanten ab —
@@ -554,7 +590,7 @@ function edgeFade() {
   for (const b of blenden) {
     let p = tops.get(b.pin);
     if (p === undefined) tops.set(b.pin, p = b.pin.getBoundingClientRect().top);
-    const top = p + b.off, o = mobile ? Math.min(clamp(top / KANTE, 0, 1), clamp((vh - top - b.h) / KANTE, 0, 1)) : 1;
+    const top = p + b.off, o = mobile ? Math.min(clamp(top / KANTE, 0, 1), clamp((innerHeight - top - b.h) / KANTE, 0, 1)) : 1;   /* unten zählt die Kante, wie sie gerade ist */
     if (Math.abs(o - b.o) > .005) { b.o = o; b.el.style.opacity = o > .995 ? "" : o.toFixed(3); }
   }
 }
@@ -688,7 +724,7 @@ function drawTag(tg) {
 
 /* ---------------------------------------------------------- Lauf ------ */
 function tick_(now) {
-  if (innerHeight !== vh || innerWidth !== vw) measure();   /* Safaris Leiste unten wird klein oder groß — nicht immer mit „resize“ */
+  if (innerWidth !== vw || stableH() !== vh) measure();   /* gedreht oder Fenster verändert — Safaris Leiste allein ändert nichts */
   const y = smoothY(), ps = chapters(y);
   edgeFade();
   placeDevice(y, ps, now);

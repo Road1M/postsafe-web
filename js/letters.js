@@ -10,7 +10,7 @@ const FONT = '"Helvetica Neue", Helvetica, Arial, sans-serif';
 function day(offset) {
   /* Fester Stichtag: derselbe Tag, an dem die App-Bildschirme dieser Seite aufgenommen sind —
      sonst liefen Briefe und iPhone mit jedem Tag weiter auseinander. */
-  const d = new Date(2026, 8, 23, 9); d.setDate(d.getDate() + offset);
+  const d = new Date(2026, 9, 27, 9); d.setDate(d.getDate() + offset);
   return d;
 }
 const dmy = d => String(d.getDate()).padStart(2, "0") + "." + String(d.getMonth() + 1).padStart(2, "0") + "." + d.getFullYear();
@@ -44,7 +44,7 @@ export const LETTERS = [
       "",
       "für den Veranlagungszeitraum 2025 ergibt sich nach Anrechnung der geleisteten Vorauszahlungen eine Nachzahlung in Höhe von 1.284,00 EUR.",
       "",
-      `Der Betrag ist bis zum ${dmy(day(5))} auf das unten genannte Konto der Finanzkasse zu überweisen. Bitte geben Sie den Verwendungszweck vollständig an.`,
+      `Der Betrag ist bis zum ${dmy(day(13))} auf das unten genannte Konto der Finanzkasse zu überweisen. Bitte geben Sie den Verwendungszweck vollständig an.`,
       "",
       "Gegen diesen Bescheid kann innerhalb eines Monats nach Bekanntgabe Einspruch eingelegt werden.",
     ],

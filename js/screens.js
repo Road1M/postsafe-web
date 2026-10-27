@@ -33,7 +33,8 @@ export function createScreen(canvas, base = "img/") {
 
   function img(name) {
     const key = name + "-" + theme;
-    if (!cache[key]) { const i = new Image(); i.decoding = "async"; i.src = base + key + ".webp?v=4"; i.onload = () => { last = ""; }; cache[key] = i; }
+    /* Dunkel: Aufnahmen der App 1.0.1 (12) vom 27.10.2026 als JPEG in Display P3; hell: die älteren WebP (nicht in Gebrauch) */
+    if (!cache[key]) { const i = new Image(); i.decoding = "async"; i.src = base + key + (theme === "dunkel" ? ".jpg?v=5" : ".webp?v=4"); i.onload = () => { last = ""; }; cache[key] = i; }
     return cache[key];
   }
   const ok = i => i && i.complete && i.naturalWidth;

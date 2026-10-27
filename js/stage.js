@@ -56,7 +56,11 @@ function studioScene() {
   return s;
 }
 
-export function createStage(canvasEl) {
+/* Die Höhe, mit der die Bühne rechnet. Am iPhone wird Safaris Leiste unten beim ersten Wischen
+   klein, und die Fensterhöhe wächst um rund 40 Punkte: Mit innerHeight gerechnet, wurden die Briefe
+   dabei schlagartig größer (Josefs Video, 27.10.2026). index.html gibt eine Höhe, die sich mit der
+   Leiste nicht ändert (100svh). */
+export function createStage(canvasEl, { height = () => innerHeight } = {}) {
   /* Sparsam mit dem Speicher: kein Griff nach der starken Grafikkarte, und Kantenglättung nur
      dort, wo die Pixel groß sind — auf einem Retina-Bildschirm glättet die doppelte Auflösung
      schon selbst, und die vierfache Glättung kostete dort über 100 MB.
@@ -129,8 +133,8 @@ export function createStage(canvasEl) {
      (5120 × 2160, doppelt scharf) wären es über 40 Millionen — mehr, als der Browser zeichnen
      kann. Safari verlor dann die Grafik mal, mal nicht, und die Seite ruckelte. */
   function resize() {
-    if (renderer) { renderer.setPixelRatio(Math.min(dpr, Math.sqrt(6e6 / (innerWidth * innerHeight)))); renderer.setSize(innerWidth, innerHeight); }
-    camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix();
+    if (renderer) { renderer.setPixelRatio(Math.min(dpr, Math.sqrt(6e6 / (innerWidth * height())))); renderer.setSize(innerWidth, height()); }
+    camera.aspect = innerWidth / height(); camera.updateProjectionMatrix();
   }
   resize();
   const visH = () => 2 * camera.position.z * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2));
@@ -142,7 +146,7 @@ export function createStage(canvasEl) {
     l.group.updateMatrixWorld(true);
     return [[-1, 1], [1, 1], [1, -1], [-1, -1]].map(([sx, sy]) => {
       tmp.set(sx * l.w / 2, sy * l.h / 2, 0).applyMatrix4(l.group.matrixWorld).project(camera);
-      return [(tmp.x + 1) / 2 * innerWidth, (1 - tmp.y) / 2 * innerHeight];
+      return [(tmp.x + 1) / 2 * innerWidth, (1 - tmp.y) / 2 * height()];
     });
   }
   /* Kein Brief ragt über den oberen oder unteren Rand: Safari (iOS 26) schneidet alles, was beim
@@ -154,14 +158,14 @@ export function createStage(canvasEl) {
       const ys = corners(l).map(c => c[1]), y0 = Math.min(...ys), y1 = Math.max(...ys);
       const d = y1 - y0 > bottom - top ? (top + bottom - y0 - y1) / 2 : y0 < top ? top - y0 : y1 > bottom ? bottom - y1 : 0;
       if (Math.abs(d) < .5) return;
-      const z = l.group.position.z, perPx = visH() * (camera.position.z - z) / camera.position.z / innerHeight;
+      const z = l.group.position.z, perPx = visH() * (camera.position.z - z) / camera.position.z / height();
       l.group.position.y -= d * perPx;
     }
   }
   /* Ein Punkt auf dem Papier (Pixel der Brief-Zeichnung) → Bildschirm */
   function project(l, px, py, texW = l.texW, texH = l.texH) {
     tmp.set((px / texW - .5) * l.w, (.5 - py / texH) * l.h, 0).applyMatrix4(l.group.matrixWorld).project(camera);
-    return [(tmp.x + 1) / 2 * innerWidth, (1 - tmp.y) / 2 * innerHeight];
+    return [(tmp.x + 1) / 2 * innerWidth, (1 - tmp.y) / 2 * height()];
   }
   return { THREE, scene, camera, renderer, letters, addLetter, resize, toWorld, corners, fitY, project, bendSheet, render: () => { if (renderer && !lost) renderer.render(scene, camera); else { goFlat(); drawFlat(); } } };
 }
