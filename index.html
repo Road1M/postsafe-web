@@ -21,7 +21,7 @@
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="PostSafe — Deine Post kennt ihren Platz.">
 <meta name="twitter:card" content="summary_large_image">
-<link rel="stylesheet" href="seite.css?v=30">
+<link rel="stylesheet" href="seite.css?v=31">
 <style>
 /* Hero */
 .hero{min-height:100svh; display:flex; align-items:center; position:relative}
@@ -99,7 +99,7 @@
 /* Kapitel 4: Vertrauen */
 #trust{background:var(--inv-bg); color:var(--inv-ink); border-radius:44px; margin-inline:clamp(8px,1.4vw,20px)}
 #trust .eyebrow{color:var(--inv-2)}
-#trust .pin{border-radius:inherit}
+#trust .pin{background:var(--inv-bg); border-radius:inherit}
 .tx p.reveal{font-size:clamp(30px,3.4vw,52px); font-weight:600; letter-spacing:-.035em; line-height:1.08; margin:0; max-width:17ch; color:inherit; text-wrap:balance}
 .reveal .wd{color:var(--inv-dim); transition:color .25s}
 .reveal .wd.lit{color:var(--inv-ink)}
@@ -446,7 +446,7 @@ function measure() {
 let area = { fx: -.21, fy: .12, spotY: .1, sPile: .56, sScan: .39 };
 function measureScan() {
   if (mobile) { sortEl.style.cssText = "left:0; right:0; top:auto; bottom:6vh"; area = { fx: 0, fy: .08, spotY: .065, sPile: .33, sScan: .38 * .95 * (370 / 510) }; return; }
-  const pin = $("#story .pin").getBoundingClientRect(), cps = $("#story .caps").getBoundingClientRect();
+  const pin = $("#story .pin .wrap").getBoundingClientRect(), cps = $("#story .caps").getBoundingClientRect();
   const capB = Math.max(...caps.map(c => c.getBoundingClientRect().bottom - pin.top - (c.classList.contains("on") ? 0 : 22)));
   /* Die Ordnerspalte steht links vom iPhone, der Brief mittig im Platz davor */
   const rw = sortEl.offsetWidth, rh = sortEl.offsetHeight, rowsL = dev.xr - 56 - rw;
