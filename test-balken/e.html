@@ -21,7 +21,8 @@ h1{font-size:44px; line-height:1.05; letter-spacing:-.03em; margin:0 0 18px}
 </head>
 <body>
 <div class="txt"><p class="testmarke">Test E – leere Seite, klebt am Rand</p><h1>Weiter nach unten scrollen, bis die Karte den ganzen Bildschirm füllt.</h1><p>Dann oben und unten auf Balken achten.</p></div>
-<div class="karte"><div class="klebt"><div style="padding:120px 28px 0"><p class="testmarke">Test E – leere Seite, klebt am Rand</p><h1>Deine Briefe liegen in deiner eigenen iCloud.</h1></div></div></div>
+<div class="karte" id="karte"><div class="klebt"><div style="padding:120px 28px 0"><p class="testmarke">Test E – leere Seite, klebt am Rand</p><h1>Deine Briefe liegen in deiner eigenen iCloud.</h1></div></div></div>
 <div class="txt"><p>Ende der Testseite.</p></div>
+<script>addEventListener("load",()=>{const q=new URLSearchParams(location.search),a=q.get("an"),y=+(q.get("y")||0);if(a)setTimeout(()=>scrollTo(0,document.getElementById(a).getBoundingClientRect().top+scrollY+y),500)});</script>
 </body>
 </html>

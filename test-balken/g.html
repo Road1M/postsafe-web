@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Test G — leere Seite, kleine klebende Fläche</title>
+<meta name="theme-color" content="#F1F1EF" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#070707" media="(prefers-color-scheme: dark)">
+<style>
+:root{--paper:#F1F1EF; --ink:#0D0D0F; --card:#0D0D0F; --card-ink:#F4F4F1}
+@media (prefers-color-scheme: dark){:root{--paper:#070707; --ink:#F4F4F1; --card:#F1F1EF; --card-ink:#0D0D0F}}
+html,body{margin:0; background:var(--paper); color:var(--ink); font:17px/1.5 -apple-system,system-ui,sans-serif}
+.txt{padding:120px 24px 60px; max-width:560px}
+h1{font-size:44px; line-height:1.05; letter-spacing:-.03em; margin:0 0 18px}
+.testmarke{font-weight:600; font-size:15px; color:#E5484D; margin:0 0 14px}
+.karte{height:240vh; margin-inline:8px; border-radius:30px; background:var(--card); color:var(--card-ink)}
+.karte .innen{padding:120px 28px 0}
+.klebt{position:sticky; top:0; width:50%; height:50vh; height:50svh; margin-bottom:50vh; margin-bottom:50svh} .klebt>div{width:200%; height:200%; border-radius:30px; background:var(--card); overflow:hidden}
+</style>
+</head>
+<body>
+<div class="txt"><p class="testmarke">Test G – leere Seite, kleine klebende Fläche</p><h1>Weiter nach unten scrollen, bis die Karte den ganzen Bildschirm füllt.</h1><p>Dann oben und unten auf Balken achten.</p></div>
+<div class="karte" id="karte"><div class="klebt"><div><div style="padding:120px 28px 0"><p class="testmarke">Test G – leere Seite, kleine klebende Fläche</p><h1>Deine Briefe liegen in deiner eigenen iCloud.</h1></div></div></div></div>
+<div class="txt"><p>Ende der Testseite.</p></div>
+<script>addEventListener("load",()=>{const q=new URLSearchParams(location.search),a=q.get("an"),y=+(q.get("y")||0);if(a)setTimeout(()=>scrollTo(0,document.getElementById(a).getBoundingClientRect().top+scrollY+y),500)});</script>
+</body>
+</html>
