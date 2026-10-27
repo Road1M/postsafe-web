@@ -10,7 +10,7 @@
 <link rel="icon" href="favicon.png?v=3" type="image/png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=3">
 <link rel="canonical" href="https://postsafe.eu/web.html">
-<link rel="stylesheet" href="seite.css?v=26">
+<link rel="stylesheet" href="seite.css?v=30">
 <style>
 .dev-fixed{position:fixed; z-index:30; left:0; top:0; pointer-events:none; will-change:transform}
 .hero{min-height:100svh; display:flex; align-items:center}
@@ -183,10 +183,8 @@
 import { mountDevice } from "./js/screens.js?v=27";
 import { mountBrowser } from "./js/browser.js?v=25";
 import { smoothScroll } from "./js/smooth.js?v=24";
-import { footBase } from "./js/fuss.js?v=24";
+import { footBase } from "./js/fuss.js?v=25";
 footBase();
-import { edges } from "./js/kanten.js?v=24";
-edges();
 /* Die Vorschau scrollt selbst, solange sie in Gestenrichtung noch Platz hat */
 const insideLiveBrowser = e => {
   const v = e.target.closest?.(".browser__view.live");

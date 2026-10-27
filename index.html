@@ -21,7 +21,7 @@
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="PostSafe — Deine Post kennt ihren Platz.">
 <meta name="twitter:card" content="summary_large_image">
-<link rel="stylesheet" href="seite.css?v=26">
+<link rel="stylesheet" href="seite.css?v=30">
 <style>
 /* Hero */
 .hero{min-height:100svh; display:flex; align-items:center; position:relative}
@@ -99,7 +99,7 @@
 /* Kapitel 4: Vertrauen */
 #trust{background:var(--inv-bg); color:var(--inv-ink); border-radius:44px; margin-inline:clamp(8px,1.4vw,20px)}
 #trust .eyebrow{color:var(--inv-2)}
-#trust .pin{background:var(--inv-bg); border-radius:inherit}   /* die Karte selbst, nicht Papier: Safari färbt seine Leisten nach dem angehefteten Kapitel */
+#trust .pin{border-radius:inherit}
 .tx p.reveal{font-size:clamp(30px,3.4vw,52px); font-weight:600; letter-spacing:-.035em; line-height:1.08; margin:0; max-width:17ch; color:inherit; text-wrap:balance}
 .reveal .wd{color:var(--inv-dim); transition:color .25s}
 .reveal .wd.lit{color:var(--inv-ink)}
@@ -351,10 +351,8 @@ import { mountDevice } from "./js/screens.js?v=27";
 import { LETTERS, drawLetter, drawBack, drawEnvelope, drawEnvelopeBack } from "./js/letters.js?v=24";
 import { mountBrowser } from "./js/browser.js?v=25";
 import { smoothScroll } from "./js/smooth.js?v=24";
-import { footBase } from "./js/fuss.js?v=24";
+import { footBase } from "./js/fuss.js?v=25";
 footBase();
-import { edges } from "./js/kanten.js?v=24";
-edges();
 /* Die Vorschau scrollt selbst, solange sie in Gestenrichtung noch Platz hat */
 const insideLiveBrowser = e => {
   const v = e.target.closest?.(".browser__view.live");

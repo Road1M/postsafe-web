@@ -70,7 +70,9 @@ a{color:inherit}
 /* Papierfarben, obwohl es nicht zu sehen ist (main trägt dieselbe Fläche): Safari färbt seit iOS 26
    seine Leisten oben und unten nach klebenden Elementen am Bildschirmrand. Ein durchsichtiges
    angeheftetes Kapitel ergab dort dunkle Balken, auch auf der hellen Seite. */
-.pin{position:sticky; top:0; height:100vh; height:100svh; overflow:hidden; background:var(--paper)}
+/* Ohne eigene Farbe: Safari (iOS 26) macht aus einem klebenden Element mit Farbe am oberen
+   Rand einen deckenden Balken. Durchsichtig läuft die Seite weich unter die Uhrzeit. */
+.pin{position:sticky; top:0; height:100vh; height:100svh; overflow:hidden}
 .pin .wrap{height:100%; display:grid; grid-template-columns:1fr 1fr; align-items:center}
 .col-r{grid-column:2}
 .tx{max-width:520px}
@@ -84,24 +86,24 @@ a{color:inherit}
 .store span{display:block; font-size:17px; font-weight:600; line-height:1.15; letter-spacing:-.01em}
 
 /* Fuß — wie auf der echten Seite: Die Seite ist eine Karte mit runder Unterkante,
-   der dunkle Fuß klebt dahinter und wird am Ende freigelegt. Das klebende Element
-   ist absichtlich nur 60 % breit (Safari färbt seine Leiste sonst dunkel ein). */
+   der dunkle Fuß klebt dahinter und wird am Ende freigelegt. Kleben darf er erst, wenn
+   das Ende der Karte im Bild ist (html.fuss, js/fuss.js): Safari (iOS 26) macht aus
+   jedem klebenden Element am unteren Rand einen deckenden Balken in seiner Farbe —
+   auch hinter der Karte, auch nur 60 % breit. Vorher liegt er an seinem Platz unter
+   der Karte und damit unsichtbar; der Wechsel fällt nicht auf. */
 :root{--rundung:24px}
 @media (min-width:768px){:root{--rundung:32px}}
 main{position:relative; z-index:1; background:var(--paper); border-end-start-radius:var(--rundung); border-end-end-radius:var(--rundung)}
-.site-foot{position:sticky; bottom:0; z-index:0; width:60%; margin:calc(-1 * var(--rundung)) auto 0; color:#F4F4F1; --ink:#F4F4F1; --ink-2:#A5A5A1; --ink-3:#8B8B87; --line:#2A2A28}
+.site-foot{position:relative; bottom:0; z-index:0; width:60%; margin:calc(-1 * var(--rundung)) auto 0; color:#F4F4F1; --ink:#F4F4F1; --ink-2:#A5A5A1; --ink-3:#8B8B87; --line:#2A2A28}
 .site-foot__flaeche{width:166.6667%; margin-inline:-33.3333%; background:var(--foot); box-shadow:0 3px 0 var(--foot)}
 :root{--foot:#0D0D0F}
 @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){--foot:#181817} }
 :root[data-theme="dark"]{--foot:#181817}
-/* Am Seitenende liegt hinter Safaris Leiste unten kein Inhalt mehr; Safari füllt die Fläche mit der
-   Grundfarbe der Seite — gemessen: der von body, html allein reicht nicht. Ist der dunkle Fuß im
-   Bild, bekommen beide seine Farbe (js/fuss.js). */
-html.fuss, html.fuss body{background:var(--foot)}
-/* Farbvorgabe für Safaris Leisten oben und unten (js/kanten.js): fest, volle Breite, am Rand,
-   hinter der ganzen Seite und deshalb nirgends zu sehen */
-.kante{position:fixed; left:0; right:0; height:4px; z-index:-1; pointer-events:none; background:var(--paper)}
-.kante--oben{top:0} .kante--unten{bottom:0}
+/* Ist das Ende der Karte im Bild, klebt der Fuß, und die Seite federt unten nicht nach: Beim
+   Nachfedern käme unter dem Fuß die helle Grundfarbe der Seite hervor. Die Grundfarbe selbst
+   dunkel zu schalten ginge nicht — nach ihr färbt Safari auch den weichen Übergang oben. */
+html.fuss{overscroll-behavior-y:none}
+html.fuss .site-foot{position:sticky}
 .site-foot__in{max-width:1240px; min-height:36vh; min-height:36svh; margin:0 auto; padding:calc(64px + var(--rundung)) var(--gut) calc(48px + env(safe-area-inset-bottom,0px)); display:grid; gap:34px; align-content:space-between}
 .site-foot__brand{display:flex; align-items:center; gap:10px; font-weight:700; font-size:17px; letter-spacing:-.035em; margin:0}
 .site-foot__note{color:var(--ink-2); font-size:15.5px; margin:12px 0 0; max-width:34ch}
