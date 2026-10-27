@@ -21,7 +21,7 @@
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="PostSafe — Deine Post kennt ihren Platz.">
 <meta name="twitter:card" content="summary_large_image">
-<link rel="stylesheet" href="seite.css?v=31">
+<link rel="stylesheet" href="seite.css?v=32">
 <style>
 /* Hero */
 .hero{min-height:100svh; display:flex; align-items:center; position:relative}
@@ -67,7 +67,7 @@
 .tag{position:fixed; z-index:32; left:0; top:0; display:flex; align-items:center; gap:10px; padding:12px 22px 12px 16px; border-radius:999px; background:var(--card); color:var(--ink); font-size:clamp(17px,1.35vw,21px); letter-spacing:-.01em; white-space:nowrap; pointer-events:none; transform-origin:center; will-change:transform, opacity; box-shadow:0 1px 2px rgba(0,0,0,.08), 0 10px 26px rgba(0,0,0,.16)}
 .tag i{width:.7em; height:.7em; border-radius:50%; background:var(--c)}
 .tag span{color:var(--ink-2)}
-.scanframe{position:fixed; z-index:31; left:0; top:0; width:100vw; height:100vh; pointer-events:none; overflow:visible}
+.scanframe{position:fixed; z-index:31; left:0; top:0; width:100vw; height:130vh; pointer-events:none; overflow:visible}   /* höher als das Fenster, sonst nimmt Safari am iPhone ihn als Leiste (siehe .stage-halter) */
 /* Der Scan ist für jeden Brief gleich: neutral, in der Farbe der Schrift. Welcher
    Ordner es wird, zeigt erst das Schildchen — wenn der Brief gelesen ist. */
 .scanframe .br{fill:none; stroke:var(--ink); stroke-width:5; stroke-linecap:round; stroke-linejoin:round}
@@ -99,7 +99,7 @@
 /* Kapitel 4: Vertrauen */
 #trust{background:var(--inv-bg); color:var(--inv-ink); border-radius:44px; margin-inline:clamp(8px,1.4vw,20px)}
 #trust .eyebrow{color:var(--inv-2)}
-#trust .pin{background:var(--inv-bg); border-radius:inherit}
+#trust .pin{border-radius:inherit}
 .tx p.reveal{font-size:clamp(30px,3.4vw,52px); font-weight:600; letter-spacing:-.035em; line-height:1.08; margin:0; max-width:17ch; color:inherit; text-wrap:balance}
 .reveal .wd{color:var(--inv-dim); transition:color .25s}
 .reveal .wd.lit{color:var(--inv-ink)}
@@ -175,7 +175,7 @@
   .tx p.reveal{font-size:clamp(26px,7vw,40px)}
   .vault{margin-top:18px}
   .vault span{font-size:12px; padding:7px 12px 7px 10px}
-  #trust{border-radius:30px}
+  #trust{border-radius:30px; margin-inline:0}   /* am Handy bis an den Rand, sonst stehen links und rechts dunkle Streifen */
   .webs__row{flex-direction:column; align-items:stretch}
   .webs__row .device{display:none}
   .fan img{margin-right:-240px}
@@ -337,7 +337,7 @@
 
 <div class="dock" id="dock"><a class="dock__app" href="https://apps.apple.com/de/app/postsafe-briefe-scannen/id6798171772"><img src="img/icon.png?v=3" alt=""><p><b>PostSafe</b><small>Im App Store · für iPhone</small></p></a><a class="chip" href="web.html">PostSafe Web</a></div>
 
-<canvas class="stage" id="stage" aria-hidden="true"></canvas>
+<div class="stage-halter"><canvas class="stage" id="stage" aria-hidden="true"></canvas></div>
 <div class="dev-fixed" id="device" aria-label="PostSafe auf dem iPhone" role="img"></div>
 <div class="tag" data-tag aria-hidden="true" style="opacity:0"></div>
 <svg class="scanframe" aria-hidden="true"><defs><linearGradient id="band" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0D0D0F" stop-opacity="0"/><stop offset="1" stop-color="#0D0D0F" stop-opacity=".2"/></linearGradient><filter id="glow" x="-10%" y="-400%" width="120%" height="900%"><feGaussianBlur stdDeviation="3"/></filter></defs><g data-frame></g></svg>
@@ -439,6 +439,7 @@ function measure() {
   devEl.style.width = dev.w + "px";
   st.resize();
   measureScan();
+  measureFade();
 }
 /* Der Scan-Bereich richtet sich nach dem freien Platz zwischen Überschrift und
    Ordnerkarten — mit Luft nach oben und unten. So liegt auf einem kleineren
@@ -505,7 +506,9 @@ function chapters(y) {
 /* Wo das iPhone steht. Gekippt, gedreht oder verändert wird es nie (Apples Regeln
    für Produktbilder) — es lebt davon, dass es sich durch den Raum bewegt: es fährt
    beim Laden herein, wechselt für die Fristen die Seite, gleitet beim Scrollen
-   leicht nach und geht am Ende mit der Seite nach oben.                      */
+   leicht nach und geht am Ende mit der Seite nach oben.
+   Am Handy überquert es nie die Fensterkanten (siehe edgeFade): Statt herein- und
+   hinauszufahren, blendet es dort ein und aus.                               */
 const T0 = performance.now();
 function placeDevice(y, ps, now) {
   const e = t => t < .5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
@@ -513,21 +516,47 @@ function placeDevice(y, ps, now) {
   const toL = clamp((y - (secs.frist.top - vh)) / vh, 0, 1), toR = clamp((y - (secs.suche.top - vh)) / vh, 0, 1);
   const side = e(toL) - e(toR);
   let x = lerp(dev.xr, dev.xl, side);
-  /* Nachgleiten: in jedem Kapitel wandert es ein wenig gegen die Leserichtung */
-  let dy = 0;
-  for (const id of ["story", "frist", "suche", "trust"]) { const s0 = secs[id]; if (y >= s0.top - vh && y <= s0.top + s0.h) dy = lerp(28, -28, clamp((y - s0.top + vh) / (s0.h + vh), 0, 1)); }
+  /* Nachgleiten: in jedem Kapitel wandert es ein wenig gegen die Leserichtung — am Handy nicht, dort reicht der Platz unten nicht */
+  let dy = 0, op = 1;
+  if (!mobile) for (const id of ["story", "frist", "suche", "trust"]) { const s0 = secs[id]; if (y >= s0.top - vh && y <= s0.top + s0.h) dy = lerp(28, -28, clamp((y - s0.top + vh) / (s0.h + vh), 0, 1)); }
   dy += lerp(0, -18, clamp(y / vh, 0, 1)) * (y < secs.story.top ? 1 : 0);
   /* Auftritt beim Laden */
   const intro = reduce ? 1 : clamp((now - T0 - 250) / 1300, 0, 1), ie = 1 - Math.pow(1 - intro, 4);
-  dy += (1 - ie) * vh * .35;
+  dy += (1 - ie) * (mobile ? 16 : vh * .35); op *= ie;
   if (mobile && y > secs.story.top - vh) {                     /* auf dem Handy macht es im Stapel-Kapitel Platz */
     const inS = clamp((y - (secs.story.top - vh * .6)) / (vh * .6), 0, 1), outS = clamp((ps - .67) / .1, 0, 1);
-    dy += (1 - Math.min(1, outS + (1 - inS))) * (vh - dev.y + 20);
+    const away = 1 - Math.min(1, outS + (1 - inS));
+    dy += away * 16; op *= 1 - away;
   }
   const leave = secs.trust.top + secs.trust.h - vh;
-  if (y > leave) dy -= (y - leave);
-  devEl.style.opacity = ie.toFixed(3);
+  if (y > leave) { dy -= (y - leave); if (mobile) op *= 1 - clamp((y - leave) / (vh * .35), 0, 1); }
+  devEl.style.opacity = op.toFixed(3);
+  devEl.style.visibility = op < .005 ? "hidden" : "";
   devEl.style.transform = `translate3d(${x.toFixed(1)}px, ${(dev.y + dy).toFixed(1)}px, 0)`;
+}
+
+/* Safari am iPhone (iOS 26/27) schneidet alles Feste und Klebende scharf an den Fensterkanten ab —
+   unter der Statusleiste und über der Leiste unten —, während die übrige Seite weich unter den
+   Leisten weiterläuft. Auf dem dunklen Papier sah das aus wie zwei Balken. Darum blenden die Texte
+   der angehefteten Kapitel kurz vor den Kanten selbst aus: Was die Kante erreicht, ist schon
+   unsichtbar. Gemessen auf Josefs iPhone (iOS 27.0), 27.10.2026. */
+const KANTE = 40;
+let blenden = [];
+function measureFade() {
+  blenden = [];
+  for (const pin of $$(".pin")) {
+    const p = pin.getBoundingClientRect().top;
+    for (const el of pin.querySelectorAll(".tx > *, .cap > *, .sort > .row")) { const r = el.getBoundingClientRect(); blenden.push({ el, pin, off: r.top - p, h: r.height, o: -1 }); }
+  }
+}
+function edgeFade() {
+  const tops = new Map();
+  for (const b of blenden) {
+    let p = tops.get(b.pin);
+    if (p === undefined) tops.set(b.pin, p = b.pin.getBoundingClientRect().top);
+    const top = p + b.off, o = mobile ? Math.min(clamp(top / KANTE, 0, 1), clamp((vh - top - b.h) / KANTE, 0, 1)) : 1;
+    if (Math.abs(o - b.o) > .005) { b.o = o; b.el.style.opacity = o > .995 ? "" : o.toFixed(3); }
+  }
 }
 
 /* ---------------------------------------------------------- Briefe ---- */
@@ -659,7 +688,9 @@ function drawTag(tg) {
 
 /* ---------------------------------------------------------- Lauf ------ */
 function tick_(now) {
+  if (innerHeight !== vh || innerWidth !== vw) measure();   /* Safaris Leiste unten wird klein oder groß — nicht immer mit „resize“ */
   const y = smoothY(), ps = chapters(y);
+  edgeFade();
   placeDevice(y, ps, now);
   lettersAt(y, ps, now);
   screen.draw(now); webDev.draw(now);

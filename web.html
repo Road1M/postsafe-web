@@ -10,7 +10,7 @@
 <link rel="icon" href="favicon.png?v=3" type="image/png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=3">
 <link rel="canonical" href="https://postsafe.eu/web.html">
-<link rel="stylesheet" href="seite.css?v=31">
+<link rel="stylesheet" href="seite.css?v=32">
 <style>
 .dev-fixed{position:fixed; z-index:30; left:0; top:0; pointer-events:none; will-change:transform}
 .hero{min-height:100svh; display:flex; align-items:center}
@@ -240,10 +240,34 @@ function measure() {
   if (mobile) { dev.h = vh * .46; dev.w = dev.h * 1350 / 2760; dev.x = (vw - dev.w) / 2; dev.y = vh - dev.h - 18; }
   else { dev.h = Math.min(vh * .82, 780); dev.w = dev.h * 1350 / 2760; dev.x = Math.min(vw * .72, vw - dev.w * .5 - 60) - dev.w / 2; dev.y = (vh - dev.h) / 2 + 12; }
   devEl.style.width = dev.w + "px";
+  measureFade();
+}
+/* Safari am iPhone schneidet Festes und Klebendes scharf an den Fensterkanten ab, die übrige Seite
+   läuft weich unter den Leisten weiter (siehe index.html, edgeFade). Darum blenden die angehefteten
+   Schritte vor den Kanten aus, und das iPhone blendet am Handy ein und aus, statt über die Kanten zu fahren. */
+const KANTE = 40;
+let blenden = [];
+function measureFade() {
+  blenden = [];
+  for (const pin of $$(".pin")) {
+    const p = pin.getBoundingClientRect().top;
+    for (const el of pin.querySelectorAll(".tx > *")) { const r = el.getBoundingClientRect(); blenden.push({ el, pin, off: r.top - p, h: r.height, o: -1 }); }
+  }
+}
+function edgeFade() {
+  const tops = new Map();
+  for (const b of blenden) {
+    let p = tops.get(b.pin);
+    if (p === undefined) tops.set(b.pin, p = b.pin.getBoundingClientRect().top);
+    const top = p + b.off, o = mobile ? Math.min(clamp(top / KANTE, 0, 1), clamp((vh - top - b.h) / KANTE, 0, 1)) : 1;
+    if (Math.abs(o - b.o) > .005) { b.o = o; b.el.style.opacity = o > .995 ? "" : o.toFixed(3); }
+  }
 }
 let lastStep = -1;
 const steps = $$("[data-step]");
 function tick(now) {
+  if (innerHeight !== vh || innerWidth !== vw) measure();   /* Safaris Leiste unten wird klein oder groß — nicht immer mit „resize“ */
+  edgeFade();
   const y = smoothY(), ps = clamp((y - secs.schritte.top) / secs.schritte.range, 0, 1);
   const inSteps = y > secs.schritte.top - vh * .5;
   const step = !inSteps ? -1 : ps < .33 ? 0 : ps < .66 ? 1 : 2;
@@ -254,14 +278,17 @@ function tick(now) {
   else if (step === 1 || (!inSteps && focused)) ring = { ...RING.code, k: pulse };
   else if (step === 2) { a = "anfrage"; ring = { ...RING.step3, k: pulse }; }
   screen.set({ a, ring }); screen.draw(now);
-  /* Auf dem Handy liegt das iPhone erst bei den Schritten im Bild; am Ende geht es mit der Seite nach oben */
-  let dy = mobile ? (1 - clamp((y - (secs.schritte.top - vh * .6)) / (vh * .6), 0, 1)) * (vh - dev.y + 20) : 0;
-  /* Nachgleiten beim Scrollen und Auftritt beim Laden — bewegt wird das Gerät, verändert nie */
-  dy += lerp(24, -24, clamp(y / (secs.schritte.top + secs.schritte.h), 0, 1));
+  /* Auf dem Handy liegt das iPhone erst bei den Schritten im Bild (es blendet dort ein); am Ende geht es mit der Seite nach oben */
+  const away = mobile ? 1 - clamp((y - (secs.schritte.top - vh * .6)) / (vh * .6), 0, 1) : 0;
+  let dy = away * 16, op = 1 - away;
+  /* Nachgleiten beim Scrollen und Auftritt beim Laden — bewegt wird das Gerät, verändert nie. Am Handy kein Nachgleiten: unten fehlt der Platz */
+  if (!mobile) dy += lerp(24, -24, clamp(y / (secs.schritte.top + secs.schritte.h), 0, 1));
   const intro = reduce ? 1 : clamp((now - T0 - 250) / 1300, 0, 1), ie = 1 - Math.pow(1 - intro, 4);
-  dy += (1 - ie) * vh * .35;
-  const leave = secs.schritte.top + secs.schritte.h - vh; if (y > leave) dy -= (y - leave);
-  devEl.style.opacity = ie.toFixed(3);
+  dy += (1 - ie) * (mobile ? 16 : vh * .35); op *= ie;
+  const leave = secs.schritte.top + secs.schritte.h - vh;
+  if (y > leave) { dy -= (y - leave); if (mobile) op *= 1 - clamp((y - leave) / (vh * .35), 0, 1); }
+  devEl.style.opacity = op.toFixed(3);
+  devEl.style.visibility = op < .005 ? "hidden" : "";
   devEl.style.transform = `translate3d(${dev.x.toFixed(1)}px, ${(dev.y + dy).toFixed(1)}px, 0)`;
 }
 function frame(now) { requestAnimationFrame(frame); tick(now); }   /* ein Fehler in einem Bild hält die Seite nicht an */
