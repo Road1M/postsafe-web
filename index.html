@@ -42,6 +42,9 @@
 
 /* Das iPhone: fest auf der rechten Seite, Apples Bild unverändert */
 .dev-fixed{position:fixed; z-index:30; left:0; top:0; pointer-events:none; will-change:transform}
+/* Am Handy: das iPhone der Startansicht. Es liegt in der Seite selbst (nicht fest), scrollt mit ihr und läuft
+   weich unter Safaris Leisten; über den Briefen wie das feste iPhone. Am Rechner gibt es nur das feste. */
+.dev-start{position:absolute; z-index:30; left:0; top:0; pointer-events:none; display:none}
 
 /* Kapitel 1: vom Stapel in den Ordner */
 #story .caps{position:relative; height:100%}
@@ -341,6 +344,7 @@
 
 <div class="stage-halter"><canvas class="stage" id="stage" aria-hidden="true"></canvas></div>
 <div class="dev-fixed" id="device" aria-label="PostSafe auf dem iPhone" role="img"></div>
+<div class="dev-start" id="deviceStart" aria-hidden="true"></div>
 <div class="tag" data-tag aria-hidden="true" style="opacity:0"></div>
 <svg class="scanframe" aria-hidden="true"><defs><linearGradient id="band" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0D0D0F" stop-opacity="0"/><stop offset="1" stop-color="#0D0D0F" stop-opacity=".2"/></linearGradient><filter id="glow" x="-10%" y="-400%" width="120%" height="900%"><feGaussianBlur stdDeviation="3"/></filter></defs><g data-frame></g></svg>
 
@@ -379,6 +383,7 @@ $("#theme").addEventListener("click", () => { const n = isDark() ? "light" : "da
 
 /* ---------------------------------------------------------- iPhone ---- */
 const devEl = $("#device"), screen = mountDevice(devEl);
+const startEl = $("#deviceStart"), startScreen = mountDevice(startEl); startScreen.setTheme("dunkel"); startScreen.set({ a: "scan" });
 screen.setTheme("dunkel");   /* das iPhone zeigt die App immer dunkel (Josef, 2026-10-20) */
 screen.preload(["scan", "archiv", "brief", "suche0", "suche1", "einst"]);
 const webDev = mountDevice($("[data-webdevice]")); webDev.setTheme("dunkel"); webDev.set({ a: "web" });
@@ -444,14 +449,24 @@ function measure() {
     const el = document.getElementById(id), top = el.getBoundingClientRect().top + scrollY;
     secs[id] = { top, h: el.offsetHeight, range: Math.max(1, el.offsetHeight - vh) };
   }
-  /* Das iPhone: so hoch wie es der Platz erlaubt — auf dem Handy unten, ganz sichtbar */
-  if (mobile) { dev.h = Math.min(vh * .42, vw * 1.02 * 2760 / 1350 * .5); dev.w = dev.h * 1350 / 2760; dev.xr = dev.xl = (vw - dev.w) / 2; dev.y = vh - dev.h - 18; }
-  else { dev.h = Math.min(vh * .82, 780); dev.w = dev.h * 1350 / 2760; dev.xr = Math.min(vw * .72, vw - dev.w * .5 - 60) - dev.w / 2; dev.xl = Math.max(vw * .27, dev.w * .5 + 60) - dev.w / 2; dev.y = (vh - dev.h) / 2 + 12; }
+  measureFade();
+  /* Das iPhone: so hoch wie es der Platz erlaubt — auf dem Handy unten, ganz sichtbar, und nie höher, als
+     es die Texte der Kapitel über ihm erlauben (sie stehen über ihm, nie dahinter; siehe edgeFade) */
+  if (mobile) {
+    /* Die Kapitelschrift steht über dem iPhone (siehe edgeFade). Bleibt darunter weniger als ein Drittel
+       des Fensters (iPhone SE), zeigen die Kapitel kein iPhone — winzig wäre nichts darauf zu erkennen. */
+    const texts = blenden.filter(b => !b.el.closest(".sort")).reduce((m, b) => Math.max(m, b.off + b.h), 0);
+    const full = Math.min(vh * .42, vw * 1.02 * 2760 / 1350 * .5), fits = vh - 18 - texts - DEV_KANTE - 4;
+    dev.inChapters = fits >= vh * .3;
+    dev.h = dev.inChapters ? Math.min(full, fits) : full;
+    dev.w = dev.h * 1350 / 2760; dev.xr = dev.xl = (vw - dev.w) / 2; dev.y = vh - dev.h - 18;
+    /* Das iPhone der Startansicht: so groß wie in den Kapiteln, unter dem App-Store-Knopf, möglichst unten im ersten Bild */
+    const knopf = $(".badges").getBoundingClientRect().bottom + scrollY;
+    Object.assign(startEl.style, { display: "block", width: dev.w + "px", left: dev.xr + "px", top: Math.max(knopf + 14, dev.y) + "px" });
+  } else { startEl.style.display = "none"; dev.h = Math.min(vh * .82, 780); dev.w = dev.h * 1350 / 2760; dev.xr = Math.min(vw * .72, vw - dev.w * .5 - 60) - dev.w / 2; dev.xl = Math.max(vw * .27, dev.w * .5 + 60) - dev.w / 2; dev.y = (vh - dev.h) / 2 + 12; }
   devEl.style.width = dev.w + "px";
   st.resize();
   measureScan();
-  measureFade();
-  texte = $$("main h1, main h2, main .lede, main .badges, main .cap > p, main .tx > p, main .big, main .q, main .vault, main .go, main .webs__hint");
 }
 /* Der Scan-Bereich richtet sich nach dem freien Platz zwischen Überschrift und
    Ordnerkarten — mit Luft nach oben und unten. So liegt auf einem kleineren
@@ -520,8 +535,12 @@ function chapters(y) {
    für Produktbilder) — es lebt davon, dass es sich durch den Raum bewegt: es fährt
    beim Laden herein, wechselt für die Fristen die Seite, gleitet beim Scrollen
    leicht nach und geht am Ende mit der Seite nach oben.
-   Am Handy überquert es nie die Fensterkanten (siehe edgeFade): Statt herein- und
-   hinauszufahren, blendet es dort ein und aus.                               */
+   Am Handy geht es einmal und kommt einmal (Josef, 28.10.2026 — vorher war es beim
+   ersten Wischen weg, kurz wieder da und wieder weg): Es gehört zur Startansicht und
+   fährt mit ihr nach oben, blendet vor der Statusleiste aus (Safari schnitte es dort
+   scharf ab), fehlt, während Briefe gelesen und einsortiert werden, und kommt mit dem
+   Ergebnis — den Ordnern — zurück. Ab da bleibt es stehen; die Schrift der Kapitel
+   blendet aus, solange sie hinter ihm liegt (edgeFade), nicht das iPhone.     */
 const T0 = performance.now();
 function placeDevice(y, ps, now) {
   const e = t => t < .5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
@@ -532,52 +551,34 @@ function placeDevice(y, ps, now) {
   /* Nachgleiten: in jedem Kapitel wandert es ein wenig gegen die Leserichtung — am Handy nicht, dort reicht der Platz unten nicht */
   let dy = 0, op = 1;
   if (!mobile) for (const id of ["story", "frist", "suche", "trust"]) { const s0 = secs[id]; if (y >= s0.top - vh && y <= s0.top + s0.h) dy = lerp(28, -28, clamp((y - s0.top + vh) / (s0.h + vh), 0, 1)); }
-  dy += lerp(0, -18, clamp(y / vh, 0, 1)) * (y < secs.story.top ? 1 : 0);
+  if (!mobile) dy += lerp(0, -18, clamp(y / vh, 0, 1)) * (y < secs.story.top ? 1 : 0);
   /* Auftritt beim Laden */
   const intro = reduce ? 1 : clamp((now - T0 - 250) / 1300, 0, 1), ie = 1 - Math.pow(1 - intro, 4);
   dy += (1 - ie) * (mobile ? 16 : vh * .35); op *= ie;
-  if (mobile && y > secs.story.top - vh) {                     /* auf dem Handy macht es im Stapel-Kapitel Platz */
-    const inS = clamp((y - (secs.story.top - vh * .6)) / (vh * .6), 0, 1), outS = clamp((ps - .67) / .1, 0, 1);
-    const away = 1 - Math.min(1, outS + (1 - inS));
-    dy += away * 16; op *= 1 - away;
+  if (mobile) {   /* in der Startansicht zeigt deviceStart das iPhone; dieses hier kommt mit den Ordnern */
+    const back = y < secs.story.top || !dev.inChapters ? 0 : clamp((ps - .67) / .1, 0, 1);
+    dy += (1 - back) * 16; op *= back;
+    startEl.style.opacity = ie.toFixed(3);
+    startEl.style.transform = `translate3d(0, ${((1 - ie) * 16).toFixed(1)}px, 0)`;
   }
   const leave = secs.trust.top + secs.trust.h - vh;
   if (y > leave) { dy -= (y - leave); if (mobile) op *= 1 - clamp((y - leave) / (vh * .35), 0, 1); }
-  if (mobile && op > .005) op *= clearOfText(x, dev.y + dy);
+  devTop = dev.y + dy; devOp = op;
   devEl.style.opacity = op.toFixed(3);
   devEl.style.visibility = op < .005 ? "hidden" : "";
   devEl.style.transform = `translate3d(${x.toFixed(1)}px, ${(dev.y + dy).toFixed(1)}px, 0)`;
-}
-
-/* Am Handy steht das iPhone fest unten, und die Seite läuft darunter durch. Kommt eine Überschrift oder ein
-   Text heran, blendet es aus: Schrift fährt nie über den Bildschirm des iPhones (Josef, 27.10.2026). Es
-   beginnt, sobald Schrift das Gerät berührt, und ist nach NAEHE Punkten fertig — das ist noch Rahmen und
-   Statusleiste. Vorher nicht: In der Startansicht liegt der App-Store-Knopf nur 2 Punkte über dem iPhone. */
-const NAEHE = 16;
-let texte = [];
-function clearOfText(x, top) {
-  const bottom = top + dev.h, left = x, right = x + dev.w;
-  let f = 1;
-  for (const el of texte) {
-    const r = el.getBoundingClientRect();
-    if (!r.height || r.right <= left || r.left >= right) continue;
-    const gap = Math.max(r.top - bottom, top - r.bottom);
-    if (gap >= 0) continue;
-    const cap = el.closest(".cap");
-    if (cap && !cap.classList.contains("on")) continue;
-    if (parseFloat(el.style.opacity || 1) < .05) continue;
-    f = Math.min(f, clamp(1 + gap / NAEHE, 0, 1));
-  }
-  return f;
 }
 
 /* Safari am iPhone (iOS 26/27) schneidet alles Feste und Klebende scharf an den Fensterkanten ab —
    unter der Statusleiste und über der Leiste unten —, während die übrige Seite weich unter den
    Leisten weiterläuft. Auf dem dunklen Papier sah das aus wie zwei Balken. Darum blenden die Texte
    der angehefteten Kapitel kurz vor den Kanten selbst aus: Was die Kante erreicht, ist schon
-   unsichtbar. Gemessen auf Josefs iPhone (iOS 27.0), 27.10.2026. */
-const KANTE = 40;
-let blenden = [];
+   unsichtbar. Gemessen auf Josefs iPhone (iOS 27.0), 27.10.2026.
+   Am Handy gilt die Oberkante des iPhones als zweite untere Kante: Was von unten heraufkommt, ist
+   unsichtbar, solange es hinter dem iPhone liegt, und erscheint erst darüber — Schrift fährt nie über
+   den Bildschirm des iPhones (Josef, 27.10.2026), und das iPhone muss dafür nicht weg (28.10.2026). */
+const KANTE = 40, DEV_KANTE = 24;
+let blenden = [], devTop = 1e9, devOp = 0;
 function measureFade() {
   blenden = [];
   for (const pin of $$(".pin")) {
@@ -590,7 +591,9 @@ function edgeFade() {
   for (const b of blenden) {
     let p = tops.get(b.pin);
     if (p === undefined) tops.set(b.pin, p = b.pin.getBoundingClientRect().top);
-    const top = p + b.off, o = mobile ? Math.min(clamp(top / KANTE, 0, 1), clamp((innerHeight - top - b.h) / KANTE, 0, 1)) : 1;   /* unten zählt die Kante, wie sie gerade ist */
+    const top = p + b.off;
+    const phone = 1 - devOp * (1 - clamp((devTop - top - b.h) / DEV_KANTE, 0, 1));   /* hinter dem iPhone */
+    const o = mobile ? Math.min(clamp(top / KANTE, 0, 1), clamp((innerHeight - top - b.h) / KANTE, 0, 1), phone) : 1;   /* unten zählt die Kante, wie sie gerade ist */
     if (Math.abs(o - b.o) > .005) { b.o = o; b.el.style.opacity = o > .995 ? "" : o.toFixed(3); }
   }
 }
@@ -726,10 +729,10 @@ function drawTag(tg) {
 function tick_(now) {
   if (innerWidth !== vw || stableH() !== vh) measure();   /* gedreht oder Fenster verändert — Safaris Leiste allein ändert nichts */
   const y = smoothY(), ps = chapters(y);
-  edgeFade();
   placeDevice(y, ps, now);
+  edgeFade();
   lettersAt(y, ps, now);
-  screen.draw(now); webDev.draw(now);
+  screen.draw(now); webDev.draw(now); if (mobile) startScreen.draw(now);
   st.render();
 }
 function frame(now) { requestAnimationFrame(frame); tick_(now); }   /* ein Fehler in einem Bild hält die Seite nicht an */
