@@ -69,7 +69,7 @@ a{color:inherit}
 .flat__l{position:absolute; left:0; top:0; transform-origin:0 0; background:#fff; box-shadow:0 1px 2px rgba(0,0,0,.08), 0 8px 24px rgba(0,0,0,.10); will-change:transform}
 
 /* Angeheftete Kapitel */
-.chap{position:relative}
+.chap{position:relative; height:var(--len)}   /* die Länge steht am Kapitel (style="--len:…") */
 /* Safari am iPhone (iOS 26/27) malt oben und unten deckende Balken statt des weichen Übergangs,
    sobald dort ein klebendes oder festes Element liegt, das ungefähr so groß ist wie das Fenster —
    egal in welcher Farbe. Darum klebt nur ein Viertel des Fensters (halb so breit, halb so hoch,
@@ -155,5 +155,8 @@ html.fuss .site-foot{position:sticky}
   .col-r{grid-column:1}
   .tx h2{font-size:clamp(32px,8.4vw,52px)}
   .tx p{font-size:17px; margin-top:12px}
+  /* Am Handy die Kapitel anderthalbmal so lang: dasselbe Wischen bewegt die Geschichte ruhiger
+     (Josef, 28.10.2026). Gescrollt wird weiter vom Browser selbst — gleichmäßig, mit seinem Schwung. */
+  .chap{height:calc(var(--len) * 1.5)}
 }
 @media (prefers-reduced-motion: reduce){ *{scroll-behavior:auto} }
