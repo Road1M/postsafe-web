@@ -73,8 +73,9 @@ function schedule(letters) {
     const t = { tc, tw: tc + .2 };
     t.n1 = t.tw + 1.1 + .45; t.liveOut = t.n1 + .3;
     t.n2 = t.n1 + .5; t.n3 = f.remind ? t.n2 + .65 : null;
-    t.tf = f.remind ? t.n3 + 1.3 : t.n2 + 1.1; t.te = t.tf + .52; t.filed = t.te + .04; t.gone = t.filed + .63;
-    times.push(t); tc = t.gone + .25;
+    /* Einsortieren in Ruhe (Josef: „viel zu schnell“): klein über den Ordner, dann hinein, dann leuchtet er */
+    t.tf = f.remind ? t.n3 + 1.3 : t.n2 + 1.1; t.te = t.tf + 1.4; t.filed = t.te + .5; t.gone = t.filed + 1.2;   /* filed: der Brief ist (fast) ganz drin — erst dann leuchtet er */
+    times.push(t); tc = t.gone + .3;
   }
   return times;
 }
@@ -82,7 +83,7 @@ function schedule(letters) {
 /* layer: feste Ebene über den Briefen; tiles: die vier Ordnerkacheln (Reihenfolge wie folders);
    letters: die vier Briefe, in der Reihenfolge, in der sie gelesen werden */
 export function createDeck(layer, tiles, { letters, folders, LETTERS }) {
-  const times = schedule(letters), END = times[times.length - 1].gone;
+  const times = schedule(letters), END = times[times.length - 1].gone + .3;   /* bis der letzte Ordner ausgeleuchtet hat */
   const dpr = Math.min(3, devicePixelRatio || 1);
   const pieces = letters.map(f => {
     const print = drawLetter(LETTERS[f.L]);
@@ -145,7 +146,14 @@ export function createDeck(layer, tiles, { letters, folders, LETTERS }) {
   return {
     END,
     /* home: Mitte des vorderen Briefs (Fenster), k: Maßstab, folder(i): { x, top, y } eines Ordners */
-    layout(g) { geo = g; fitNotes(); },
+    layout(g) {
+      geo = g; fitNotes();
+      /* Welle und Markierung so fein wie der Brief groß ist — am Rechner ist er größer als Maßstab 1 */
+      const s = Math.max(1, g.k), w = Math.round(PW * dpr * s), h = Math.round(PH * dpr * s);
+      for (const P of pieces) if (P.wave.width !== w) {
+        P.wave.width = P.live.width = w; P.wave.height = P.live.height = h; P.liveKey = ""; P.waveClear = false;
+      }
+    },
     /* Wo und wie der Brief mit Rang r im Fächer liegt (Mitte, Drehung um seine Mitte, Breite): dahin
        fliegen die 3D-Briefe aus dem Hintergrund, bevor der Fächer übernimmt */
     restPose(r) {
@@ -162,10 +170,10 @@ export function createDeck(layer, tiles, { letters, folders, LETTERS }) {
         const [ang, px, py] = poseAt(rank);
         let x = geo.home.x + px * k, y = geo.home.y + py * k, rot = ang, sc = 1, op = 1;
         /* klein über seinen Ordner, dann hinein — dessen Oberkante schneidet ihn ab wie eine Tasche */
-        const fo = geo.folder(P.f.f), pf = spring(t - T.tf, .6, 0), pe = spring(t - T.te, .6, 0);
+        const fo = geo.folder(P.f.f), pf = spring(t - T.tf, 1.5, 0), pe = spring(t - T.te, 1.1, 0);
         x = lerp(x, fo.x, pf); y = lerp(y, fo.top - 30, pf); rot = lerp(rot, 0, pf); sc = lerp(sc, .22 / k, pf);
         y = lerp(y, fo.y + 14, pe); sc = lerp(sc, .2 / k, pe);
-        if (t > T.gone) op = 1 - clamp((t - T.gone) / .1);
+        if (t > T.gone) op = 1 - clamp((t - T.gone) / .25);
         const s = sc * k, filing = t > T.tf;
         P.el.style.zIndex = filing ? 60 : 50 - Math.round(rank * 10);
         P.el.style.opacity = op.toFixed(3); P.el.style.visibility = op < .005 ? "hidden" : "";
@@ -188,19 +196,30 @@ export function createDeck(layer, tiles, { letters, folders, LETTERS }) {
         const arr = t0 => easeOut((t - t0 - .12) / .3);
         P.parts[0].style.opacity = arr(T.n2).toFixed(3); if (P.parts[1]) P.parts[1].style.opacity = arr(T.n3).toFixed(3);
       });
-      /* Ordner: während ein Brief hineingeht, treten die anderen zurück; seiner gibt nach und zählt hoch */
+      /* Ordner: während ein Brief hineingeht, treten die anderen zurück; seiner nimmt ihn, gibt nach,
+         leuchtet in seiner Farbe auf und zählt hoch — damit man sieht: dort liegt er jetzt */
       let focus = -1, fw = 0;
-      pieces.forEach((P, j) => { const T = times[j], w = easeInOut((t - T.tf) / .3) * (1 - easeInOut((t - T.filed - .2) / .35)); if (w > fw) { fw = w; focus = P.f.f; } });
+      pieces.forEach((P, j) => { const T = times[j], w = easeInOut((t - T.tf) / .5) * (1 - easeInOut((t - T.filed - .7) / .5)); if (w > fw) { fw = w; focus = P.f.f; } });
       tiles.forEach((tile, i) => {
-        let n = folders[i].n, sc = 1 + (i === focus ? .03 * fw : 0), dip = 0, roll = 1;
+        let n = folders[i].n, sc = 1 + (i === focus ? .03 * fw : 0), dip = 0, roll = 1, glow = 0, ring = 1;
         pieces.forEach((P, j) => {
           if (P.f.f !== i) return; const dt = t - times[j].filed; if (dt < 0) return;
-          n++; roll = Math.min(roll, easeOut(dt / .35));
-          sc += .04 * (dt < .14 ? easeInOut(dt / .14) : 1 - spring(dt - .14, .45, .45));
-          dip = 4 * (dt < .12 ? easeInOut(dt / .12) : 1 - spring(dt - .12, .45, .5));
+          n++; roll = Math.min(roll, easeOut(dt / .5));
+          sc += .06 * (dt < .16 ? easeInOut(dt / .16) : 1 - spring(dt - .16, .6, .45));
+          dip = 4 * (dt < .12 ? easeInOut(dt / .12) : 1 - spring(dt - .12, .55, .5));
+          glow = Math.max(glow, dt < .2 ? easeOut(dt / .2) : Math.exp(-(dt - .2) / .6));
+          ring = Math.min(ring, easeOut(dt / 1.1));
         });
         tile.style.transform = `translateY(${dip.toFixed(2)}px) scale(${sc.toFixed(4)})`;
-        tile.style.opacity = focus >= 0 && i !== focus ? (1 - .55 * fw).toFixed(3) : "";
+        /* zurücktreten über filter: opacity gehört edgeFade (index.html), sonst überschrieben sich beide */
+        const dim = focus >= 0 && i !== focus ? 1 - .55 * fw : 1, c = a => folders[i].c.replace(")", ` / ${a.toFixed(3)})`);
+        const sh = glow > .01 ? `0 6px 10px rgba(0,0,0,.12), inset 0 0 0 1px rgba(255,255,255,${(.14 + .5 * glow).toFixed(3)}), 0 0 ${(30 * glow).toFixed(1)}px ${(6 * glow).toFixed(1)}px ${c(.8 * glow)}` : "";
+        tile.style.boxShadow = sh;
+        /* dazu eine Lichtwelle, die vom Ordner wegläuft — der Moment, in dem er ihn nimmt */
+        tile.style.outline = ring < 1 ? `2px solid ${c(.75 * (1 - ring))}` : "";
+        tile.style.outlineOffset = ring < 1 ? (2 + 18 * ring).toFixed(1) + "px" : "";
+        tile.style.zIndex = glow > .01 ? 2 : "";
+        tile.style.filter = [dim < .999 ? `opacity(${dim.toFixed(3)})` : "", glow > .01 ? `brightness(${(1 + .14 * glow).toFixed(3)})` : ""].join(" ").trim();
         const ct = tile.querySelector("[data-n]");
         if (ct.dataset.v !== String(n)) { ct.dataset.v = n; ct.innerHTML = n === folders[i].n ? `<i>${n} Briefe</i>` : `<i>${n - 1} Briefe</i><i>${n} Briefe</i>`; }
         const r = ct.children; if (r.length === 2) { r[0].style.transform = r[1].style.transform = `translateY(${(-14 * roll).toFixed(1)}px)`; r[0].style.opacity = (1 - roll).toFixed(3); }

@@ -55,6 +55,7 @@
    zählt, die Zahl ist klein (Josef, 28.10.2026). Sie kleben im Kapitel und blenden an den Kanten aus. */
 .sort{position:absolute; left:0; top:0; width:308px; display:grid; grid-template-columns:1fr 1fr; gap:8px; transition:opacity .6s var(--ease), translate .8s var(--ease)}
 .sort:not(.on){opacity:0; translate:24px 0}
+.sort.col{grid-template-columns:1fr}   /* am Rechner untereinander, siehe measureDeck */
 .fold{position:relative; height:64px; border-radius:18px; background:var(--c); color:#fff; overflow:hidden; box-shadow:0 6px 10px rgba(0,0,0,.12), inset 0 0 0 1px rgba(255,255,255,.14)}
 .fold b{position:absolute; left:14px; top:10px; font-size:18px; font-weight:700; letter-spacing:-.3px; white-space:nowrap}
 .fold [data-n]{position:absolute; left:14px; bottom:9px; height:14px; overflow:hidden; font-size:11px; line-height:14px; font-weight:600; color:rgba(255,255,255,.86); font-variant-numeric:tabular-nums}
@@ -331,7 +332,7 @@ import { createStage } from "./js/stage.js?v=25";
 import { mountDevice, BEZEL } from "./js/screens.js?v=29";
 import { LETTERS, drawLetter, drawBack, drawEnvelope, drawEnvelopeBack } from "./js/letters.js?v=27";
 import { mountBrowser } from "./js/browser.js?v=28";
-import { createDeck, PH, NEED } from "./js/deck.js?v=2";
+import { createDeck, PH, NEED } from "./js/deck.js?v=6";
 import { smoothScroll } from "./js/smooth.js?v=24";
 import { footBase } from "./js/fuss.js?v=25";
 footBase();
@@ -419,7 +420,7 @@ const deck = createDeck($("#deck"), $$(".sort .fold"), { letters: FLY, folders: 
    damit jeder Schritt in Ruhe zu sehen ist (Josef, 28.10.2026: „viel weniger pro Scroll“) —, danach kommt
    nur noch kurz „Abgelegt“ mit dem iPhone (OUTRO), ohne langen Leerlauf. measure() setzt daraus die Länge
    des Kapitels und die Anteile PS_SWAP, PS_END und PS_BACK (wie lange das iPhone zum Zurückkommen braucht). */
-const INTRO = 1.2, OUTRO = .8, SPEED = () => mobile ? .45 : .3;
+const INTRO = 1.2, OUTRO = .4, SPEED = () => mobile ? .45 : .3;
 let PS_SWAP = .15, PS_END = .78, PS_BACK = .1;
 const FLOAT = [
   { x: .02, y: -.4, z: -200, rx: 16, ry: -26, rz: -12 }, { x: .44, y: -.36, z: -300, rx: -10, ry: 30, rz: 14 },
@@ -439,12 +440,6 @@ let vw, vh, mobile, secs = {}, dev = { w: 0, h: 0, x: 0, y: 0 };
 function measure() {
   vw = innerWidth; vh = stableH(); mobile = vw <= 820 || vw / vh < .9;
   $("#story").style.height = ((INTRO + deck.END * SPEED() + OUTRO + 1) * vh).toFixed(0) + "px";
-  for (const id of ["hero", "story", "frist", "suche", "trust", "web"]) {
-    const el = document.getElementById(id), top = el.getBoundingClientRect().top + scrollY;
-    secs[id] = { top, h: el.offsetHeight, range: Math.max(1, el.offsetHeight - vh) };
-  }
-  const screens = secs.story.range / vh;
-  PS_SWAP = INTRO / screens; PS_END = 1 - OUTRO / screens; PS_BACK = .5 / screens;
   measureFade();
   /* Das iPhone: so hoch wie es der Platz erlaubt — auf dem Handy unten, ganz sichtbar, und nie höher, als
      es die Texte der Kapitel über ihm erlauben (sie stehen über ihm, nie dahinter; siehe edgeFade) */
@@ -461,6 +456,23 @@ function measure() {
     Object.assign(startEl.style, { display: "block", width: dev.w + "px", left: dev.xr + "px", top: Math.max(knopf + 14, dev.y) + "px" });
   } else { startEl.style.display = "none"; dev.h = Math.min(vh * .82, 780); dev.w = dev.h * BEZEL.w / BEZEL.h; dev.xr = Math.min(vw * .72, vw - dev.w * .5 - 60) - dev.w / 2; dev.xl = Math.max(vw * .27, dev.w * .5 + 60) - dev.w / 2; dev.y = (vh - dev.h) / 2 + 12; }
   devEl.style.width = dev.w + "px";
+  /* Am Handy rücken Fristen und Suche unter das Ende des Kapitels davor, so weit, dass ihre Überschrift
+     über dem iPhone auftaucht, kurz nachdem die vorige oben loszieht (Ankern: 100svh vor Kapitelende) —
+     sonst stand eine Bildschirmhöhe lang nur das iPhone da (Josef, 28.10.2026). Gerechnet statt fest,
+     denn wie weit das ist, hängt an Fensterhöhe und iPhone-Größe. */
+  const zeigt = {};
+  for (const id of ["frist", "suche"]) {
+    const el = document.getElementById(id), h2 = blenden.find(b => b.el === el.querySelector(".tx > h2"));
+    const lap = mobile && dev.inChapters && h2 ? Math.max(0, vh * .9 + h2.off + h2.h - dev.y) : 0;
+    el.style.marginTop = lap ? -lap.toFixed(0) + "px" : "";
+    if (lap) zeigt[id] = h2.off + h2.h - dev.y;   /* ab hier über dem iPhone, gerechnet vom Kapitelanfang */
+  }
+  for (const id of ["hero", "story", "frist", "suche", "trust", "web"]) {
+    const el = document.getElementById(id), top = el.getBoundingClientRect().top + scrollY;
+    secs[id] = { top, h: el.offsetHeight, range: Math.max(1, el.offsetHeight - vh), zeigt: id in zeigt ? top + zeigt[id] : null };
+  }
+  const screens = secs.story.range / vh;
+  PS_SWAP = INTRO / screens; PS_END = 1 - OUTRO / screens; PS_BACK = .3 / screens;
   st.resize();
   measureDeck();
 }
@@ -478,21 +490,26 @@ function measureDeck() {
     const avail = sTop - 14 - top; k = Math.min(1, avail / NEED, (right - left) / 330);
     home = { x: (left + right) / 2, y: top + Math.max(0, (avail - NEED * k) / 2) + PH * k / 2 };
   };
+  let col = false;
   if (mobile) below(16, vw - 16, capB + 24);
   else {
-    const L0 = cps.left, R0 = dev.xr - 48, top = capB + 34, availH = vh - 40 - top;
-    sw = 2 * 150 + 8; const availW = R0 - L0 - sw - 32;
-    if (availW < 330 * .62) below(L0, R0, top);
-    else {
-      k = Math.min(1, availH / NEED, availW / 330);
-      const pageTop = top + Math.max(0, (availH - NEED * k) / 2);
+    /* Am Rechner stehen die Ordner untereinander, nicht 2×2: neben dem iPhone ist die Breite knapp, und
+       jeder Pixel, den die Ordner nicht brauchen, macht den Brief größer — er darf über Maßstab 1 hinaus
+       (Josef, 28.10.2026: beim Einscannen „mega klein“) */
+    const L0 = cps.left, R0 = dev.xr - 48, top = capB + 34, availH = vh - 40 - top, availW = R0 - L0 - 150 - 40;
+    below(L0, R0, top);   /* in schmalen Fenstern ist der Brief so größer — dann bleibt es dabei */
+    const kc = Math.min(1.5, availH / NEED, availW / 330);
+    if (kc > k) {
+      col = true; k = kc; sw = 150;
+      const pageTop = top + Math.max(0, (availH - NEED * k) / 2), CH = 4 * TH + 3 * 8;
       home = { x: L0 + Math.max(165 * k, availW / 2), y: pageTop + PH * k / 2 };
-      sLeft = R0 - sw; sTop = pageTop + NEED * k / 2 - SH / 2;
+      sLeft = R0 - sw; sTop = Math.min(vh - 40 - CH, Math.max(top, pageTop + NEED * k / 2 - CH / 2));
     }
   }
+  sortEl.classList.toggle("col", col);
   sortEl.style.cssText = `left:${(sLeft - cps.left).toFixed(1)}px; top:${(sTop - off).toFixed(1)}px; width:${sw.toFixed(1)}px`;
-  const tw = (sw - 8) / 2;
-  deck.layout({ home, k, folder: i => { const x0 = sLeft + (i % 2) * (tw + 8), y0 = sTop + (i >> 1) * (TH + 8); return { x: x0 + tw / 2, top: y0, y: y0 + TH / 2 }; } });
+  const tw = col ? sw : (sw - 8) / 2;
+  deck.layout({ home, k, folder: i => { const x0 = sLeft + (col ? 0 : (i % 2) * (tw + 8)), y0 = sTop + (col ? i : i >> 1) * (TH + 8); return { x: x0 + tw / 2, top: y0, y: y0 + TH / 2 }; } });
 }
 const prog = (id, y) => clamp((y - secs[id].top) / secs[id].range, 0, 1);
 
@@ -512,13 +529,14 @@ let lastCap = -1, lastDays = -1, lastQ = null, lastW = -1;
 
 function chapters(y) {
   const ps = prog("story", y), pf = prog("frist", y), pq = prog("suche", y), pt = prog("trust", y), mid = vh * .5;
-  const cap = ps < PS_SWAP * .8 ? 0 : ps < PS_END + .005 ? 1 : 2;
+  const ab = id => secs[id].zeigt ?? secs[id].top - mid;   /* am Handy, sobald die neue Überschrift über dem iPhone auftaucht */
+  const cap = ps < PS_SWAP * .8 ? 0 : ps < PS_END ? 1 : 2;   /* Abgelegt, Ordner weg und iPhone her — alles an derselben Stelle */
   if (cap !== lastCap) { caps.forEach((c, i) => c.classList.toggle("on", i === cap)); lastCap = cap; }
-  sortEl.classList.toggle("on", y > secs.story.top && ps > PS_SWAP * .8 && ps < (mobile ? PS_END + .01 : .98));   /* erst, wenn der Stapel liegt */
+  sortEl.classList.toggle("on", y > secs.story.top && ps > PS_SWAP * .8 && ps < (mobile ? PS_END : .98));   /* erst, wenn der Stapel liegt; am Handy weg, sobald Abgelegt kommt — dort kommt das iPhone */
 
   let a = "scan", notif = 0;
-  if (y < secs.frist.top - mid) { if (ps > PS_END) a = "archiv"; }
-  else if (y < secs.suche.top - mid) { a = "brief"; notif = pf > .56 ? 1 : 0; }
+  if (y < ab("frist")) { if (ps > PS_END) a = "archiv"; }
+  else if (y < ab("suche")) { a = "brief"; notif = pf > .56 ? 1 : 0; }
   else if (y < secs.trust.top - mid) { a = pq > .5 ? "suche1" : "suche0"; }
   else a = "einst";
   screen.set({ a, notif, notifText: a === "brief" ? NOTE_TEXT : null, theme: a === "einst" ? (pageDark ? "dunkel" : "hell") : null });   /* nur dort kommt sie; das Glas wird vorher vorbereitet */
@@ -555,21 +573,24 @@ function placeDevice(y, ps, now) {
   const side = e(toL) - e(toR);
   let x = lerp(dev.xr, dev.xl, side);
   /* Nachgleiten: in jedem Kapitel wandert es ein wenig gegen die Leserichtung — am Handy nicht, dort reicht der Platz unten nicht */
-  let dy = 0, op = 1;
+  let dy = 0, op = 1, hold = 0;
   if (!mobile) for (const id of ["story", "frist", "suche", "trust"]) { const s0 = secs[id]; if (y >= s0.top - vh && y <= s0.top + s0.h) dy = lerp(28, -28, clamp((y - s0.top + vh) / (s0.h + vh), 0, 1)); }
   if (!mobile) dy += lerp(0, -18, clamp(y / vh, 0, 1)) * (y < secs.story.top ? 1 : 0);
   /* Auftritt beim Laden */
   const intro = reduce ? 1 : clamp((now - T0 - 250) / 1300, 0, 1), ie = 1 - Math.pow(1 - intro, 4);
   dy += (1 - ie) * (mobile ? 16 : vh * .35); op *= ie;
   if (mobile) {   /* in der Startansicht zeigt deviceStart das iPhone; dieses hier kommt mit den Ordnern */
-    const back = y < secs.story.top || !dev.inChapters ? 0 : clamp((ps - PS_END - PS_BACK * .2) / PS_BACK, 0, 1);
+    const back = y < secs.story.top || !dev.inChapters ? 0 : clamp((ps - PS_END) / PS_BACK, 0, 1);
     dy += (1 - back) * 16; op *= back;
+    /* sein Platz bleibt frei, sobald Abgelegt kommt — auch während es noch einblendet: was von unten
+       heraufsteigt (Fristen), erscheint erst über ihm, statt kurz aufzublitzen und dahinter zu verschwinden */
+    if (y >= secs.story.top && dev.inChapters && ps >= PS_END) hold = 1;
     startEl.style.opacity = ie.toFixed(3);
     startEl.style.transform = `translate3d(0, ${((1 - ie) * 16).toFixed(1)}px, 0)`;
   }
   const leave = secs.trust.top + secs.trust.h - vh;
-  if (y > leave) { dy -= (y - leave); if (mobile) op *= 1 - clamp((y - leave) / (vh * .35), 0, 1); }
-  devTop = dev.y + dy; devOp = op;
+  if (y > leave) { dy -= (y - leave); if (mobile) { const f = 1 - clamp((y - leave) / (vh * .35), 0, 1); op *= f; hold *= f; } }
+  devTop = dev.y + dy; devOp = Math.max(op, hold);
   devEl.style.opacity = op.toFixed(3);
   devEl.style.visibility = op < .005 ? "hidden" : "";
   devEl.style.transform = `translate3d(${x.toFixed(1)}px, ${(dev.y + dy).toFixed(1)}px, 0)`;
@@ -589,7 +610,8 @@ function measureFade() {
   blenden = [];
   for (const pin of $$(".pin")) {
     const p = pin.getBoundingClientRect().top;
-    for (const el of pin.querySelectorAll(".tx > *, .cap > *, .sort > .fold")) {
+    /* die Ordner nicht: sie stehen über der Kante, gehen, bevor das iPhone kommt, und ihre Deckkraft gehört js/deck.js */
+    for (const el of pin.querySelectorAll(".tx > *, .cap > *")) {
       /* Ausgeblendetes (am Handy z. B. die Tagesleiste) hat kein Rechteck — gemessen ergäbe es je nach Scrollstelle
          Unsinn, und das iPhone sprang in Größe und Lage oder verschwand (Josef, 28.10.2026) */
       if (!el.getClientRects().length) continue;
