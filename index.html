@@ -401,7 +401,7 @@ const dd = n => { const d = STICHTAG(); d.setDate(d.getDate() + n); return d.toL
    liest einen nach dem anderen und legt ihn ab (js/deck.js). Auf ihrer Karte steht, was die App aus
    ihnen liest — vom Stichtag aus gerechnet wie die Daten in den Briefen (js/letters.js). */
 const kurz = n => { const d = STICHTAG(); d.setDate(d.getDate() + n); return d.toLocaleDateString("de-DE", { day: "numeric", month: "short" }); };
-const erinnerung = n => { const d = STICHTAG(); d.setDate(d.getDate() + n); return `Erinnerung ${d.toLocaleDateString("de-DE", { weekday: "short" })} ${kurz(n)}, 09:00`; };
+const erinnerung = n => { const d = STICHTAG(); d.setDate(d.getDate() + n); return `Erinnerung ${["So.", "Mo.", "Di.", "Mi.", "Do.", "Fr.", "Sa."][d.getDay()]} ${kurz(n)}, 09:00`; };   /* wie die App: „Di.“ — Browser schreiben den Wochentag mal mit, mal ohne Punkt */
 /* Die Ordner in der Reihenfolge der App; die Zahl vorher — nach den vier Briefen 7, 6, 5 und 4 wie auf der Ordnerseite */
 const FOLDERS = [
   { name: "Behörde", c: "color(display-p3 0 .4157 1)", n: 6 }, { name: "Wohnen", c: "color(display-p3 1 .4 0)", n: 5 },
