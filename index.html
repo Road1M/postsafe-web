@@ -51,34 +51,38 @@
 #story .cap{position:absolute; left:0; top:max(96px,12vh); max-width:560px; transition:opacity .6s var(--ease), transform .8s var(--ease), filter .6s}
 #story .cap:not(.on){opacity:0; transform:translateY(22px); filter:blur(6px); pointer-events:none}
 #story .cap h2{font-size:clamp(32px,min(4.2vw,6.6vh),64px)}   /* auf niedrigen Bildschirmen kleiner — mehr Luft für den Scan */
-/* Die Ordner wie auf der alten Seite: eine Spalte aus Zeilen. Kommt ein Brief an,
-   füllt sich seine Zeile in der Ordnerfarbe der App, und die Zahl springt hoch. */
-.sort{position:absolute; left:0; top:0; width:clamp(210px,17vw,290px); display:flex; flex-direction:column; gap:12px; transition:opacity .6s var(--ease), transform .8s var(--ease)}
-.sort:not(.on){opacity:0; transform:translateX(24px)}
-.row{position:relative; display:flex; align-items:center; gap:12px; height:clamp(52px,6.4vh,62px); padding:0 18px 0 8px; border-radius:999px; background:var(--card); box-shadow:inset 0 0 0 1px var(--line), 0 10px 30px rgba(0,0,0,.06); overflow:hidden; isolation:isolate}
-.row__fill{position:absolute; inset:0; z-index:-1; background:var(--c); opacity:calc(var(--p,0) * .16)}
-.row__sw{flex:none; width:clamp(36px,4.4vh,44px); aspect-ratio:1; border-radius:50%; display:grid; place-items:center; background:var(--c); color:#fff; transform:scale(calc(1 + var(--p,0) * .16))}
-.row__sw svg{width:46%; height:auto}
-.row__tx{flex:1; min-width:0; display:flex; flex-direction:column; line-height:1.15}
-.row__tx b{font-size:clamp(15px,1.15vw,18px); letter-spacing:-.01em}
-.row__tx small{font-size:12.5px; color:var(--ink-2); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-height:0; opacity:0; transition:max-height .4s var(--ease), opacity .4s, color .3s}
-.row.has .row__tx small{max-height:18px; opacity:1; margin-top:2px}
-.row__n{font-size:15px; font-variant-numeric:tabular-nums; color:var(--ink-3); transition:color .3s}
-.row.has .row__n{color:var(--ink)}
-.row.bump .row__n{animation:bump .5s var(--ease)}
-@keyframes bump{40%{transform:scale(1.5)}}
-.tag{position:fixed; z-index:32; left:0; top:0; display:flex; align-items:center; gap:10px; padding:12px 22px 12px 16px; border-radius:999px; background:var(--card); color:var(--ink); font-size:clamp(17px,1.35vw,21px); letter-spacing:-.01em; white-space:nowrap; pointer-events:none; transform-origin:center; will-change:transform, opacity; box-shadow:0 1px 2px rgba(0,0,0,.08), 0 10px 26px rgba(0,0,0,.16)}
-.tag i{width:.7em; height:.7em; border-radius:50%; background:var(--c)}
-.tag span{color:var(--ink-2)}
-.scanframe{position:fixed; z-index:31; left:0; top:0; width:100vw; height:130vh; pointer-events:none; overflow:visible}   /* höher als das Fenster, sonst nimmt Safari am iPhone ihn als Leiste (siehe .stage-halter) */
-/* Der Scan ist für jeden Brief gleich: neutral, in der Farbe der Schrift. Welcher
-   Ordner es wird, zeigt erst das Schildchen — wenn der Brief gelesen ist. Die Ecken
-   sind die des App-Symbols (Arm, Rundung und runde Enden im selben Verhältnis); Licht
-   und Markierungen liegen auf dem Papier und haben darum dessen Schriftfarbe. */
-.scanframe .br{fill:none; stroke:var(--ink); stroke-linecap:round; stroke-linejoin:round}
-.scanframe .veil{fill:#0D0D0F; fill-opacity:.08}
-.scanframe .light{fill:url(#light)}
-.scanframe .hl{fill:none; stroke:#0D0D0F; stroke-opacity:.5; stroke-width:1.4; stroke-dasharray:1 1}
+/* Die vier Ordner, zwei je Reihe, gleich groß: kleine Ordnerkarten der App (FolderTile). Der Name
+   zählt, die Zahl ist klein (Josef, 28.10.2026). Sie kleben im Kapitel und blenden an den Kanten aus. */
+.sort{position:absolute; left:0; top:0; width:308px; display:grid; grid-template-columns:1fr 1fr; gap:8px; transition:opacity .6s var(--ease), translate .8s var(--ease)}
+.sort:not(.on){opacity:0; translate:24px 0}
+.fold{position:relative; height:64px; border-radius:18px; background:var(--c); color:#fff; overflow:hidden; box-shadow:0 6px 10px rgba(0,0,0,.12), inset 0 0 0 1px rgba(255,255,255,.14)}
+.fold b{position:absolute; left:14px; top:10px; font-size:18px; font-weight:700; letter-spacing:-.3px; white-space:nowrap}
+.fold [data-n]{position:absolute; left:14px; bottom:9px; height:14px; overflow:hidden; font-size:11px; line-height:14px; font-weight:600; color:rgba(255,255,255,.86); font-variant-numeric:tabular-nums}
+.fold [data-n] i{display:block; font-style:normal}
+@media (max-height:700px){ .fold{height:52px} .fold b{top:8px; font-size:16px} .fold [data-n]{bottom:7px} }   /* niedrige Fenster (iPhone SE): mehr Platz für Brief und Karte */
+/* Die Briefe, sobald sie als Fächer liegen (js/deck.js): eine feste Ebene über den 3D-Briefen, höher als
+   das Fenster — sonst nähme Safari am iPhone sie als Leiste (siehe .stage-halter) */
+.deck{position:fixed; z-index:31; left:0; top:0; width:100vw; height:130vh; pointer-events:none; overflow:hidden; visibility:hidden}
+.dk-piece{position:absolute; left:0; top:0; transform-origin:50% 50%; will-change:transform, opacity}
+.dk-paper{position:absolute; inset:0; box-shadow:0 1px 2px rgba(0,0,0,.08), 0 12px 26px rgba(0,0,0,.16)}
+.dk-piece canvas{position:absolute; inset:0; width:100%; height:100%; filter:contrast(1.12)}   /* Schrift etwas kräftiger, Druck und Welle gleich */
+.dk-live{position:absolute; inset:0}
+.dk-live i{position:absolute; border-radius:3px; transform-origin:0 50%}
+/* Die Karte, die PostSafe aus dem Brief macht (OnboardingLetterNote): sie wächst nach unten auf */
+.dk-note{position:absolute; border-radius:20px; background:var(--card); color:var(--ink); box-shadow:0 12px 20px rgba(0,0,0,.18); overflow:hidden; transform-origin:50% 0}
+.dk-note .in{position:absolute; left:16px; right:16px; top:15px}
+.dk-note .hd{display:flex; align-items:center; gap:5px; font-size:12px; font-weight:600; color:var(--ink-2)}
+.dk-note .hd i{width:10px; height:10px; border-radius:3px; background:var(--c)}
+.dk-note .ti{margin-top:7px; font-size:19px; line-height:23px; font-weight:700; letter-spacing:-.4px; white-space:nowrap}
+.dk-note .se{margin-top:1px; font-size:13px; line-height:16px; color:var(--ink-2); white-space:nowrap}
+.dk-note .fl{margin-top:12px; display:flex; align-items:flex-start; white-space:nowrap}
+.dk-note .fl hr{width:1px; height:34px; border:0; margin:0 12px; background:var(--line)}
+.dk-note .fl span{display:block; font-size:11px; line-height:13px; font-weight:600; color:var(--ink-2)}
+.dk-note .fl b{display:block; margin-top:1px; font-size:19px; line-height:23px; font-weight:700; letter-spacing:-.4px}
+.dk-note .rm{margin-top:12px; display:flex; align-items:center; gap:10px; white-space:nowrap}
+.dk-note .rm i{flex:none; width:34px; height:34px; border-radius:11px; display:grid; place-items:center; background:var(--ink); color:var(--paper)}
+.dk-note .rm b{display:block; font-size:15px; line-height:18px; font-weight:600}
+.dk-note .rm span{display:block; font-size:12px; line-height:15px; color:var(--ink-2)}
 
 /* Kapitel 2: Fristen */
 #frist .tx h2{font-size:clamp(34px,3.8vw,58px)}
@@ -158,13 +162,8 @@
   .badges img{height:52px}
   .hint{display:none}
   #story .cap{top:0; right:0}   /* .pin .wrap gibt am Handy schon 96 px Abstand — so stehen Stapel, Foto und Abgelegt auf der Höhe der anderen Kapitel */
-  .sort{display:grid; grid-template-columns:1fr 1fr; gap:8px; width:auto}
-  .sort:not(.on){transform:translateY(24px)}
-  .row{height:46px; gap:8px; padding:0 12px 0 5px}
-  .row__sw{width:36px}
-  .row__tx b{font-size:14px}
-  .row__tx small{display:none}
-  .tag{font-size:15px; padding:8px 15px 8px 12px; gap:8px}
+  .sort{width:auto}
+  .sort:not(.on){translate:0 24px}
   .big{font-size:clamp(84px,24vw,140px); margin-top:14px}
   .big small{font-size:14px}
   .tick,.tick-l{display:none}
@@ -226,10 +225,10 @@
       <div class="cap" data-cap><p class="eyebrow">Ein Foto</p><h2 class="display">Ein Foto genügt. <b>PostSafe liest den Brief</b> und legt ihn ab.</h2></div>
       <div class="cap" data-cap><p class="eyebrow">Abgelegt</p><h2 class="display">Sortiert, gesichert und <b>auch Jahre später</b> leicht zu finden.</h2></div>
       <div class="sort" data-sort aria-hidden="true">
-        <div class="row" data-row="behoerde" style="--c:color(display-p3 0 .4157 1)"><i class="row__fill"></i><span class="row__sw"><svg viewBox="0 0 18 15" aria-hidden="true"><path d="M1 3.2A1.7 1.7 0 0 1 2.7 1.5h3.4l1.6 2h7.6A1.7 1.7 0 0 1 17 5.2v7.1a1.7 1.7 0 0 1-1.7 1.7H2.7A1.7 1.7 0 0 1 1 12.3z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg></span><span class="row__tx"><b>Behörde</b><small data-note></small></span><span class="row__n" data-n>0</span></div>
-        <div class="row" data-row="wohnen" style="--c:color(display-p3 1 .4 0)"><i class="row__fill"></i><span class="row__sw"><svg viewBox="0 0 18 15" aria-hidden="true"><path d="M1 3.2A1.7 1.7 0 0 1 2.7 1.5h3.4l1.6 2h7.6A1.7 1.7 0 0 1 17 5.2v7.1a1.7 1.7 0 0 1-1.7 1.7H2.7A1.7 1.7 0 0 1 1 12.3z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg></span><span class="row__tx"><b>Wohnen</b><small data-note></small></span><span class="row__n" data-n>0</span></div>
-        <div class="row" data-row="rechnungen" style="--c:color(display-p3 1 .2353 .549)"><i class="row__fill"></i><span class="row__sw"><svg viewBox="0 0 18 15" aria-hidden="true"><path d="M1 3.2A1.7 1.7 0 0 1 2.7 1.5h3.4l1.6 2h7.6A1.7 1.7 0 0 1 17 5.2v7.1a1.7 1.7 0 0 1-1.7 1.7H2.7A1.7 1.7 0 0 1 1 12.3z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg></span><span class="row__tx"><b>Rechnungen</b><small data-note></small></span><span class="row__n" data-n>0</span></div>
-        <div class="row" data-row="bank" style="--c:color(display-p3 .1098 .7451 .3608)"><i class="row__fill"></i><span class="row__sw"><svg viewBox="0 0 18 15" aria-hidden="true"><path d="M1 3.2A1.7 1.7 0 0 1 2.7 1.5h3.4l1.6 2h7.6A1.7 1.7 0 0 1 17 5.2v7.1a1.7 1.7 0 0 1-1.7 1.7H2.7A1.7 1.7 0 0 1 1 12.3z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg></span><span class="row__tx"><b>Bank</b><small data-note></small></span><span class="row__n" data-n>0</span></div>
+        <div class="fold" style="--c:color(display-p3 0 .4157 1)"><b>Behörde</b><span data-n><i>6 Briefe</i></span></div>
+        <div class="fold" style="--c:color(display-p3 1 .4 0)"><b>Wohnen</b><span data-n><i>5 Briefe</i></span></div>
+        <div class="fold" style="--c:color(display-p3 1 .2353 .549)"><b>Rechnungen</b><span data-n><i>4 Briefe</i></span></div>
+        <div class="fold" style="--c:color(display-p3 .1098 .7451 .3608)"><b>Bank</b><span data-n><i>3 Briefe</i></span></div>
       </div>
     </div></div></div>
   </section>
@@ -323,8 +322,7 @@
 <div class="stage-halter"><canvas class="stage" id="stage" aria-hidden="true"></canvas></div>
 <div class="dev-fixed" id="device" aria-label="PostSafe auf dem iPhone" role="img"></div>
 <div class="dev-start" id="deviceStart" aria-hidden="true"></div>
-<div class="tag" data-tag aria-hidden="true" style="opacity:0"></div>
-<svg class="scanframe" aria-hidden="true"><defs><linearGradient id="light" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".5" stop-color="#fff" stop-opacity=".95"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient><clipPath id="paper"><polygon data-paper points=""/></clipPath></defs><g data-frame></g></svg>
+<div class="deck" id="deck" aria-hidden="true"></div>
 
 <script type="module">
 /* ?v= hält Seite und Skripte beisammen: Ein Browser darf sonst eine neue Seite mit einem alten
@@ -332,8 +330,9 @@
    js/ die Zahl hier, in web.html und in js/browser.js erhöhen. */
 import { createStage } from "./js/stage.js?v=25";
 import { mountDevice, BEZEL } from "./js/screens.js?v=29";
-import { LETTERS, drawLetter, drawBack, drawEnvelope, drawEnvelopeBack } from "./js/letters.js?v=25";
-import { mountBrowser } from "./js/browser.js?v=26";
+import { LETTERS, drawLetter, drawBack, drawEnvelope, drawEnvelopeBack } from "./js/letters.js?v=27";
+import { mountBrowser } from "./js/browser.js?v=28";
+import { createDeck, PH, NEED } from "./js/deck.js?v=1";
 import { smoothScroll } from "./js/smooth.js?v=24";
 import { footBase } from "./js/fuss.js?v=25";
 footBase();
@@ -394,22 +393,31 @@ const items = [];
 items.forEach(l => st.bendSheet(l.geo, l.w, l.h, l.fold[0], l.fold[1], l.curl));
 /* Wer im Kapitel „Ein Foto“ gescannt wird, und in welchen Ordner er fliegt */
 /* Stichtag der App-Aufnahmen (siehe js/letters.js) — alle Daten dieser Seite gehen von ihm aus.
-   Die Bildschirme im iPhone sind am 27.10.2026 aufgenommen (App 1.0.1, Build 12). */
-const STICHTAG = () => new Date(2026, 9, 27, 9);
+   Die Bildschirme im iPhone sind am 28.10.2026 aufgenommen (App 1.0.1, Build 12) — dort ist der
+   Einkommensteuerbescheid am 10. November fällig, mit Erinnerung am 3. November. */
+const STICHTAG = () => new Date(2026, 9, 28, 9);
 const dd = n => { const d = STICHTAG(); d.setDate(d.getDate() + n); return d.toLocaleDateString("de-DE", { day: "numeric", month: "long" }); };
-/* Vier Briefe, einer je Ordner — in der Reihenfolge der App: Behörde, Wohnen,
-   Rechnungen, Bank. Was PostSafe liest, wird markiert; ein Schildchen nennt das
-   Wichtigste, und die Ordnerzeile merkt es sich. */
-const FLY = [
-  { i: 0, to: "wohnen", tag: "84,20 €", note: "Stadtwerke · 84,20 €", boxes: ["sender", "subject", "amount"] },
-  { i: 1, to: "behoerde", tag: "Frist " + dd(13), note: "Finanzamt · bis " + dd(13), boxes: ["sender", "subject", "due"] },
-  { i: 2, to: "rechnungen", tag: "49,95 €", note: "Mobilfunk · 49,95 €", boxes: ["sender", "subject", "amount"] },
-  { i: 5, to: "bank", tag: "Neue Entgelte", note: "Hausbank · neue Entgelte", boxes: ["sender", "subject"] }
+/* Vier Briefe, einer je Ordner. Sie kommen aus dem Hintergrund und liegen dann als Fächer; PostSafe
+   liest einen nach dem anderen und legt ihn ab (js/deck.js). Auf ihrer Karte steht, was die App aus
+   ihnen liest — vom Stichtag aus gerechnet wie die Daten in den Briefen (js/letters.js). */
+const kurz = n => { const d = STICHTAG(); d.setDate(d.getDate() + n); return d.toLocaleDateString("de-DE", { day: "numeric", month: "short" }); };
+const erinnerung = n => { const d = STICHTAG(); d.setDate(d.getDate() + n); return `Erinnerung ${d.toLocaleDateString("de-DE", { weekday: "short" })} ${kurz(n)}, 09:00`; };
+/* Die Ordner in der Reihenfolge der App; die Zahl vorher — nach den vier Briefen 7, 6, 5 und 4 wie auf der Ordnerseite */
+const FOLDERS = [
+  { name: "Behörde", c: "color(display-p3 0 .4157 1)", n: 6 }, { name: "Wohnen", c: "color(display-p3 1 .4 0)", n: 5 },
+  { name: "Rechnungen", c: "color(display-p3 1 .2353 .549)", n: 4 }, { name: "Bank", c: "color(display-p3 .1098 .7451 .3608)", n: 3 }
 ];
-/* Der Ablauf im Kapitel (Anteil des Kapitels): in einem Zug alle vier Briefe, einer nach dem
-   anderen. Jeder braucht SPAN; der nächste hebt sich erst, wenn der vorige gelesen ist und
-   schon auf dem Weg in seinen Ordner (STEP) — es wird immer nur ein Brief gelesen. */
-const START = .165, SPAN = .16, STEP = .138, SORTED = START + (FLY.length - 1) * STEP + SPAN;
+const FLY = [
+  { i: 0, L: 0, f: 1, title: "Jahresabrechnung Strom 2025", sender: "Stadtwerke Musterstadt", task: "84,20 € zahlen", dueLabel: "Fällig", due: kurz(7) },
+  { i: 1, L: 1, f: 0, title: "Einkommensteuerbescheid 2025", sender: "Finanzamt Musterstadt", task: "1.284,00 € zahlen", dueLabel: "Fällig", due: kurz(13),
+    remind: erinnerung(6), remindNote: "Vorschlag · 7 Tage vor der Frist" },
+  { i: 2, L: 7, f: 2, title: "Rechnung August 2026", sender: "Mobilfunk GmbH", task: "Nichts", dueLabel: "Eingang", due: kurz(-14) },
+  { i: 5, L: 5, f: 3, title: "Neue Kontoführungsentgelte", sender: "Hausbank Musterstadt", task: "Prüfen", dueLabel: "Eingang", due: kurz(-5) }
+];
+const deck = createDeck($("#deck"), $$(".sort .fold"), { letters: FLY, folders: FOLDERS, LETTERS });
+/* Der Ablauf im Kapitel (Anteil des Kapitels): bis PS_SWAP fliegen die Briefe aus dem Hintergrund in
+   den Fächer, dann übernimmt js/deck.js — bis PS_END sind alle vier gelesen und abgelegt. */
+const PS_SWAP = .15, PS_END = .78, SORTED = PS_END;
 const FLOAT = [
   { x: .02, y: -.4, z: -200, rx: 16, ry: -26, rz: -12 }, { x: .44, y: -.36, z: -300, rx: -10, ry: 30, rz: 14 },
   { x: .45, y: .38, z: -120, rx: 22, ry: -22, rz: -6 }, { x: .12, y: .47, z: 0, rx: -26, ry: 24, rz: 18 },
@@ -448,46 +456,45 @@ function measure() {
   } else { startEl.style.display = "none"; dev.h = Math.min(vh * .82, 780); dev.w = dev.h * BEZEL.w / BEZEL.h; dev.xr = Math.min(vw * .72, vw - dev.w * .5 - 60) - dev.w / 2; dev.xl = Math.max(vw * .27, dev.w * .5 + 60) - dev.w / 2; dev.y = (vh - dev.h) / 2 + 12; }
   devEl.style.width = dev.w + "px";
   st.resize();
-  measureScan();
+  measureDeck();
 }
-/* Der Scan-Bereich richtet sich nach dem freien Platz zwischen Überschrift und
-   Ordnerkarten — mit Luft nach oben und unten. So liegt auf einem kleineren
-   Bildschirm nichts über den Ordnern oder an der Überschrift. */
-let area = { fx: -.21, fy: .12, spotY: .1, sPile: .56, sScan: .39 };
+/* Wo der Fächer liegt und wo die Ordner stehen: am Handy der Brief so groß, wie zwischen Überschrift und
+   Ordnern Platz ist (samt Karte darunter), die Ordner unten; am Rechner der Brief links, die Ordner
+   zwischen ihm und dem iPhone. Ist es eng, wird alles gemeinsam kleiner (k). */
 const pxmm = z => vh / (2 * (620 - z) * Math.tan(12 * Math.PI / 180));   /* Pixel je Millimeter des Briefs in der Tiefe z */
-function measureScan() {
+function measureDeck() {
   const pin = $("#story .pin .wrap").getBoundingClientRect(), cps = $("#story .caps").getBoundingClientRect();
   const capB = Math.max(...caps.map(c => c.getBoundingClientRect().bottom - pin.top - (c.classList.contains("on") ? 0 : 22)));
-  if (mobile) {
-    /* Am Handy: der Brief so groß, wie er zwischen Überschrift und Ordnern Platz hat, mittig dazwischen.
-       Darüber Luft für die Ecken, darunter für das Schildchen. */
-    sortEl.style.cssText = "left:0; right:0; top:auto; bottom:6vh";
-    const ty = new DOMMatrix(getComputedStyle(sortEl).transform).m42 || 0;   /* ohne das Hereingleiten der Ordner */
-    const rowsTop = sortEl.getBoundingClientRect().top - ty - pin.top, top = capB + 30, bottom = rowsTop - 16 - 38 - 26;
-    const h = Math.max(150, Math.min(bottom - top, (vw - 64) * 148.5 / 105)), mid = (top + bottom) / 2;
-    const sScan = h / (148.5 * pxmm(250));
-    area = { fx: 0, fy: mid / vh - .5, spotY: mid / vh - .5, sPile: h * .64 / (148.5 * pxmm(66)), sScan };
-    return;
-  }
-  /* Die Ordnerspalte steht links vom iPhone, der Brief mittig im Platz davor */
-  const rw = sortEl.offsetWidth, rh = sortEl.offsetHeight, rowsL = dev.xr - 56 - rw;
-  const left = cps.left, availW = rowsL - left;
-  const top = capB + 36, bottom = vh - 40 - 64, gap = Math.max(160, bottom - top), midPx = (top + bottom) / 2;   /* unten Platz fürs Schildchen */
-  sortEl.style.cssText = `left:${(rowsL - cps.left).toFixed(0)}px; top:${(midPx - rh / 2 - (cps.top - pin.top)).toFixed(0)}px`;
-  area = {
-    fx: (left + availW * .5) / vw - .5, fy: midPx / vh - .5, spotY: midPx / vh - .5,
-    sPile: Math.min(.56, (gap * .84 / pxmm(66) - 20) / 159, availW * .66 / (pxmm(66) * 118)),
-    sScan: Math.max(.16, Math.min(.39, (gap * .9 - 40) / (148.5 * pxmm(250)), (availW - 150) / (105 * pxmm(250))))
+  const off = cps.top - pin.top, TH = $(".sort .fold").offsetHeight || 64, SH = 2 * TH + 8;
+  let home, k, sLeft, sTop, sw;
+  const below = (left, right, top) => {   /* die Ordner unten, der Brief darüber */
+    sw = Math.min(right - left, 420); sLeft = (left + right) / 2 - sw / 2; sTop = vh - Math.max(16, vh * .04) - SH;
+    const avail = sTop - 14 - top; k = Math.min(1, avail / NEED, (right - left) / 330);
+    home = { x: (left + right) / 2, y: top + Math.max(0, (avail - NEED * k) / 2) + PH * k / 2 };
   };
+  if (mobile) below(16, vw - 16, capB + 24);
+  else {
+    const L0 = cps.left, R0 = dev.xr - 48, top = capB + 34, availH = vh - 40 - top;
+    sw = 2 * 150 + 8; const availW = R0 - L0 - sw - 32;
+    if (availW < 330 * .62) below(L0, R0, top);
+    else {
+      k = Math.min(1, availH / NEED, availW / 330);
+      const pageTop = top + Math.max(0, (availH - NEED * k) / 2);
+      home = { x: L0 + Math.max(165 * k, availW / 2), y: pageTop + PH * k / 2 };
+      sLeft = R0 - sw; sTop = pageTop + NEED * k / 2 - SH / 2;
+    }
+  }
+  sortEl.style.cssText = `left:${(sLeft - cps.left).toFixed(1)}px; top:${(sTop - off).toFixed(1)}px; width:${sw.toFixed(1)}px`;
+  const tw = (sw - 8) / 2;
+  deck.layout({ home, k, folder: i => { const x0 = sLeft + (i % 2) * (tw + 8), y0 = sTop + (i >> 1) * (TH + 8); return { x: x0 + tw / 2, top: y0, y: y0 + TH / 2 }; } });
 }
 const prog = (id, y) => clamp((y - secs[id].top) / secs[id].range, 0, 1);
 
 /* ---------------------------------------------------------- Kapitel --- */
 const caps = $$("[data-cap]"), sortEl = $("[data-sort]");
-const rowEl = Object.fromEntries($$("[data-row]").map(r => [r.dataset.row, r]));
 const tick = $("[data-tick]"); for (let i = 0; i < 22; i++) tick.appendChild(document.createElement("i"));
 const ticks = [...tick.children];
-/* Fällig am 9. November: derselbe Bescheid (1.284,00 €), den das iPhone im Kapitel Fristen zeigt */
+/* Fällig am 10. November: derselbe Bescheid (1.284,00 €), den das iPhone im Kapitel Fristen zeigt */
 const due = STICHTAG(); due.setDate(due.getDate() + 13);
 const d21 = new Date(due); d21.setDate(d21.getDate() - 21); const d7 = new Date(due); d7.setDate(d7.getDate() - 7);
 const fmt = d => d.toLocaleDateString("de-DE", { day: "numeric", month: "short" });
@@ -501,7 +508,7 @@ function chapters(y) {
   const ps = prog("story", y), pf = prog("frist", y), pq = prog("suche", y), pt = prog("trust", y), mid = vh * .5;
   const cap = ps < .12 ? 0 : ps < SORTED + .005 ? 1 : 2;
   if (cap !== lastCap) { caps.forEach((c, i) => c.classList.toggle("on", i === cap)); lastCap = cap; }
-  sortEl.classList.toggle("on", y > secs.story.top && ps > .15 && ps < (mobile ? SORTED + .01 : .98));   /* erst, wenn der Stapel liegt */
+  sortEl.classList.toggle("on", y > secs.story.top && ps > .12 && ps < (mobile ? SORTED + .01 : .98));   /* erst, wenn der Stapel liegt */
 
   let a = "scan", notif = 0;
   if (y < secs.frist.top - mid) { if (ps > SORTED) a = "archiv"; }
@@ -576,7 +583,11 @@ function measureFade() {
   blenden = [];
   for (const pin of $$(".pin")) {
     const p = pin.getBoundingClientRect().top;
-    for (const el of pin.querySelectorAll(".tx > *, .cap > *, .sort > .row")) { const r = el.getBoundingClientRect(); blenden.push({ el, pin, off: r.top - p, h: r.height, o: -1 }); }
+    for (const el of pin.querySelectorAll(".tx > *, .cap > *, .sort > .fold")) {
+      /* Ausgeblendetes (am Handy z. B. die Tagesleiste) hat kein Rechteck — gemessen ergäbe es je nach Scrollstelle
+         Unsinn, und das iPhone sprang in Größe und Lage oder verschwand (Josef, 28.10.2026) */
+      if (!el.getClientRects().length) continue;
+      const r = el.getBoundingClientRect(); blenden.push({ el, pin, off: r.top - p, h: r.height, o: -1 }); }
   }
 }
 function edgeFade() {
@@ -592,18 +603,12 @@ function edgeFade() {
 }
 
 /* ---------------------------------------------------------- Briefe ---- */
-const d2r = Math.PI / 180, qTmp = new st.THREE.Quaternion(), eTmp = new st.THREE.Euler(), flat = new st.THREE.Quaternion();
-const frameG = $("[data-frame]"), tagEl = $("[data-tag]");
-const rectOf = el => el.getBoundingClientRect();
-function rowWorld(id) { const r = rectOf(rowEl[id].querySelector(".row__sw")); return st.toWorld((r.left + r.width / 2) / vw - .5, (r.top + r.height / 2) / vh - .5, 0); }
-const V3 = st.THREE.Vector3, arcA = new V3(), arcB = new V3(), arcC = new V3();
-const rowState = {};
+const d2r = Math.PI / 180, qTmp = new st.THREE.Quaternion(), eTmp = new st.THREE.Euler(), deckEl = $("#deck");
 function lettersAt(y, ps, now) {
   const F = mobile ? FLOAT_M : FLOAT, sc = mobile ? .38 : .56, n = FLY.length;
-  const act = [], rows = {};
   items.forEach((l, i) => {
     const f = F[i], t = now / 1000 + i * 1.7;
-    let p = st.toWorld(f.x, f.y, f.z), rx = f.rx, ry = f.ry, rz = f.rz, s = sc, o = 1, fold = 1, glow = 0, lit = 0;
+    let p = st.toWorld(f.x, f.y, f.z), rx = f.rx, ry = f.ry, rz = f.rz, s = sc, o = 1, fold = 1, lit = 0;
     if (!reduce) { p.y += Math.sin(t * .6) * 5; rz += Math.sin(t * .45) * 4; ry += Math.cos(t * .38) * 7; }
     /* Am Handy liegt die Ruhelage oben und unten ganz im Bild (zur Seite darf ein Brief hinaus):
        Safari schneidet feste Ebenen an seinen Leisten ab. Von dort fliegt er wie gehabt weiter. */
@@ -612,133 +617,29 @@ function lettersAt(y, ps, now) {
       st.fitY(l, 10, vh - 10); p.y = l.group.position.y;
     }
     const fly = FLY.findIndex(x => x.i === i);
-    /* Auf den Stapel: wer zuletzt gelesen wird, liegt zuunterst und kommt zuerst an */
+    /* In den Fächer: wer zuletzt gelesen wird, liegt hinten und kommt zuerst an */
     const tp = y < secs.story.top ? 0 : ease(clamp((ps - (fly < 0 ? 0 : (n - 1 - fly) * .022)) / .075, 0, 1));
     if (fly < 0) { o = 1 - clamp(tp * 2.2, 0, 1); p.x += Math.sign(f.x || 1) * tp * 160; p.z -= tp * 120; }
     else if (tp > 0) {
-      const pile = st.toWorld(area.fx, area.fy, 30 + (n - 1 - fly) * 24);
-      pile.x += (fly * 29 % 40 - 20); pile.y += (fly * 17 % 20 - 10);
-      p.lerp(pile, tp); p.z += Math.sin(Math.PI * tp) * 90; s = lerp(sc, area.sPile, tp);
-      rx = lerp(rx, -24, tp); ry = lerp(ry, 0, tp); rz = lerp(rz, [-14, 9, -4, 16][fly], tp);
-      fold = lerp(1, .3, tp);
+      /* genau dorthin, wo ihn der Fächer übernimmt (js/deck.js): flach, von vorn, gleich groß */
+      const r = deck.restPose(fly), z = 60 - fly * 10;
+      p.lerp(st.toWorld(r.x / vw - .5, r.y / vh - .5, z), tp); p.z += Math.sin(Math.PI * tp) * 90;
+      s = lerp(sc, r.w / (105 * pxmm(z)), tp); rx = lerp(rx, 0, tp); ry = lerp(ry, 0, tp); rz = lerp(rz, -r.rot, tp);
+      fold = lerp(1, 0, tp); lit = tp;
+      o = 1 - clamp((ps - PS_SWAP) / .006, 0, 1);
     }
+    if (fly >= 0 && y > secs.frist.top - vh * .5) o = 0;
     eTmp.set(rx * d2r, ry * d2r, rz * d2r); qTmp.setFromEuler(eTmp);
-    if (fly >= 0) {
-      const t0 = START + fly * STEP, u = clamp((ps - t0) / SPAN, 0, 1), to = FLY[fly].to;
-      const r = rows[to] || (rows[to] = { n: 0, note: "", p: 0 });
-      if (y > secs.frist.top - vh * .5) o = 0;
-      if (u > 0) {
-        const spot = st.toWorld(area.fx, area.spotY, 250);     /* weit vor dem Stapel */
-        const a = ease(clamp(u / .18, 0, 1));                  /* heben und glätten */
-        p.lerp(spot, a); qTmp.slerp(flat, a); fold = lerp(.3, 0, a); s = lerp(area.sPile, area.sScan, a); lit = a;   /* frontal zum Licht: hell wie Papier */
-        if (u < 1) act[fly] = { l, u };
-        glow = u > .24 && u < .32 ? Math.sin((u - .24) / .08 * Math.PI) * .26 : 0;   /* die Ecken rasten ein: das Foto */
-        /* Einsortieren: der Brief wird klein wie eine Karteikarte und gleitet in einem Bogen
-           in seine Zeile. Am Rechner oben herum, nie durch andere Zeilen hindurch; am Handy,
-           wo die Ordner darunter liegen, erst zur Seite und dann hinein. */
-        const k = clamp((u - .64) / .36, 0, 1);
-        if (k > 0) {
-          const c = k < .5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2;
-          arcA.copy(p); arcC.copy(rowWorld(to)); arcC.z = 60;
-          if (mobile) arcB.set(arcC.x, arcA.y - 20, 170); else arcB.set((arcA.x + arcC.x) / 2, Math.max(arcA.y, arcC.y) + 70, 180);
-          const m = 1 - c; p.set(m * m * arcA.x + 2 * m * c * arcB.x + c * c * arcC.x, m * m * arcA.y + 2 * m * c * arcB.y + c * c * arcC.y, m * m * arcA.z + 2 * m * c * arcB.z + c * c * arcC.z);
-          s = lerp(s, sc * .09, Math.pow(c, .7));
-          eTmp.set(0, 0, -Math.sin(Math.PI * c) * 10 * d2r); qTmp.multiply(new st.THREE.Quaternion().setFromEuler(eTmp));
-          o = 1 - clamp((c - .82) / .18, 0, 1);
-        }
-        if (u >= 1) { r.n++; r.note = FLY[fly].note; o = 0; }
-        /* Die Zeile nimmt ihn auf: ein kurzes Aufleuchten, danach ist sie wieder ruhig */
-        const pk = clamp((ps - (t0 + SPAN * .92)) / .03, 0, 1);
-        if (pk > 0 && pk < 1) r.p = Math.max(r.p, Math.sin(Math.PI * pk));
-      }
-    }
     l.group.position.copy(p); l.group.quaternion.copy(qTmp); l.group.scale.setScalar(s);
     l.group.visible = o > .01;
     l.mats.forEach(m => { m.transparent = o < .999; m.opacity = o; });
-    l.mats[0].emissiveIntensity = .16 + lit * .2 + glow;               /* Papier leuchtet leicht aus sich heraus — heller, nie grau */
-    /* Vor dem Sucher liegt das Blatt ganz glatt — sonst säßen die Markierungen neben der Schrift */
-    const curl = (.4 + .6 * fold) * (1 - lit);
-    if (Math.abs((l._fold ?? 1) - fold) > .02 || Math.abs((l._curl ?? 1) - curl) > .02) { st.bendSheet(l.geo, l.w, l.h, l.fold[0] * fold, l.fold[1] * fold, l.curl * curl); l._fold = fold; l._curl = curl; }
+    l.mats[0].emissiveIntensity = .16 + lit * .2;               /* frontal zum Licht: hell wie Papier */
+    if (Math.abs((l._fold ?? 1) - fold) > .02) { st.bendSheet(l.geo, l.w, l.h, l.fold[0] * fold, l.fold[1] * fold, l.curl * fold); l._fold = fold; }
   });
-  drawScan(act, ps); drawTag(act);
-  for (const id in rowEl) {
-    const r = rows[id] || { n: 0, note: "", p: 0 }, el = rowEl[id], was = rowState[id] || { n: 0, note: "", p: 0 };
-    if (r.n !== was.n) {
-      el.querySelector("[data-n]").textContent = r.n; el.classList.toggle("has", r.n > 0);
-      if (r.n > was.n) { el.classList.remove("bump"); void el.offsetWidth; el.classList.add("bump"); }
-    }
-    if (r.note !== was.note) el.querySelector("[data-note]").textContent = r.note;
-    if (r.p !== was.p) el.style.setProperty("--p", r.p.toFixed(3));
-    rowState[id] = r;
-  }
-}
-
-/* Der Scan: Vier Ecken stehen wie ein Sucher dort, wo gelesen wird. Jeder Brief hebt
-   sich hinein, die Ecken rasten ein (das Foto), ein weiches Licht fährt über das Blatt
-   wie in der App, und was PostSafe liest, wird nachgezogen. Dann lassen die Ecken los
-   und der Brief fliegt mit seinem Schildchen in den Ordner. Für jeden Brief gleich und
-   neutral — die Farbe des Ordners zeigt erst das Schildchen. */
-const paperEl = $("[data-paper]");
-const rise = (v, a, b) => clamp((v - a) / (b - a), 0, 1);
-const inOut = t => t < .5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
-const snap = t => { const c = 1.4; return 1 + (c + 1) * Math.pow(t - 1, 3) + c * Math.pow(t - 1, 2); };   /* rastet mit einem Hauch Überschwung ein */
-function corner(x, y, dx, dy, L, R) {      /* eine Ecke wie im App-Symbol: Arm, Rundung, Arm */
-  return `M${x} ${y + dy * L}V${y + dy * R}A${R} ${R} 0 0 ${dx * dy > 0 ? 1 : 0} ${x + dx * R} ${y}H${x + dx * L}`;
-}
-function halves(x0, y0, x1, y1, r) {       /* ein gerundetes Feld als zwei Hälften: oben Mitte → unten Mitte */
-  const m = (x0 + x1) / 2;
-  return [`M${m} ${y0}H${x1 - r}A${r} ${r} 0 0 1 ${x1} ${y0 + r}V${y1 - r}A${r} ${r} 0 0 1 ${x1 - r} ${y1}H${m}`,
-          `M${m} ${y0}H${x0 + r}A${r} ${r} 0 0 0 ${x0} ${y0 + r}V${y1 - r}A${r} ${r} 0 0 0 ${x0 + r} ${y1}H${m}`];
-}
-const n1 = v => v.toFixed(1);
-function drawScan(act, ps) {
-  const lastT0 = START + (FLY.length - 1) * STEP;
-  const vis = rise(ps, START, START + .12 * SPAN) * (1 - rise(ps, lastT0 + .62 * SPAN, lastT0 + .72 * SPAN));
-  if (vis <= .001) { if (frameG.innerHTML) frameG.innerHTML = ""; return; }
-  let lock = 0;
-  for (const a of act) if (a) lock = Math.max(lock, snap(rise(a.u, .12, .24)) * (1 - inOut(rise(a.u, .58, .68))));
-  const cx = (area.fx + .5) * vw, cy = (area.spotY + .5) * vh, ppm = area.sScan * pxmm(250);
-  const hw = 105 * ppm / 2, hh = 148.5 * ppm / 2, pad = lerp(22, 9, lock);
-  const x0 = cx - hw - pad, x1 = cx + hw + pad, y0 = cy - hh - pad, y1 = cy + hh + pad;
-  const L = Math.min(54, (x1 - x0) * .2), R = L * .39, sw = clamp((x1 - x0) * .011, 2.2, 3.2);
-  let svg = `<path class="br" stroke-width="${sw.toFixed(2)}" opacity="${(vis * (.45 + .55 * clamp(lock, 0, 1))).toFixed(3)}" d="${
-    [corner(x0, y0, 1, 1, L, R), corner(x1, y0, -1, 1, L, R), corner(x1, y1, -1, -1, L, R), corner(x0, y1, 1, -1, L, R)].join("")}"/>`;
-  const fly = act.findIndex(a => a && a.u > .26 && a.u < .66);
-  if (fly >= 0) {
-    const { l, u } = act[fly], c = st.corners(l), xs = c.map(v => v[0]), ys = c.map(v => v[1]);
-    const X0 = Math.min(...xs), X1 = Math.max(...xs), Y0 = Math.min(...ys), Y1 = Math.max(...ys);
-    paperEl.setAttribute("points", c.map(v => n1(v[0]) + "," + n1(v[1])).join(" "));
-    /* Ungelesenes liegt unter einem Hauch Schatten; das Licht fährt darüber und lässt hell zurück, was gelesen ist */
-    const swp = rise(u, .26, .52), ly = lerp(Y0 - 2, Y1 + 30, inOut(swp)), veil = rise(u, .2, .26), out = 1 - rise(u, .58, .64);
-    if (swp < 1 && veil > 0) svg += `<g clip-path="url(#paper)" opacity="${veil.toFixed(3)}"><rect class="veil" x="${n1(X0)}" y="${n1(ly)}" width="${n1(X1 - X0)}" height="${n1(Math.max(0, Y1 - ly + 2))}"/>${swp > 0 ? `<rect class="light" x="${n1(X0)}" y="${n1(ly - 10)}" width="${n1(X1 - X0)}" height="20"/>` : ""}</g>`;
-    for (const key of FLY[fly].boxes) {
-      const b = l.boxes && l.boxes[key]; if (!b || out <= 0) continue;
-      const p0 = st.project(l, b[0], b[1]), p1 = st.project(l, b[0] + b[2], b[1] + b[3]);
-      const bx = Math.min(p0[0], p1[0]) - .5, by = Math.min(p0[1], p1[1]) - 1, bw = Math.abs(p1[0] - p0[0]) + 1, bhh = Math.abs(p1[1] - p0[1]) + 2;   /* das Feld hat schon etwas Rand (letters.js) */
-      const tr = swp >= 1 ? 1 : inOut(rise(ly, by, by + bhh + 70));   /* das Licht zieht das Feld nach, von oben nach unten */
-      if (tr <= 0) continue;
-      for (const d of halves(bx, by, bx + bw, by + bhh, Math.min(5, bhh / 2)))
-        svg += `<path class="hl" pathLength="1" stroke-dashoffset="${(1 - tr).toFixed(3)}" opacity="${out.toFixed(3)}" d="${d}"/>`;
-    }
-  }
-  frameG.innerHTML = svg;
-}
-
-/* Das Ergebnis des Lesens: ein Schildchen mit dem Ordner in seiner Farbe. Es steigt
-   unter dem Brief auf und fliegt an ihm haftend mit in den Ordner. */
-let tagFor = -1, tagW = 0, tagH = 0;
-function drawTag(act) {
-  const fly = act.findIndex(a => a && a.u > .46);
-  if (fly < 0) { if (tagFor !== -1) { tagEl.style.opacity = 0; tagFor = -1; } return; }
-  const { l, u } = act[fly], def = FLY[fly], row = rowEl[def.to];
-  if (tagFor !== fly) { tagFor = fly; tagEl.style.setProperty("--c", getComputedStyle(row).getPropertyValue("--c")); tagEl.innerHTML = `<i></i><b>${row.querySelector("b").textContent}</b><span>${def.tag}</span>`; tagW = tagEl.offsetWidth; tagH = tagEl.offsetHeight; }
-  const c = st.corners(l), xs = c.map(v => v[0]), Y1 = Math.max(...c.map(v => v[1]));
-  const r = clamp((Math.max(...xs) - Math.min(...xs)) / (105 * area.sScan * pxmm(250)), .3, 1);   /* so groß wie der Brief gerade */
-  const ae = 1 - Math.pow(1 - rise(u, .46, .54), 3), fl = inOut(rise(u, .64, 1));
-  const sc = lerp(.9, 1, ae) * r, x = (Math.min(...xs) + Math.max(...xs)) / 2 - tagW / 2;
-  const yy = Y1 + (mobile ? 24 : 34) * r + tagH * sc / 2 - tagH / 2 - (1 - ae) * 12;
-  tagEl.style.opacity = (ae * (1 - rise(fl, .5, .85))).toFixed(3);
-  tagEl.style.transform = `translate3d(${x.toFixed(1)}px, ${yy.toFixed(1)}px, 0) scale(${sc.toFixed(3)})`;
+  /* Ab hier liegt der Fächer, und es wird gelesen und abgelegt */
+  const on = y >= secs.story.top && y < secs.frist.top && ps > PS_SWAP - .006 && ps < PS_END + .02;
+  deckEl.style.opacity = clamp((ps - (PS_SWAP - .006)) / .006, 0, 1).toFixed(3);
+  deck.render((ps - PS_SWAP) / (PS_END - PS_SWAP) * deck.END, on);
 }
 
 /* ---------------------------------------------------------- Lauf ------ */

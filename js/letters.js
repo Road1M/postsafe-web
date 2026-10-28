@@ -10,7 +10,7 @@ const FONT = '"Helvetica Neue", Helvetica, Arial, sans-serif';
 function day(offset) {
   /* Fester Stichtag: derselbe Tag, an dem die App-Bildschirme dieser Seite aufgenommen sind —
      sonst liefen Briefe und iPhone mit jedem Tag weiter auseinander. */
-  const d = new Date(2026, 9, 27, 9); d.setDate(d.getDate() + offset);
+  const d = new Date(2026, 9, 28, 9); d.setDate(d.getDate() + offset);
   return d;
 }
 const dmy = d => String(d.getDate()).padStart(2, "0") + "." + String(d.getMonth() + 1).padStart(2, "0") + "." + d.getFullYear();
@@ -128,7 +128,7 @@ export const LETTERS = [
 ];
 
 /* ---------------------------------------------------------- Papier ---- */
-function paper(ctx, w, h, base) {
+export function paper(ctx, w, h, base) {
   ctx.fillStyle = base; ctx.fillRect(0, 0, w, h);
   const img = ctx.getImageData(0, 0, w, h), d = img.data;
   for (let i = 0; i < d.length; i += 4) {                     /* Papierkorn */
