@@ -10,7 +10,7 @@
 <link rel="icon" href="favicon.png?v=3" type="image/png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=3">
 <link rel="canonical" href="https://postsafe.eu/web.html">
-<link rel="stylesheet" href="seite.css?v=32">
+<link rel="stylesheet" href="seite.css?v=33">
 <style>
 .dev-fixed{position:fixed; z-index:30; left:0; top:0; pointer-events:none; will-change:transform}
 .hero{min-height:100svh; display:flex; align-items:center}
@@ -180,7 +180,7 @@
 <!-- Die Logik der echten Seite, unverändert: vier Ziffern werden zu einer Adresse im WLAN. -->
 <script src="web.js?v=3"></script>
 <script type="module">
-import { mountDevice } from "./js/screens.js?v=28";
+import { mountDevice, BEZEL } from "./js/screens.js?v=29";
 import { mountBrowser } from "./js/browser.js?v=26";
 import { smoothScroll } from "./js/smooth.js?v=24";
 import { footBase } from "./js/fuss.js?v=25";
@@ -207,14 +207,14 @@ const isDark = () => root.getAttribute("data-theme") === "dark" || (!root.hasAtt
 $("#theme").addEventListener("click", () => { const n = isDark() ? "light" : "dark"; root.setAttribute("data-theme", n); applyTheme(); });
 
 const devEl = $("#device"), screen = mountDevice(devEl);
-screen.setTheme("dunkel");   /* das iPhone zeigt die App immer dunkel (Josef, 2026-10-20) */
 screen.preload(["web", "du", "anfrage"]);
 let browser = null;
 mountBrowser($("[data-browser]"), { height: 680 }).then(b => { browser = b; applyTheme(); });
 /* Safari färbt seine Leisten oben und unten nach der Seite. Wer am dunklen iPhone auf hell
    schaltet, bekäme sonst weiter die dunkle Leistenfarbe aus theme-color. */
 const barColor = d => $$('meta[name="theme-color"]').forEach(m => m.content = d ? "#070707" : "#F1F1EF");
-function applyTheme() { const d = isDark(); barColor(d); if (browser) browser.setDark(d); }
+/* Die App im iPhone steht immer gegen die Seite: auf der hellen Seite dunkel, auf der dunklen hell (Josef, 28.10.2026) */
+function applyTheme() { const d = isDark(); barColor(d); if (browser) browser.setDark(d); screen.setTheme(d ? "hell" : "dunkel"); }
 applyTheme(); matchMedia("(prefers-color-scheme: dark)").addEventListener("change", applyTheme);
 
 /* Vier Kästchen, die zeigen, was im echten Feld steht */
@@ -231,7 +231,7 @@ input.addEventListener("blur", () => { focused = false; paintCells(); });
 paintCells();
 
 /* Wo es in der App steht — in Pixeln der Aufnahme (Punkte × 3) */
-const RING = { row: { x: 90, y: 1650, w: 1028, h: 130, r: 44 }, code: { x: 41, y: 671, w: 1123, h: 826, r: 98 }, step3: { x: 622, y: 1588, w: 476, h: 134, r: 67 } };
+const RING = { row: { x: 47, y: 1733, w: 1226, h: 158, r: 44 }, code: { x: 48, y: 679, w: 1224, h: 823, r: 100 }, step3: { x: 678, y: 1601, w: 534, h: 135, r: 67 } };
 
 /* Eine feste Höhe (100svh): Safaris Leiste unten wird am iPhone beim Wischen klein und groß, und mit der
    wechselnden Fensterhöhe sprang das iPhone jedes Mal auf eine neue Größe (siehe index.html). */
@@ -243,8 +243,8 @@ let vw, vh, mobile, secs = {}, dev = {};
 function measure() {
   vw = innerWidth; vh = stableH(); mobile = vw <= 820 || vw / vh < .9;
   for (const id of ["hero", "schritte"]) { const el = document.getElementById(id); secs[id] = { top: el.getBoundingClientRect().top + scrollY, h: el.offsetHeight, range: Math.max(1, el.offsetHeight - vh) }; }
-  if (mobile) { dev.h = vh * .46; dev.w = dev.h * 1350 / 2760; dev.x = (vw - dev.w) / 2; dev.y = vh - dev.h - 18; }
-  else { dev.h = Math.min(vh * .82, 780); dev.w = dev.h * 1350 / 2760; dev.x = Math.min(vw * .72, vw - dev.w * .5 - 60) - dev.w / 2; dev.y = (vh - dev.h) / 2 + 12; }
+  if (mobile) { dev.h = vh * .46; dev.w = dev.h * BEZEL.w / BEZEL.h; dev.x = (vw - dev.w) / 2; dev.y = vh - dev.h - 18; }
+  else { dev.h = Math.min(vh * .82, 780); dev.w = dev.h * BEZEL.w / BEZEL.h; dev.x = Math.min(vw * .72, vw - dev.w * .5 - 60) - dev.w / 2; dev.y = (vh - dev.h) / 2 + 12; }
   devEl.style.width = dev.w + "px";
   measureFade();
   texte = $$("main h1, main h2, main .lede, main .pair, main .soon, main .tx > p, main .steps li.on, main .after > .wrap > p");

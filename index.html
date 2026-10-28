@@ -21,7 +21,7 @@
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="PostSafe — Deine Post kennt ihren Platz.">
 <meta name="twitter:card" content="summary_large_image">
-<link rel="stylesheet" href="seite.css?v=32">
+<link rel="stylesheet" href="seite.css?v=33">
 <style>
 /* Hero */
 .hero{min-height:100svh; display:flex; align-items:center; position:relative}
@@ -72,12 +72,13 @@
 .tag span{color:var(--ink-2)}
 .scanframe{position:fixed; z-index:31; left:0; top:0; width:100vw; height:130vh; pointer-events:none; overflow:visible}   /* höher als das Fenster, sonst nimmt Safari am iPhone ihn als Leiste (siehe .stage-halter) */
 /* Der Scan ist für jeden Brief gleich: neutral, in der Farbe der Schrift. Welcher
-   Ordner es wird, zeigt erst das Schildchen — wenn der Brief gelesen ist. */
-.scanframe .br{fill:none; stroke:var(--ink); stroke-width:5; stroke-linecap:round; stroke-linejoin:round}
-.scanframe .hl{fill:rgba(13,13,15,.07); stroke:rgba(13,13,15,.55); stroke-width:1.5}
-.scanframe .band{fill:url(#band)}
-.scanframe .line{fill:#0D0D0F}
-.scanframe .glow{fill:#0D0D0F; opacity:.35; filter:url(#glow)}
+   Ordner es wird, zeigt erst das Schildchen — wenn der Brief gelesen ist. Die Ecken
+   sind die des App-Symbols (Arm, Rundung und runde Enden im selben Verhältnis); Licht
+   und Markierungen liegen auf dem Papier und haben darum dessen Schriftfarbe. */
+.scanframe .br{fill:none; stroke:var(--ink); stroke-linecap:round; stroke-linejoin:round}
+.scanframe .veil{fill:#0D0D0F; fill-opacity:.08}
+.scanframe .light{fill:url(#light)}
+.scanframe .hl{fill:none; stroke:#0D0D0F; stroke-opacity:.5; stroke-width:1.4; stroke-dasharray:1 1}
 
 /* Kapitel 2: Fristen */
 #frist .tx h2{font-size:clamp(34px,3.8vw,58px)}
@@ -123,17 +124,7 @@
 .webs__hint{font-family:var(--mono); font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--ink-3); margin-top:16px}
 
 /* Kapitel 6 ff. */
-.keep{padding-block:14vh 12vh; position:relative; z-index:31}
-.keep h2{font-size:clamp(44px,7.4vw,124px)}
-.keep p{font-size:clamp(18px,1.6vw,22px); color:var(--ink-2); max-width:40ch; margin:26px 0 0}
-/* Zwei Ordnerkarten aus der App, flach übereinander wie ein Stapel Ordner: oben sieht man noch den
-   Namen der hinteren. Sie bewegen sich nicht und klappen nicht auf — am Handy ging das nur per Tippen
-   und machte die Seite breiter (Josef, 27.10.2026). */
-.fan{display:grid; width:min(420px,100%); margin-top:56px}
-.fan img{grid-area:1/1; width:100%; height:auto; filter:drop-shadow(0 18px 28px rgba(0,0,0,.22))}
-.fan img + img{margin-top:24%}
-.fan-note{font-family:var(--mono); font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--ink-3); margin-top:26px}
-.fine{padding-block:4vh 12vh; position:relative; z-index:31}
+.fine{padding-block:10vh 12vh; position:relative; z-index:31}
 .fine h3{font-size:clamp(26px,2.6vw,36px); font-weight:600; letter-spacing:-.03em; margin:0 0 34px; max-width:22ch}
 .fine__grid{display:grid; grid-template-columns:repeat(4,1fr); border-top:1px solid var(--line)}
 .fine__grid p{margin:0; padding:22px 26px 0 0; font-size:15px; color:var(--ink-2); line-height:1.5}
@@ -284,19 +275,6 @@
     </div>
   </section>
 
-  <section class="keep">
-    <div class="wrap">
-      <p class="eyebrow">Ohne Ablaufdatum</p>
-      <h2 class="display">Was einmal drin ist, <b>bleibt dir.</b></h2>
-      <p>Auch wenn du eines Tages aufhörst: Deine Briefe bleiben lesbar, durchsuchbar und exportierbar.</p>
-      <div class="fan" role="img" aria-label="Zwei deiner Ordner, aufgefächert">
-        <img src="img/karte-wohnen.png?v=5" alt="Ordner Wohnen">
-        <img src="img/karte-behoerde.png?v=5" alt="Ordner Behörde">
-      </div>
-      <p class="fan-note">Abo beendet — neue Scans pausieren. Deine Ordner bleiben.</p>
-    </div>
-  </section>
-
   <section class="fine">
     <div class="wrap">
       <h3>Für alle, die es genauer wissen wollen</h3>
@@ -346,14 +324,14 @@
 <div class="dev-fixed" id="device" aria-label="PostSafe auf dem iPhone" role="img"></div>
 <div class="dev-start" id="deviceStart" aria-hidden="true"></div>
 <div class="tag" data-tag aria-hidden="true" style="opacity:0"></div>
-<svg class="scanframe" aria-hidden="true"><defs><linearGradient id="band" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0D0D0F" stop-opacity="0"/><stop offset="1" stop-color="#0D0D0F" stop-opacity=".2"/></linearGradient><filter id="glow" x="-10%" y="-400%" width="120%" height="900%"><feGaussianBlur stdDeviation="3"/></filter></defs><g data-frame></g></svg>
+<svg class="scanframe" aria-hidden="true"><defs><linearGradient id="light" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".5" stop-color="#fff" stop-opacity=".95"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient><clipPath id="paper"><polygon data-paper points=""/></clipPath></defs><g data-frame></g></svg>
 
 <script type="module">
 /* ?v= hält Seite und Skripte beisammen: Ein Browser darf sonst eine neue Seite mit einem alten
    Skript aus dem Zwischenspeicher paaren, und dann bleibt alles stehen. Bei jeder Änderung unter
    js/ die Zahl hier, in web.html und in js/browser.js erhöhen. */
 import { createStage } from "./js/stage.js?v=25";
-import { mountDevice } from "./js/screens.js?v=28";
+import { mountDevice, BEZEL } from "./js/screens.js?v=29";
 import { LETTERS, drawLetter, drawBack, drawEnvelope, drawEnvelopeBack } from "./js/letters.js?v=25";
 import { mountBrowser } from "./js/browser.js?v=26";
 import { smoothScroll } from "./js/smooth.js?v=24";
@@ -383,16 +361,19 @@ $("#theme").addEventListener("click", () => { const n = isDark() ? "light" : "da
 
 /* ---------------------------------------------------------- iPhone ---- */
 const devEl = $("#device"), screen = mountDevice(devEl);
-const startEl = $("#deviceStart"), startScreen = mountDevice(startEl); startScreen.setTheme("dunkel"); startScreen.set({ a: "scan" });
-screen.setTheme("dunkel");   /* das iPhone zeigt die App immer dunkel (Josef, 2026-10-20) */
+const startEl = $("#deviceStart"), startScreen = mountDevice(startEl); startScreen.set({ a: "scan" });
 screen.preload(["scan", "archiv", "brief", "suche0", "suche1", "einst"]);
-const webDev = mountDevice($("[data-webdevice]")); webDev.setTheme("dunkel"); webDev.set({ a: "web" });
+const webDev = mountDevice($("[data-webdevice]")); webDev.set({ a: "web" });
 let browser = null;
 mountBrowser($("[data-browser]"), { height: 640 }).then(b => { browser = b; applyTheme(); });
 /* Safari färbt seine Leisten oben und unten nach der Seite. Wer am dunklen iPhone auf hell
    schaltet, bekäme sonst weiter die dunkle Leistenfarbe aus theme-color. */
 const barColor = d => $$('meta[name="theme-color"]').forEach(m => m.content = d ? "#070707" : "#F1F1EF");
-function applyTheme() { const d = isDark(); barColor(d); if (browser) browser.setDark(d); }
+/* Die App im iPhone steht immer gegen die Seite: auf der hellen Seite dunkel, auf der dunklen hell —
+   so heben sich Kacheln, Kanten und Felder ab (Josef, 28.10.2026).
+   „Dein Speicher“ ist eine umgekehrte Karte; dort steht die App gegen die Karte (chapters). */
+let pageDark = false;
+function applyTheme() { const d = pageDark = isDark(), app = d ? "hell" : "dunkel"; barColor(d); if (browser) browser.setDark(d); [screen, startScreen, webDev].forEach(s => s.setTheme(app)); screen.preload(["einst"], d ? "dunkel" : "hell"); }
 applyTheme(); matchMedia("(prefers-color-scheme: dark)").addEventListener("change", applyTheme);
 
 /* ---------------------------------------------------------- Briefe ---- */
@@ -425,9 +406,10 @@ const FLY = [
   { i: 2, to: "rechnungen", tag: "49,95 €", note: "Mobilfunk · 49,95 €", boxes: ["sender", "subject", "amount"] },
   { i: 5, to: "bank", tag: "Neue Entgelte", note: "Hausbank · neue Entgelte", boxes: ["sender", "subject"] }
 ];
-/* Der Ablauf im Kapitel (Anteil des Kapitels): in einem Zug alle vier Briefe. Jeder braucht
-   SPAN; der nächste hebt sich, sobald der vorige in seinen Ordner fliegt (STEP). */
-const START = .165, SPAN = .16, STEP = .1, SORTED = START + (FLY.length - 1) * STEP + SPAN;
+/* Der Ablauf im Kapitel (Anteil des Kapitels): in einem Zug alle vier Briefe, einer nach dem
+   anderen. Jeder braucht SPAN; der nächste hebt sich erst, wenn der vorige gelesen ist und
+   schon auf dem Weg in seinen Ordner (STEP) — es wird immer nur ein Brief gelesen. */
+const START = .165, SPAN = .16, STEP = .138, SORTED = START + (FLY.length - 1) * STEP + SPAN;
 const FLOAT = [
   { x: .02, y: -.4, z: -200, rx: 16, ry: -26, rz: -12 }, { x: .44, y: -.36, z: -300, rx: -10, ry: 30, rz: 14 },
   { x: .45, y: .38, z: -120, rx: 22, ry: -22, rz: -6 }, { x: .12, y: .47, z: 0, rx: -26, ry: 24, rz: 18 },
@@ -456,14 +438,14 @@ function measure() {
     /* Die Kapitelschrift steht über dem iPhone (siehe edgeFade). Bleibt darunter weniger als ein Drittel
        des Fensters (iPhone SE), zeigen die Kapitel kein iPhone — winzig wäre nichts darauf zu erkennen. */
     const texts = blenden.filter(b => !b.el.closest(".sort")).reduce((m, b) => Math.max(m, b.off + b.h), 0);
-    const full = Math.min(vh * .42, vw * 1.02 * 2760 / 1350 * .5), fits = vh - 18 - texts - DEV_KANTE - 4;
+    const full = Math.min(vh * .42, vw * 1.02 * BEZEL.h / BEZEL.w * .5), fits = vh - 18 - texts - DEV_KANTE - 4;
     dev.inChapters = fits >= vh * .3;
     dev.h = dev.inChapters ? Math.min(full, fits) : full;
-    dev.w = dev.h * 1350 / 2760; dev.xr = dev.xl = (vw - dev.w) / 2; dev.y = vh - dev.h - 18;
+    dev.w = dev.h * BEZEL.w / BEZEL.h; dev.xr = dev.xl = (vw - dev.w) / 2; dev.y = vh - dev.h - 18;
     /* Das iPhone der Startansicht: so groß wie in den Kapiteln, unter dem App-Store-Knopf, möglichst unten im ersten Bild */
     const knopf = $(".badges").getBoundingClientRect().bottom + scrollY;
     Object.assign(startEl.style, { display: "block", width: dev.w + "px", left: dev.xr + "px", top: Math.max(knopf + 14, dev.y) + "px" });
-  } else { startEl.style.display = "none"; dev.h = Math.min(vh * .82, 780); dev.w = dev.h * 1350 / 2760; dev.xr = Math.min(vw * .72, vw - dev.w * .5 - 60) - dev.w / 2; dev.xl = Math.max(vw * .27, dev.w * .5 + 60) - dev.w / 2; dev.y = (vh - dev.h) / 2 + 12; }
+  } else { startEl.style.display = "none"; dev.h = Math.min(vh * .82, 780); dev.w = dev.h * BEZEL.w / BEZEL.h; dev.xr = Math.min(vw * .72, vw - dev.w * .5 - 60) - dev.w / 2; dev.xl = Math.max(vw * .27, dev.w * .5 + 60) - dev.w / 2; dev.y = (vh - dev.h) / 2 + 12; }
   devEl.style.width = dev.w + "px";
   st.resize();
   measureScan();
@@ -472,16 +454,26 @@ function measure() {
    Ordnerkarten — mit Luft nach oben und unten. So liegt auf einem kleineren
    Bildschirm nichts über den Ordnern oder an der Überschrift. */
 let area = { fx: -.21, fy: .12, spotY: .1, sPile: .56, sScan: .39 };
+const pxmm = z => vh / (2 * (620 - z) * Math.tan(12 * Math.PI / 180));   /* Pixel je Millimeter des Briefs in der Tiefe z */
 function measureScan() {
-  if (mobile) { sortEl.style.cssText = "left:0; right:0; top:auto; bottom:6vh"; area = { fx: 0, fy: .08, spotY: .065, sPile: .33, sScan: .38 * .95 * (370 / 510) }; return; }
   const pin = $("#story .pin .wrap").getBoundingClientRect(), cps = $("#story .caps").getBoundingClientRect();
   const capB = Math.max(...caps.map(c => c.getBoundingClientRect().bottom - pin.top - (c.classList.contains("on") ? 0 : 22)));
+  if (mobile) {
+    /* Am Handy: der Brief so groß, wie er zwischen Überschrift und Ordnern Platz hat, mittig dazwischen.
+       Darüber Luft für die Ecken, darunter für das Schildchen. */
+    sortEl.style.cssText = "left:0; right:0; top:auto; bottom:6vh";
+    const ty = new DOMMatrix(getComputedStyle(sortEl).transform).m42 || 0;   /* ohne das Hereingleiten der Ordner */
+    const rowsTop = sortEl.getBoundingClientRect().top - ty - pin.top, top = capB + 30, bottom = rowsTop - 16 - 38 - 26;
+    const h = Math.max(150, Math.min(bottom - top, (vw - 64) * 148.5 / 105)), mid = (top + bottom) / 2;
+    const sScan = h / (148.5 * pxmm(250));
+    area = { fx: 0, fy: mid / vh - .5, spotY: mid / vh - .5, sPile: h * .64 / (148.5 * pxmm(66)), sScan };
+    return;
+  }
   /* Die Ordnerspalte steht links vom iPhone, der Brief mittig im Platz davor */
   const rw = sortEl.offsetWidth, rh = sortEl.offsetHeight, rowsL = dev.xr - 56 - rw;
   const left = cps.left, availW = rowsL - left;
   const top = capB + 36, bottom = vh - 40 - 64, gap = Math.max(160, bottom - top), midPx = (top + bottom) / 2;   /* unten Platz fürs Schildchen */
   sortEl.style.cssText = `left:${(rowsL - cps.left).toFixed(0)}px; top:${(midPx - rh / 2 - (cps.top - pin.top)).toFixed(0)}px`;
-  const pxmm = z => vh / (2 * (620 - z) * Math.tan(12 * Math.PI / 180));
   area = {
     fx: (left + availW * .5) / vw - .5, fy: midPx / vh - .5, spotY: midPx / vh - .5,
     sPile: Math.min(.56, (gap * .84 / pxmm(66) - 20) / 159, availW * .66 / (pxmm(66) * 118)),
@@ -501,6 +493,7 @@ const d21 = new Date(due); d21.setDate(d21.getDate() - 21); const d7 = new Date(
 const fmt = d => d.toLocaleDateString("de-DE", { day: "numeric", month: "short" });
 $("[data-t0]").textContent = fmt(d21); $("[data-t1]").textContent = fmt(d7) + " · Erinnerung"; $("[data-t2]").textContent = fmt(due) + " · Frist";
 const dueLong = due.toLocaleDateString("de-DE", { day: "numeric", month: "long" });
+const NOTE_TEXT = { title: "Frist", l1: "Finanzamt — noch 7 Tage, fällig am", l2: dueLong };
 const words = (() => { const r = $("[data-reveal]"); r.innerHTML = r.textContent.trim().split(/\s+/).map(w => `<span class="wd">${w}</span>`).join(" "); return $$(".reveal .wd"); })();
 let lastCap = -1, lastDays = -1, lastQ = null, lastW = -1;
 
@@ -508,14 +501,14 @@ function chapters(y) {
   const ps = prog("story", y), pf = prog("frist", y), pq = prog("suche", y), pt = prog("trust", y), mid = vh * .5;
   const cap = ps < .12 ? 0 : ps < SORTED + .005 ? 1 : 2;
   if (cap !== lastCap) { caps.forEach((c, i) => c.classList.toggle("on", i === cap)); lastCap = cap; }
-  sortEl.classList.toggle("on", y > secs.story.top && ps > .15 && ps < (mobile ? .67 : .98));   /* erst, wenn der Stapel liegt */
+  sortEl.classList.toggle("on", y > secs.story.top && ps > .15 && ps < (mobile ? SORTED + .01 : .98));   /* erst, wenn der Stapel liegt */
 
   let a = "scan", notif = 0;
   if (y < secs.frist.top - mid) { if (ps > SORTED) a = "archiv"; }
   else if (y < secs.suche.top - mid) { a = "brief"; notif = pf > .56 ? 1 : 0; }
   else if (y < secs.trust.top - mid) { a = pq > .5 ? "suche1" : "suche0"; }
   else a = "einst";
-  screen.set({ a, notif, notifText: { title: "Frist", l1: "Finanzamt — noch 7 Tage, fällig am", l2: dueLong } });
+  screen.set({ a, notif, notifText: a === "brief" ? NOTE_TEXT : null, theme: a === "einst" ? (pageDark ? "dunkel" : "hell") : null });   /* nur dort kommt sie; das Glas wird vorher vorbereitet */
 
   /* Fristen: 21 Tage schrumpfen auf 7 */
   const fk = clamp(pf / .55, 0, 1), days = Math.round(lerp(21, 7, 1 - Math.pow(1 - fk, 3)));   /* schnell los, sanft auf die 7 */
@@ -556,7 +549,7 @@ function placeDevice(y, ps, now) {
   const intro = reduce ? 1 : clamp((now - T0 - 250) / 1300, 0, 1), ie = 1 - Math.pow(1 - intro, 4);
   dy += (1 - ie) * (mobile ? 16 : vh * .35); op *= ie;
   if (mobile) {   /* in der Startansicht zeigt deviceStart das iPhone; dieses hier kommt mit den Ordnern */
-    const back = y < secs.story.top || !dev.inChapters ? 0 : clamp((ps - .67) / .1, 0, 1);
+    const back = y < secs.story.top || !dev.inChapters ? 0 : clamp((ps - SORTED - .02) / .1, 0, 1);
     dy += (1 - back) * 16; op *= back;
     startEl.style.opacity = ie.toFixed(3);
     startEl.style.transform = `translate3d(0, ${((1 - ie) * 16).toFixed(1)}px, 0)`;
@@ -607,7 +600,7 @@ const V3 = st.THREE.Vector3, arcA = new V3(), arcB = new V3(), arcC = new V3();
 const rowState = {};
 function lettersAt(y, ps, now) {
   const F = mobile ? FLOAT_M : FLOAT, sc = mobile ? .38 : .56, n = FLY.length;
-  let scan = null, tag = null; const rows = {};
+  const act = [], rows = {};
   items.forEach((l, i) => {
     const f = F[i], t = now / 1000 + i * 1.7;
     let p = st.toWorld(f.x, f.y, f.z), rx = f.rx, ry = f.ry, rz = f.rz, s = sc, o = 1, fold = 1, glow = 0, lit = 0;
@@ -638,16 +631,16 @@ function lettersAt(y, ps, now) {
         const spot = st.toWorld(area.fx, area.spotY, 250);     /* weit vor dem Stapel */
         const a = ease(clamp(u / .18, 0, 1));                  /* heben und glätten */
         p.lerp(spot, a); qTmp.slerp(flat, a); fold = lerp(.3, 0, a); s = lerp(area.sPile, area.sScan, a); lit = a;   /* frontal zum Licht: hell wie Papier */
-        if (u > .1 && u < .68) scan = { l, fly, u };
-        if (u > .4 && u < 1) tag = { l, fly, u };
-        glow = u > .2 && u < .3 ? Math.sin((u - .2) / .1 * Math.PI) * .3 : 0;
-        /* Einsortieren: der Brief wird klein wie eine Karteikarte und gleitet in
-           einem Bogen in seine Zeile — oben herum, nie durch andere Zeilen hindurch */
+        if (u < 1) act[fly] = { l, u };
+        glow = u > .24 && u < .32 ? Math.sin((u - .24) / .08 * Math.PI) * .26 : 0;   /* die Ecken rasten ein: das Foto */
+        /* Einsortieren: der Brief wird klein wie eine Karteikarte und gleitet in einem Bogen
+           in seine Zeile. Am Rechner oben herum, nie durch andere Zeilen hindurch; am Handy,
+           wo die Ordner darunter liegen, erst zur Seite und dann hinein. */
         const k = clamp((u - .64) / .36, 0, 1);
         if (k > 0) {
           const c = k < .5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2;
           arcA.copy(p); arcC.copy(rowWorld(to)); arcC.z = 60;
-          arcB.set((arcA.x + arcC.x) / 2, Math.max(arcA.y, arcC.y) + 70, 180);
+          if (mobile) arcB.set(arcC.x, arcA.y - 20, 170); else arcB.set((arcA.x + arcC.x) / 2, Math.max(arcA.y, arcC.y) + 70, 180);
           const m = 1 - c; p.set(m * m * arcA.x + 2 * m * c * arcB.x + c * c * arcC.x, m * m * arcA.y + 2 * m * c * arcB.y + c * c * arcC.y, m * m * arcA.z + 2 * m * c * arcB.z + c * c * arcC.z);
           s = lerp(s, sc * .09, Math.pow(c, .7));
           eTmp.set(0, 0, -Math.sin(Math.PI * c) * 10 * d2r); qTmp.multiply(new st.THREE.Quaternion().setFromEuler(eTmp));
@@ -663,9 +656,11 @@ function lettersAt(y, ps, now) {
     l.group.visible = o > .01;
     l.mats.forEach(m => { m.transparent = o < .999; m.opacity = o; });
     l.mats[0].emissiveIntensity = .16 + lit * .2 + glow;               /* Papier leuchtet leicht aus sich heraus — heller, nie grau */
-    if (Math.abs((l._fold ?? 1) - fold) > .02) { st.bendSheet(l.geo, l.w, l.h, l.fold[0] * fold, l.fold[1] * fold, l.curl * (.4 + .6 * fold)); l._fold = fold; }
+    /* Vor dem Sucher liegt das Blatt ganz glatt — sonst säßen die Markierungen neben der Schrift */
+    const curl = (.4 + .6 * fold) * (1 - lit);
+    if (Math.abs((l._fold ?? 1) - fold) > .02 || Math.abs((l._curl ?? 1) - curl) > .02) { st.bendSheet(l.geo, l.w, l.h, l.fold[0] * fold, l.fold[1] * fold, l.curl * curl); l._fold = fold; l._curl = curl; }
   });
-  drawScan(scan); drawTag(tag);
+  drawScan(act, ps); drawTag(act);
   for (const id in rowEl) {
     const r = rows[id] || { n: 0, note: "", p: 0 }, el = rowEl[id], was = rowState[id] || { n: 0, note: "", p: 0 };
     if (r.n !== was.n) {
@@ -678,50 +673,71 @@ function lettersAt(y, ps, now) {
   }
 }
 
-/* Der Scan: Rahmen rastet ein, ein Lichtband fährt über das Blatt und markiert,
-   was PostSafe liest. Für jeden Brief gleich — neutral. */
-function drawScan(sc) {
-  if (!sc) { if (frameG.innerHTML) frameG.innerHTML = ""; return; }
-  const { l, fly, u } = sc, def = FLY[fly];
-  l.group.updateMatrixWorld(true);
-  const c = st.corners(l), xs = c.map(v => v[0]), ys = c.map(v => v[1]);
-  const X0 = Math.min(...xs), X1 = Math.max(...xs), Y0 = Math.min(...ys), Y1 = Math.max(...ys);
-  const k = ease(clamp((u - .1) / .1, 0, 1)), out = clamp((u - .58) / .08, 0, 1), vis = k * (1 - out);
-  const pad = lerp(60, 12, k), x0 = X0 - pad, x1 = X1 + pad, y0 = Y0 - pad, y1 = Y1 + pad, L = Math.min(46, (x1 - x0) * .22);
-  let svg = `<g opacity="${vis.toFixed(2)}" class="br"><path d="M${x0} ${y0 + L}V${y0 + 14}q0-14 14-14H${x0 + L}"/><path d="M${x1 - L} ${y0}H${x1 - 14}q14 0 14 14V${y0 + L}"/><path d="M${x1} ${y1 - L}V${y1 - 14}q0 14-14 14H${x1 - L}"/><path d="M${x0 + L} ${y1}H${x0 + 14}q-14 0-14-14V${y1 - L}"/></g>`;
-  const sw = clamp((u - .18) / .3, 0, 1);
-  if (sw > 0 && sw < 1) {                                   /* ein kräftiger Streifen, dahinter eine Schleppe */
-    const by = lerp(Y0, Y1, sw), th = Math.min(110, by - Y0), fin = Math.min(1, sw * 8, (1 - sw) * 8);
-    svg += `<g opacity="${fin.toFixed(2)}"><rect class="band" x="${X0}" y="${by - th}" width="${X1 - X0}" height="${th}"/><rect class="glow" x="${X0 - 8}" y="${by - 3}" width="${X1 - X0 + 16}" height="6" rx="3"/><rect class="line" x="${X0 - 8}" y="${by - 1.5}" width="${X1 - X0 + 16}" height="3" rx="1.5"/></g>`;
-  }
-  for (const key of def.boxes) {
-    const b = l.boxes && l.boxes[key]; if (!b) continue;
-    const p0 = st.project(l, b[0], b[1]), p1 = st.project(l, b[0] + b[2], b[1] + b[3]);
-    const hx = Math.min(p0[0], p1[0]), hy = Math.min(p0[1], p1[1]), hw = Math.abs(p1[0] - p0[0]), hh = Math.abs(p1[1] - p0[1]);
-    if (u > .18 && (Y0 + (Y1 - Y0) * sw > hy || sw >= 1)) svg += `<rect class="hl" x="${hx}" y="${hy}" width="${hw}" height="${hh}" rx="4" opacity="${(1 - out).toFixed(2)}"/>`;
+/* Der Scan: Vier Ecken stehen wie ein Sucher dort, wo gelesen wird. Jeder Brief hebt
+   sich hinein, die Ecken rasten ein (das Foto), ein weiches Licht fährt über das Blatt
+   wie in der App, und was PostSafe liest, wird nachgezogen. Dann lassen die Ecken los
+   und der Brief fliegt mit seinem Schildchen in den Ordner. Für jeden Brief gleich und
+   neutral — die Farbe des Ordners zeigt erst das Schildchen. */
+const paperEl = $("[data-paper]");
+const rise = (v, a, b) => clamp((v - a) / (b - a), 0, 1);
+const inOut = t => t < .5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+const snap = t => { const c = 1.4; return 1 + (c + 1) * Math.pow(t - 1, 3) + c * Math.pow(t - 1, 2); };   /* rastet mit einem Hauch Überschwung ein */
+function corner(x, y, dx, dy, L, R) {      /* eine Ecke wie im App-Symbol: Arm, Rundung, Arm */
+  return `M${x} ${y + dy * L}V${y + dy * R}A${R} ${R} 0 0 ${dx * dy > 0 ? 1 : 0} ${x + dx * R} ${y}H${x + dx * L}`;
+}
+function halves(x0, y0, x1, y1, r) {       /* ein gerundetes Feld als zwei Hälften: oben Mitte → unten Mitte */
+  const m = (x0 + x1) / 2;
+  return [`M${m} ${y0}H${x1 - r}A${r} ${r} 0 0 1 ${x1} ${y0 + r}V${y1 - r}A${r} ${r} 0 0 1 ${x1 - r} ${y1}H${m}`,
+          `M${m} ${y0}H${x0 + r}A${r} ${r} 0 0 0 ${x0} ${y0 + r}V${y1 - r}A${r} ${r} 0 0 0 ${x0 + r} ${y1}H${m}`];
+}
+const n1 = v => v.toFixed(1);
+function drawScan(act, ps) {
+  const lastT0 = START + (FLY.length - 1) * STEP;
+  const vis = rise(ps, START, START + .12 * SPAN) * (1 - rise(ps, lastT0 + .62 * SPAN, lastT0 + .72 * SPAN));
+  if (vis <= .001) { if (frameG.innerHTML) frameG.innerHTML = ""; return; }
+  let lock = 0;
+  for (const a of act) if (a) lock = Math.max(lock, snap(rise(a.u, .12, .24)) * (1 - inOut(rise(a.u, .58, .68))));
+  const cx = (area.fx + .5) * vw, cy = (area.spotY + .5) * vh, ppm = area.sScan * pxmm(250);
+  const hw = 105 * ppm / 2, hh = 148.5 * ppm / 2, pad = lerp(22, 9, lock);
+  const x0 = cx - hw - pad, x1 = cx + hw + pad, y0 = cy - hh - pad, y1 = cy + hh + pad;
+  const L = Math.min(54, (x1 - x0) * .2), R = L * .39, sw = clamp((x1 - x0) * .011, 2.2, 3.2);
+  let svg = `<path class="br" stroke-width="${sw.toFixed(2)}" opacity="${(vis * (.45 + .55 * clamp(lock, 0, 1))).toFixed(3)}" d="${
+    [corner(x0, y0, 1, 1, L, R), corner(x1, y0, -1, 1, L, R), corner(x1, y1, -1, -1, L, R), corner(x0, y1, 1, -1, L, R)].join("")}"/>`;
+  const fly = act.findIndex(a => a && a.u > .26 && a.u < .66);
+  if (fly >= 0) {
+    const { l, u } = act[fly], c = st.corners(l), xs = c.map(v => v[0]), ys = c.map(v => v[1]);
+    const X0 = Math.min(...xs), X1 = Math.max(...xs), Y0 = Math.min(...ys), Y1 = Math.max(...ys);
+    paperEl.setAttribute("points", c.map(v => n1(v[0]) + "," + n1(v[1])).join(" "));
+    /* Ungelesenes liegt unter einem Hauch Schatten; das Licht fährt darüber und lässt hell zurück, was gelesen ist */
+    const swp = rise(u, .26, .52), ly = lerp(Y0 - 2, Y1 + 30, inOut(swp)), veil = rise(u, .2, .26), out = 1 - rise(u, .58, .64);
+    if (swp < 1 && veil > 0) svg += `<g clip-path="url(#paper)" opacity="${veil.toFixed(3)}"><rect class="veil" x="${n1(X0)}" y="${n1(ly)}" width="${n1(X1 - X0)}" height="${n1(Math.max(0, Y1 - ly + 2))}"/>${swp > 0 ? `<rect class="light" x="${n1(X0)}" y="${n1(ly - 10)}" width="${n1(X1 - X0)}" height="20"/>` : ""}</g>`;
+    for (const key of FLY[fly].boxes) {
+      const b = l.boxes && l.boxes[key]; if (!b || out <= 0) continue;
+      const p0 = st.project(l, b[0], b[1]), p1 = st.project(l, b[0] + b[2], b[1] + b[3]);
+      const bx = Math.min(p0[0], p1[0]) - .5, by = Math.min(p0[1], p1[1]) - 1, bw = Math.abs(p1[0] - p0[0]) + 1, bhh = Math.abs(p1[1] - p0[1]) + 2;   /* das Feld hat schon etwas Rand (letters.js) */
+      const tr = swp >= 1 ? 1 : inOut(rise(ly, by, by + bhh + 70));   /* das Licht zieht das Feld nach, von oben nach unten */
+      if (tr <= 0) continue;
+      for (const d of halves(bx, by, bx + bw, by + bhh, Math.min(5, bhh / 2)))
+        svg += `<path class="hl" pathLength="1" stroke-dashoffset="${(1 - tr).toFixed(3)}" opacity="${out.toFixed(3)}" d="${d}"/>`;
+    }
   }
   frameG.innerHTML = svg;
 }
 
-/* Das Ergebnis des Lesens: ein Schildchen mit dem Ordner in seiner Farbe. Es
-   fliegt mit in die Zeile und geht in ihrer Zahl auf. */
-let tagFor = -1;
-function drawTag(tg) {
-  if (!tg) { if (tagFor !== -1) { tagEl.style.opacity = 0; tagFor = -1; } return; }
-  const { l, fly, u } = tg, def = FLY[fly], row = rowEl[def.to];
-  if (tagFor !== fly) { tagFor = fly; tagEl.style.setProperty("--c", getComputedStyle(row).getPropertyValue("--c")); tagEl.innerHTML = `<i></i><b>${row.querySelector("b").textContent}</b><span>${def.tag}</span>`; }
-  l.group.updateMatrixWorld(true);
+/* Das Ergebnis des Lesens: ein Schildchen mit dem Ordner in seiner Farbe. Es steigt
+   unter dem Brief auf und fliegt an ihm haftend mit in den Ordner. */
+let tagFor = -1, tagW = 0, tagH = 0;
+function drawTag(act) {
+  const fly = act.findIndex(a => a && a.u > .46);
+  if (fly < 0) { if (tagFor !== -1) { tagEl.style.opacity = 0; tagFor = -1; } return; }
+  const { l, u } = act[fly], def = FLY[fly], row = rowEl[def.to];
+  if (tagFor !== fly) { tagFor = fly; tagEl.style.setProperty("--c", getComputedStyle(row).getPropertyValue("--c")); tagEl.innerHTML = `<i></i><b>${row.querySelector("b").textContent}</b><span>${def.tag}</span>`; tagW = tagEl.offsetWidth; tagH = tagEl.offsetHeight; }
   const c = st.corners(l), xs = c.map(v => v[0]), Y1 = Math.max(...c.map(v => v[1]));
-  const ap = clamp((u - .42) / .08, 0, 1), ae = 1 - Math.pow(1 - ap, 3);
-  /* mittig unter dem Brief, mit Luft zum Rahmen — es steigt aus dem Blatt nach unten */
-  let x = (Math.min(...xs) + Math.max(...xs)) / 2 - tagEl.offsetWidth / 2, yy = Y1 + (mobile ? 22 : 34) - lerp(18, 0, ae), sc = lerp(.8, 1, ae), op = ae;
-  const k = clamp((u - .64) / .36, 0, 1);
-  if (k > 0) {                                              /* mit in die Zeile, auf den Platz der Notiz */
-    const e2 = k < .5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2, nr = rectOf(row.querySelector("[data-n]"));
-    x = lerp(x, nr.left + nr.width / 2 - tagEl.offsetWidth * .2, e2); yy = lerp(yy, nr.top + nr.height / 2 - tagEl.offsetHeight / 2, e2); sc = lerp(1, .4, e2);
-    op = 1 - clamp((k - .5) / .4, 0, 1);
-  }
-  tagEl.style.opacity = op.toFixed(3);
+  const r = clamp((Math.max(...xs) - Math.min(...xs)) / (105 * area.sScan * pxmm(250)), .3, 1);   /* so groß wie der Brief gerade */
+  const ae = 1 - Math.pow(1 - rise(u, .46, .54), 3), fl = inOut(rise(u, .64, 1));
+  const sc = lerp(.9, 1, ae) * r, x = (Math.min(...xs) + Math.max(...xs)) / 2 - tagW / 2;
+  const yy = Y1 + (mobile ? 24 : 34) * r + tagH * sc / 2 - tagH / 2 - (1 - ae) * 12;
+  tagEl.style.opacity = (ae * (1 - rise(fl, .5, .85))).toFixed(3);
   tagEl.style.transform = `translate3d(${x.toFixed(1)}px, ${yy.toFixed(1)}px, 0) scale(${sc.toFixed(3)})`;
 }
 

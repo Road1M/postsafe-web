@@ -123,10 +123,9 @@ html.fuss .site-foot{position:sticky}
 .foot a{text-decoration:none; color:var(--ink-2)}
 .foot a:hover{color:var(--ink)}
 
-/* Das iPhone: Apples Produktbild, darunter der Bildschirm */
-.device{position:relative; aspect-ratio:1350/2760; user-select:none}
-.device canvas{position:absolute; left:5.3333%; top:2.5%; width:89.3333%; height:95%}
-.device img{position:absolute; inset:0; width:100%; height:100%; pointer-events:none}
+/* Das iPhone: Apples Produktbild und der Bildschirm in einer Leinwand (js/screens.js) */
+.device{position:relative; aspect-ratio:1470/3000; user-select:none}
+.device canvas{position:absolute; inset:0; width:100%; height:100%}
 
 /* Die App-Store-Badges, wie Apple und Google sie liefern */
 .badges{display:flex; align-items:center; gap:12px; flex-wrap:wrap}
