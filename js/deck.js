@@ -10,7 +10,7 @@
 import { drawLetter, paper } from "./letters.js?v=27";
 
 const P3 = CSS.supports("color", "color(display-p3 0 0 0)");
-const acc = a => P3 ? `color(display-p3 0 .4157 1 / ${a})` : `rgba(0,106,255,${a})`;   /* das Blau der App */
+const MARK = P3 ? "color(display-p3 0 .4157 1)" : "rgb(0,106,255)";   /* das Blau der App, deckend; durchscheinend wird die ganze Fläche */
 const BELL = '<svg width="15" height="15" viewBox="0 0 20 20" aria-hidden="true"><path d="M10 2.6a4.6 4.6 0 0 0-4.6 4.6v3.3L3.6 13.6h12.8l-1.8-3.1V7.2A4.6 4.6 0 0 0 10 2.6z" fill="currentColor"/><path d="M8 15.6a2.1 2.1 0 0 0 4 0z" fill="currentColor"/></svg>';
 
 export const PW = 230, PH = Math.round(230 * 1188 / 840);       /* ein Brief bei Maßstab 1, DIN A4 */
@@ -34,18 +34,34 @@ function bez(t) { t = clamp(t); let u = t; for (let i = 0; i < 6; i++) { const x
 const poseAt = r => { const i = Math.min(POSES.length - 1, Math.floor(r)), j = Math.min(POSES.length - 1, i + 1), f = clamp(r - i); return POSES[i].map((v, k) => lerp(v, POSES[j][k], f)); };
 const el = (tag, cls, html, parent) => { const e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; if (parent) parent.append(e); return e; };
 
-/* Die Textzeilen eines Blatts, aus dem Druck gelesen: Zeilen mit Tinte, Lücken dazwischen — auch die
-   graue Fußzeile; farbige Tinte nur oben im Briefkopf (Logo des Absenders), weiter unten ist sie die
-   Unterschrift, und die ist kein Text */
+/* Die Textstellen eines Blatts, aus dem Druck gelesen wie Live Text sie markiert: erst die Zeilen (Reihen
+   mit Tinte, Lücken dazwischen), dann in jeder Zeile die Spalten — Anschrift links und Angaben rechts, die
+   drei Spalten der Fußzeile — getrennt, wo eine breite Lücke ist. Tinte ist alles deutlich Dunklere als das
+   Papier, auch die hellgraue Fußzeile; farbige Tinte nur oben im Briefkopf (Logo des Absenders) — weiter
+   unten ist sie die Unterschrift, und die ist kein Text. */
 function textLines(cv) {
   const W = cv.width, H = cv.height, d = cv.getContext("2d").getImageData(0, 0, W, H).data, out = [], head = H * .12;
-  const inkAt = (x, y) => { const i = (y * W + x) * 4, r = d[i], g = d[i + 1], b = d[i + 2]; return r + g + b < 450 && (y < head || Math.abs(r - b) < 30); };
-  let y0 = -1, x0 = W, x1 = 0, gap = 0;
+  const x0 = Math.round(W * .1), x1 = Math.round(W * .95), gapCols = Math.round(W * .025);
+  const ink = new Uint8Array(W * H);
+  for (let y = 0; y < H; y++) for (let x = x0; x < x1; x++) {
+    const i = (y * W + x) * 4, r = d[i], g = d[i + 1], b = d[i + 2];
+    if (r + g + b < 560 && (y < head || Math.abs(r - b) < 30)) ink[y * W + x] = 1;
+  }
+  const rowInk = y => { let n = 0; for (let x = x0; x < x1 && n < 2; x++) n += ink[y * W + x]; return n > 1; };
+  let y0 = -1, gap = 0;
   for (let y = 0; y <= H; y++) {
-    let ink = 0, lx = W, rx = 0;
-    if (y < H) for (let x = Math.round(W * .1); x < W * .95; x++) if (inkAt(x, y)) { ink++; if (x < lx) lx = x; rx = x; }
-    if (ink > 1) { if (y0 < 0) { y0 = y; x0 = W; x1 = 0; } x0 = Math.min(x0, lx); x1 = Math.max(x1, rx); gap = 0; }
-    else if (y0 >= 0 && ++gap > 2) { const h = y - gap - y0 + 1; if (h >= 3 && h <= H * .06 && x1 - x0 > 14) out.push([x0 / W, y0 / H, (x1 - x0) / W, h / H]); y0 = -1; }
+    if (y < H && rowInk(y)) { if (y0 < 0) y0 = y; gap = 0; continue; }
+    if (y0 < 0 || ++gap <= 2) continue;
+    const ya = y0, yb = y - gap, h = yb - ya + 1; y0 = -1;
+    if (h < 3 || h > H * .06) continue;
+    /* Spalten in dieser Zeile */
+    let start = -1, last = -1;
+    for (let x = x0; x <= x1; x++) {
+      let col = 0; if (x < x1) for (let yy = ya; yy <= yb && !col; yy++) col = ink[yy * W + x];
+      if (col) { if (start < 0) start = x; last = x; }
+      else if (start >= 0 && x - last > gapCols) { if (last - start > 14) out.push([start / W, ya / H, (last - start) / W, h / H]); start = -1; }
+    }
+    if (start >= 0 && last - start > 14) out.push([start / W, ya / H, (last - start) / W, h / H]);
   }
   return out;
 }
@@ -78,19 +94,17 @@ export function createDeck(layer, tiles, { letters, folders, LETTERS }) {
     const p = el("div", "dk-piece", null, layer); p.style.width = PW + "px"; p.style.height = PH + "px";
     el("div", "dk-paper", null, p).append(print);
     const wave = el("canvas", null, null, p); wave.width = Math.round(PW * dpr); wave.height = Math.round(PH * dpr); wave.style.opacity = 0;
-    const live = el("div", "dk-live", null, p);
-    const bands = textLines(print).map(([x, y, w, h]) => {
-      const i = el("i", null, null, live);
-      Object.assign(i.style, { left: (x * PW - 2.5) + "px", top: (y * PH - 2) + "px", width: (w * PW + 5) + "px", height: (h * PH + 4) + "px", background: acc(.26) });
-      return { i, y, h };
-    });
+    /* Die Markierungen alle auf einer Fläche, deckend gezeichnet und erst als Ganzes durchscheinend:
+       wo sich zwei berühren, wird es nicht dunkler (Josef, 28.10.2026: dunklere Streifen) */
+    const live = el("canvas", "dk-live", null, p); live.width = Math.round(PW * dpr); live.height = Math.round(PH * dpr);
+    const lctx = live.getContext("2d"), bands = textLines(print).map(([x, y, w, h]) => ({ x, y, w, h }));
     const fo = folders[f.f];
     const note = el("div", "dk-note", `<div class="in"><div class="hd"><i></i>${fo.name}</div><div class="ti">${f.title}</div><div class="se">${f.sender}</div>` +
       `<div class="fl"><div><span>Zu tun</span><b>${f.task}</b></div><hr><div><span>${f.dueLabel}</span><b>${f.due}</b></div></div>` +
       (f.remind ? `<div class="rm"><i>${BELL}</i><div><b>${f.remind}</b><span>${f.remindNote}</span></div></div>` : "") + `</div>`, p);
     note.style.setProperty("--c", fo.c);
     Object.assign(note.style, { width: NOTE_W + "px", left: (PW - NOTE_W) / 2 + "px", top: (PH / 2 - 4) + "px" });
-    return { f, print, bold, blank, el: p, wave, wctx: wave.getContext("2d"), live, bands, note, parts: note.querySelectorAll(".fl, .rm"), waveClear: false };
+    return { f, print, bold, blank, el: p, wave, wctx: wave.getContext("2d"), live, lctx, bands, liveKey: "", note, parts: note.querySelectorAll(".fl, .rm"), waveClear: false };
   });
   /* Was nicht passt, wird kleiner (wie minimumScaleFactor in der App); dann die Höhen der drei Stufen */
   function fitNotes() {
@@ -161,8 +175,13 @@ export function createDeck(layer, tiles, { letters, folders, LETTERS }) {
         /* die Welle, und wo sie vorbei ist, ist der Text markiert */
         const wp = bez((t - T.tw) / 1.1); drawWave(P, wp);
         const kH = PH / (190 * 1697 / 1200), front = wp >= .999 ? 2 : wp <= .001 ? -1 : (-24 * kH + wp * (PH + 48 * kH)) / PH;
-        P.live.style.opacity = (1 - easeOut((t - T.liveOut) / .3)).toFixed(3);
-        for (const b of P.bands) { const m = easeOut((front - (b.y + b.h) - .02) / .06); b.i.style.transform = `scaleX(${m.toFixed(3)})`; b.i.style.opacity = m.toFixed(3); }
+        P.live.style.opacity = (.26 * (1 - easeOut((t - T.liveOut) / .3))).toFixed(3);
+        const marks = P.bands.map(b => easeOut((front - (b.y + b.h) - .02) / .06)), key = marks.map(m => m.toFixed(2)).join();
+        if (key !== P.liveKey) {
+          P.liveKey = key; const c = P.lctx, sx = P.live.width / PW, sy = P.live.height / PH;
+          c.clearRect(0, 0, P.live.width, P.live.height); c.fillStyle = MARK;
+          P.bands.forEach((b, i) => { const m = marks[i]; if (m <= 0) return; c.beginPath(); c.roundRect((b.x * PW - 2.5) * sx, (b.y * PH - 2) * sy, (b.w * PW + 5) * m * sx, (b.h * PH + 4) * sy, 3 * sx); c.fill(); });
+        }
         /* die Karte: Kopf, dann Zu tun und Fällig, dann die Erinnerung */
         const s1 = spring(t - T.n1, .45, 0), s2 = spring(t - T.n2, .5, 0), s3 = T.n3 != null ? spring(t - T.n3, .5, 0) : 0;
         Object.assign(P.note.style, { height: lerp(lerp(P.h1, P.h2, s2), P.h3, s3).toFixed(1) + "px", opacity: clamp(s1 * 1.4).toFixed(3), transform: `scale(${lerp(.94, 1, s1).toFixed(4)})`, visibility: t < T.n1 ? "hidden" : "" });

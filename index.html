@@ -66,8 +66,7 @@
 .dk-piece{position:absolute; left:0; top:0; transform-origin:50% 50%; will-change:transform, opacity}
 .dk-paper{position:absolute; inset:0; box-shadow:0 1px 2px rgba(0,0,0,.08), 0 12px 26px rgba(0,0,0,.16)}
 .dk-piece canvas{position:absolute; inset:0; width:100%; height:100%; filter:contrast(1.12)}   /* Schrift etwas kräftiger, Druck und Welle gleich */
-.dk-live{position:absolute; inset:0}
-.dk-live i{position:absolute; border-radius:3px; transform-origin:0 50%}
+.dk-piece canvas.dk-live{filter:none}   /* die Markierung: eine Fläche, durchscheinend als Ganzes */
 /* Die Karte, die PostSafe aus dem Brief macht (OnboardingLetterNote): sie wächst nach unten auf */
 .dk-note{position:absolute; border-radius:20px; background:var(--card); color:var(--ink); box-shadow:0 12px 20px rgba(0,0,0,.18); overflow:hidden; transform-origin:50% 0}
 .dk-note .in{position:absolute; left:16px; right:16px; top:15px}
@@ -332,7 +331,7 @@ import { createStage } from "./js/stage.js?v=25";
 import { mountDevice, BEZEL } from "./js/screens.js?v=29";
 import { LETTERS, drawLetter, drawBack, drawEnvelope, drawEnvelopeBack } from "./js/letters.js?v=27";
 import { mountBrowser } from "./js/browser.js?v=28";
-import { createDeck, PH, NEED } from "./js/deck.js?v=1";
+import { createDeck, PH, NEED } from "./js/deck.js?v=2";
 import { smoothScroll } from "./js/smooth.js?v=24";
 import { footBase } from "./js/fuss.js?v=25";
 footBase();
@@ -415,9 +414,13 @@ const FLY = [
   { i: 5, L: 5, f: 3, title: "Neue Kontoführungsentgelte", sender: "Hausbank Musterstadt", task: "Prüfen", dueLabel: "Eingang", due: kurz(-5) }
 ];
 const deck = createDeck($("#deck"), $$(".sort .fold"), { letters: FLY, folders: FOLDERS, LETTERS });
-/* Der Ablauf im Kapitel (Anteil des Kapitels): bis PS_SWAP fliegen die Briefe aus dem Hintergrund in
-   den Fächer, dann übernimmt js/deck.js — bis PS_END sind alle vier gelesen und abgelegt. */
-const PS_SWAP = .15, PS_END = .78, SORTED = PS_END;
+/* Der Ablauf im Kapitel, in Bildschirmhöhen gedacht: erst fliegen die Briefe aus dem Hintergrund in den
+   Fächer (INTRO), dann übernimmt js/deck.js — je Sekunde seines Ablaufs SPEED Bildschirmhöhen Scrollen,
+   damit jeder Schritt in Ruhe zu sehen ist (Josef, 28.10.2026: „viel weniger pro Scroll“) —, danach kommt
+   nur noch kurz „Abgelegt“ mit dem iPhone (OUTRO), ohne langen Leerlauf. measure() setzt daraus die Länge
+   des Kapitels und die Anteile PS_SWAP, PS_END und PS_BACK (wie lange das iPhone zum Zurückkommen braucht). */
+const INTRO = 1.2, OUTRO = .8, SPEED = () => mobile ? .45 : .3;
+let PS_SWAP = .15, PS_END = .78, PS_BACK = .1;
 const FLOAT = [
   { x: .02, y: -.4, z: -200, rx: 16, ry: -26, rz: -12 }, { x: .44, y: -.36, z: -300, rx: -10, ry: 30, rz: 14 },
   { x: .45, y: .38, z: -120, rx: 22, ry: -22, rz: -6 }, { x: .12, y: .47, z: 0, rx: -26, ry: 24, rz: 18 },
@@ -435,10 +438,13 @@ const FLOAT_M = [
 let vw, vh, mobile, secs = {}, dev = { w: 0, h: 0, x: 0, y: 0 };
 function measure() {
   vw = innerWidth; vh = stableH(); mobile = vw <= 820 || vw / vh < .9;
+  $("#story").style.height = ((INTRO + deck.END * SPEED() + OUTRO + 1) * vh).toFixed(0) + "px";
   for (const id of ["hero", "story", "frist", "suche", "trust", "web"]) {
     const el = document.getElementById(id), top = el.getBoundingClientRect().top + scrollY;
     secs[id] = { top, h: el.offsetHeight, range: Math.max(1, el.offsetHeight - vh) };
   }
+  const screens = secs.story.range / vh;
+  PS_SWAP = INTRO / screens; PS_END = 1 - OUTRO / screens; PS_BACK = .5 / screens;
   measureFade();
   /* Das iPhone: so hoch wie es der Platz erlaubt — auf dem Handy unten, ganz sichtbar, und nie höher, als
      es die Texte der Kapitel über ihm erlauben (sie stehen über ihm, nie dahinter; siehe edgeFade) */
@@ -506,12 +512,12 @@ let lastCap = -1, lastDays = -1, lastQ = null, lastW = -1;
 
 function chapters(y) {
   const ps = prog("story", y), pf = prog("frist", y), pq = prog("suche", y), pt = prog("trust", y), mid = vh * .5;
-  const cap = ps < .12 ? 0 : ps < SORTED + .005 ? 1 : 2;
+  const cap = ps < PS_SWAP * .8 ? 0 : ps < PS_END + .005 ? 1 : 2;
   if (cap !== lastCap) { caps.forEach((c, i) => c.classList.toggle("on", i === cap)); lastCap = cap; }
-  sortEl.classList.toggle("on", y > secs.story.top && ps > .12 && ps < (mobile ? SORTED + .01 : .98));   /* erst, wenn der Stapel liegt */
+  sortEl.classList.toggle("on", y > secs.story.top && ps > PS_SWAP * .8 && ps < (mobile ? PS_END + .01 : .98));   /* erst, wenn der Stapel liegt */
 
   let a = "scan", notif = 0;
-  if (y < secs.frist.top - mid) { if (ps > SORTED) a = "archiv"; }
+  if (y < secs.frist.top - mid) { if (ps > PS_END) a = "archiv"; }
   else if (y < secs.suche.top - mid) { a = "brief"; notif = pf > .56 ? 1 : 0; }
   else if (y < secs.trust.top - mid) { a = pq > .5 ? "suche1" : "suche0"; }
   else a = "einst";
@@ -556,7 +562,7 @@ function placeDevice(y, ps, now) {
   const intro = reduce ? 1 : clamp((now - T0 - 250) / 1300, 0, 1), ie = 1 - Math.pow(1 - intro, 4);
   dy += (1 - ie) * (mobile ? 16 : vh * .35); op *= ie;
   if (mobile) {   /* in der Startansicht zeigt deviceStart das iPhone; dieses hier kommt mit den Ordnern */
-    const back = y < secs.story.top || !dev.inChapters ? 0 : clamp((ps - SORTED - .02) / .1, 0, 1);
+    const back = y < secs.story.top || !dev.inChapters ? 0 : clamp((ps - PS_END - PS_BACK * .2) / PS_BACK, 0, 1);
     dy += (1 - back) * 16; op *= back;
     startEl.style.opacity = ie.toFixed(3);
     startEl.style.transform = `translate3d(0, ${((1 - ie) * 16).toFixed(1)}px, 0)`;
@@ -618,7 +624,7 @@ function lettersAt(y, ps, now) {
     }
     const fly = FLY.findIndex(x => x.i === i);
     /* In den Fächer: wer zuletzt gelesen wird, liegt hinten und kommt zuerst an */
-    const tp = y < secs.story.top ? 0 : ease(clamp((ps - (fly < 0 ? 0 : (n - 1 - fly) * .022)) / .075, 0, 1));
+    const tp = y < secs.story.top ? 0 : ease(clamp((ps / PS_SWAP - (fly < 0 ? 0 : (n - 1 - fly) * .147)) / .5, 0, 1));
     if (fly < 0) { o = 1 - clamp(tp * 2.2, 0, 1); p.x += Math.sign(f.x || 1) * tp * 160; p.z -= tp * 120; }
     else if (tp > 0) {
       /* genau dorthin, wo ihn der Fächer übernimmt (js/deck.js): flach, von vorn, gleich groß */
