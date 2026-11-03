@@ -9,7 +9,7 @@
 <meta name="theme-color" content="#070707" media="(prefers-color-scheme: dark)">
 <link rel="icon" href="favicon.png?v=3" type="image/png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=3">
-<link rel="stylesheet" href="style.css?v=11">
+<link rel="stylesheet" href="style.css?v=12">
 </head>
 <body>
 
@@ -36,7 +36,7 @@
 <div class="wrap__in">
 
 <h1>Datenschutzerklärung</h1>
-<p class="stand">Gilt für die App <strong>PostSafe</strong> für iOS und für diese Website. Stand: 28. Oktober 2026.</p>
+<p class="stand">Gilt für die App <strong>PostSafe</strong> für iOS und für diese Website. Stand: 28. Oktober 2026. · <a href="#english" lang="en">English version below</a></p>
 
 <h2>Das Wichtigste vorweg</h2>
 <p class="lead">
@@ -535,6 +535,531 @@
   Änderung an den eingesetzten Dienstleistern oder den Verarbeitungszwecken führt zu einer
   <strong>erneuten Einwilligung</strong>, nicht zu einer stillen Aktualisierung.
 </p>
+
+<section class="lang-en" lang="en" id="english">
+
+<h1>Privacy Policy</h1>
+<p class="stand">English version. Applies to the <strong>PostSafe</strong> app for iOS and to this website. Effective: November 3, 2026.</p>
+<p>
+  This is the English translation of the German privacy policy above. Section 12 adds information for
+  users in the United States.
+</p>
+
+<h2>At a glance</h2>
+<p class="lead">
+  PostSafe scans your mail. Letters are among the most personal things there are — that is why
+  <strong>I don’t keep your letters</strong>: they live in your own iCloud. The only exception is the
+  optional <strong>emergency copy</strong>: it exists only with a subscription and only if you expressly
+  agree, and I can open it (section 3a).
+</p>
+<ul>
+  <li>Your letters, page images, recognized text, folders and deadlines are stored in <strong>your own
+      private iCloud database</strong>, not on my server. They use your iCloud storage, and I have no
+      technical access to them.</li>
+  <li>Without an emergency copy, <strong>my server stores no letter content</strong> — no image, no
+      recognized text, no sender, no amount, no folder name. To read a page, it only passes it on to the AI
+      service without keeping it. This is built into how the software works and is backed by automated
+      tests.</li>
+  <li><strong>Only if you agree to the emergency copy</strong> does my server also hold an
+      <strong>encrypted copy</strong> of your letters. The server cannot open it. I can, and I do so only if
+      you ask me to give your letters back to you.</li>
+  <li>For text recognition, a page is transferred <strong>for processing</strong> to a European AI service
+      and is not used there for training. Details below.</li>
+  <li><strong>Your folder names go only to the AI service, and only for sorting.</strong> So that a letter
+      lands in one of your existing folders instead of the app creating a new one, the names of your
+      folders are transferred together with the letter for processing — only the names, without color,
+      order or the number of letters in them. My server only passes them through and does not store them;
+      they go to no one else — except encrypted into your emergency copy, if you have agreed to it.</li>
+</ul>
+
+<h2>1. Controller</h2>
+<p>
+  Josef Werner, Nägelseestraße 11, 79288 Gottenheim, Germany<br>
+  Email: <a href="mailto:kontakt@postsafe.eu">kontakt@postsafe.eu</a>
+</p>
+
+<h2>2. What data is processed</h2>
+
+<div class="scroll-x">
+<table>
+  <thead>
+    <tr><th>Data</th><th>Where it is stored</th><th>Legal basis</th><th>How long</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Page images, recognized text, extracted fields, folders, deadlines, the sentence in the letter that states a deadline</td>
+      <td>Your private iCloud database at Apple; on your device everything except the full page images of
+          older letters</td>
+      <td>Art. 6(1)(b) GDPR (contract); additionally Art. 9(2)(a) (explicit consent), see section 3</td>
+      <td>Until you delete the letter or your account. The app removes full page images of older letters
+          from your device earlier, once your iCloud has them safely, and loads them again when you open
+          the letter.</td>
+    </tr>
+    <tr>
+      <td>Account identifiers: user ID, Apple identifier and the email address Apple provides — your real
+          one or, if you hide it, a relay address from Apple</td>
+      <td>Supabase, data center in Frankfurt am Main, Germany</td>
+      <td>Art. 6(1)(b) GDPR</td>
+      <td>For the life of the account</td>
+    </tr>
+    <tr>
+      <td>Quota status, subscription tier, time of last use, technical details of a processing run (page
+          count, model, duration, error code), consent records, server logs</td>
+      <td>Supabase, Frankfurt am Main</td>
+      <td>Art. 6(1)(b) GDPR; for abuse prevention and counters Art. 6(1)(f); for consent records
+          Art. 7(1)</td>
+      <td>For the life of the account. Consent records outlast a withdrawal, because it must remain
+          provable that processing was lawful while consent applied</td>
+    </tr>
+    <tr>
+      <td>Log of calls to the AI service: per call the page count or the length of the transferred text,
+          the length of the returned text and whether the call succeeded —
+          <strong>never the content itself</strong></td>
+      <td>Supabase, Frankfurt am Main</td>
+      <td>Art. 6(1)(f) GDPR — the legitimate interest in preventing misuse of the AI service and the
+          costs it would cause</td>
+      <td>48 hours; an entry is removed with the next processing run after that</td>
+    </tr>
+    <tr>
+      <td><strong>Purchased letters:</strong> per purchase the App Store transaction number, the package,
+          the quantity, whether it was a test purchase, and the time; per scan, how many letters it counted
+          as; your balance. No price and no payment data</td>
+      <td>Supabase, Frankfurt am Main</td>
+      <td>Art. 6(1)(b) GDPR (you bought scans)</td>
+      <td>For the life of the account; remaining purchased letters expire with the account</td>
+    </tr>
+    <tr>
+      <td><strong>Device check for the free scans</strong> (App Attest): so that only the genuine PostSafe
+          app on a real iPhone or iPad gets the free scans, the app has Apple confirm a key once per account
+          and device. Stored are the identifier and the public part of this key, the environment and the
+          time — nothing about your letters</td>
+      <td>Supabase, Frankfurt am Main; the confirmation itself comes from Apple</td>
+      <td>Art. 6(1)(f) GDPR — the legitimate interest in protecting the free scans against
+          mass-created accounts</td>
+      <td>For the life of the account, deleted with your account</td>
+    </tr>
+    <tr>
+      <td><strong>Emergency copy</strong> (only with a subscription and your consent): per letter one file
+          encrypted on your iPhone, containing page images, recognized text, extracted fields, deadlines,
+          title, sender and folder name. Readable in it are only your user ID, the letter’s ID, the month
+          of the scan and the file size</td>
+      <td>Supabase Storage, Frankfurt am Main</td>
+      <td>Art. 9(2)(a) GDPR (explicit consent, separate from the consent to scanning); for the other
+          details Art. 6(1)(a)</td>
+      <td>As long as the account exists. Deleted 30 days after you permanently delete the letter (from the
+          Trash), turn off the emergency copy or delete your account; immediately if you choose “Delete
+          emergency copy” in the app; also if your account has not been used for three years</td>
+    </tr>
+    <tr>
+      <td>Returned archive: the ZIP file I create from your emergency copy when you ask for your
+          letters</td>
+      <td>Supabase Storage, Frankfurt am Main</td>
+      <td>Art. 6(1)(b) GDPR (your request); Art. 9(2)(a)</td>
+      <td>7 days, then deleted</td>
+    </tr>
+    <tr>
+      <td>Deletion record: your random user ID, the time of deletion and two checkmarks confirming that the
+          Apple sign-in was revoked and the record at RevenueCat was removed</td>
+      <td>Supabase, Frankfurt am Main</td>
+      <td>Art. 6(1)(c) in conjunction with Art. 5(2) GDPR — I must be able to prove that a requested
+          deletion was actually carried out</td>
+      <td>Three years from the deletion, then this record is removed automatically too</td>
+    </tr>
+    <tr>
+      <td><strong>Invitations:</strong> your invitation code and, if you enter a friend’s code, which
+          account invited which. Your friend does not see who you are, and you only see how many of your
+          friends have joined — no names</td>
+      <td>Supabase, Frankfurt am Main</td>
+      <td>Art. 6(1)(b) GDPR (you use the invitation feature)</td>
+      <td>For the life of the account, deleted with your account</td>
+    </tr>
+    <tr>
+      <td><strong>Feedback</strong> you write yourself via “Send feedback”: your text, your user ID, the
+          app version and the time. At most one feedback per day</td>
+      <td>Supabase, Frankfurt am Main</td>
+      <td>Art. 6(1)(f) GDPR — the legitimate interest in improving PostSafe with your input; you decide
+          yourself whether and what you write</td>
+      <td>Deleted with your account</td>
+    </tr>
+    <tr>
+      <td>Letter content <strong>during processing</strong> (page image, recognized text) and the names of
+          your folders, so the letter can be assigned to one of them</td>
+      <td>Mistral AI, data centers in the EU</td>
+      <td>Art. 6(1)(b) and Art. 9(2)(a) GDPR</td>
+      <td>Only for the duration of processing. Afterwards Mistral keeps nothing (zero data
+          retention)</td>
+    </tr>
+    <tr>
+      <td>Subscription status and purchases of letters: pseudonymous user ID, product, status, expiry
+          date</td>
+      <td>RevenueCat, Inc., USA</td>
+      <td>Art. 6(1)(b) GDPR</td>
+      <td>For the duration of the subscription relationship</td>
+    </tr>
+    <tr>
+      <td>Purchase and payment data</td>
+      <td>Apple</td>
+      <td>Contract between you and Apple</td>
+      <td>According to Apple’s rules. <strong>I never see your payment data</strong></td>
+    </tr>
+    <tr>
+      <td>Anonymous usage statistics (fixed catalog of events, plus technical details about the device, see
+          section 5). Can be turned off in the app</td>
+      <td>TelemetryDeck GmbH, servers in Germany and Finland</td>
+      <td>In the provider’s view not personal data; alternatively Art. 6(1)(f) GDPR</td>
+      <td>No personal data arises that would need to be kept</td>
+    </tr>
+    <tr>
+      <td>PostSafe Web, if you use it: what your browser shows — folders, letters with page images and
+          text, your saved signature — and files you put from your computer onto your iPhone</td>
+      <td>Only your iPhone and the browser on your computer, directly over your own Wi-Fi. None of it
+          reaches me</td>
+      <td>Art. 6(1)(b) GDPR (you use the feature)</td>
+      <td>Only while the connection lasts; the app tells your browser not to store any of it. What you
+          download yourself stays on your computer</td>
+    </tr>
+    <tr>
+      <td>Calendar entries for deadlines — only from app versions before August 26, 2026. Since then
+          PostSafe no longer creates any and no longer asks for calendar access; the app still removes
+          existing entries</td>
+      <td>Only your device and your own iCloud calendar</td>
+      <td>Art. 6(1)(b) GDPR, based on the calendar access granted at the time</td>
+      <td>Until the deadline, the letter or your account is deleted</td>
+    </tr>
+    <tr>
+      <td>Crash and diagnostic reports</td>
+      <td>Apple — only if you have allowed this in iOS Settings</td>
+      <td>Your choice in iOS Settings</td>
+      <td>According to Apple’s rules</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<div class="note">
+  <strong>What my server never stores in readable form:</strong> letter images, recognized text, sender
+  names, amounts, folder names, subject lines or deadline dates. The only exception is the encrypted
+  emergency copy, and only if you have agreed to it. The only text stored in readable form is what you
+  send yourself via “Send feedback”. The server logs, too, are limited to a fixed set of technical
+  fields — event name, endpoint, pseudonymous user ID, processing run ID, error code, count and duration.
+  Free text does not appear in them.
+</div>
+
+<h2>3. Special categories of personal data</h2>
+<p>
+  Mail regularly contains specially protected data within the meaning of Art. 9 GDPR: letters from health
+  insurers and clinics, church tax notices, union mail, correspondence with lawyers. PostSafe cannot and
+  does not want to tell in advance which letter is which — sorting them beforehand would itself mean
+  evaluating your mail.
+</p>
+<p>
+  Processing is therefore based on your <strong>explicit consent</strong> under Art. 9(2)(a) GDPR. It is
+  obtained before the first scan, at the moment you want to scan, separately from agreeing to the terms of
+  use, in plain language and expressly naming the transfer of letter content to Mistral.
+</p>
+<p>
+  <strong>You can withdraw your consent at any time</strong> in the app’s settings. Withdrawal takes
+  effect for the future and only stops new scans. Your existing archive remains fully readable, searchable
+  and exportable. You can also postpone consent at first — the app remains usable; you just cannot scan
+  new letters.
+</p>
+
+<h2>3a. The emergency copy</h2>
+<p>
+  Anyone who takes out a subscription is asked <strong>once</strong> whether I should keep an encrypted
+  emergency copy of their letters — on a separate screen after the purchase, with two equally sized
+  answers. The subscription works exactly the same without the copy. Users without a subscription are not
+  asked; nothing is uploaded from them. In the app’s settings you can turn the copy on or off at any time.
+</p>
+<p>
+  <strong>What is backed up:</strong> all your letters, including those you scanned before agreeing, with
+  page images, text, extracted details, deadlines and folder names. Each letter is <strong>encrypted on
+  your iPhone</strong> before it leaves it, with a key whose secret half only I have. My server cannot open
+  the files. The secret half is kept in my password manager and once on paper in my safe — never on a
+  server and never in the app.
+</p>
+<p>
+  <strong>When I open it:</strong> only if you ask me to give your letters back to you — for example
+  because your iPhone and your Apple account are lost. Then I personally verify that it is you: using your
+  ID document (by video call or as a photo that is deleted after the check; I keep no copy) and using your
+  letters, which I may view in full for this purpose. You receive your archive as a ZIP file via a link
+  that is valid for 7 days.
+</p>
+<p>
+  <strong>When it is deleted:</strong> 30 days after you permanently delete a letter, that is, from the
+  Trash (that letter), turn off the emergency copy or delete your account (everything). The 30 days give
+  you time to undo a mistake. It also works without this waiting period: in the app under Settings →
+  Privacy → Emergency copy, “Delete emergency copy” deletes all copies immediately and turns the emergency
+  copy off. If that ever does not work right away, they are deleted by the next day at the latest. If your
+  account has not been used for three years, the copy is deleted as well. The end of a subscription deletes
+  nothing; nothing new is uploaded after that.
+</p>
+
+<h2>4. Recipients and processors</h2>
+<p>
+  I use the following service providers. Data processing agreements under Art. 28 GDPR are in place with
+  all of them; each is part of the terms I have agreed with the respective provider.
+</p>
+
+<div class="scroll-x">
+<table>
+  <thead>
+    <tr><th>Service</th><th>Purpose</th><th>Location</th><th>Transfer to third countries</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Apple (iCloud, CloudKit, Sign in with Apple, App Attest)</td><td>Storing your letters in your own iCloud, sign-in, confirming the genuine app for the free scans</td><td>Apple infrastructure</td><td>Under Apple’s terms; covered by the Apple Developer Program License Agreement</td></tr>
+    <tr><td>Supabase</td><td>Account, quota management, subscription status, purchased letters, invitation codes, feedback; passing pages on to the AI service without keeping them; storing the encrypted emergency copy, only with your consent</td><td>AWS region Frankfurt am Main (eu-central-1)</td><td>None — the region was chosen deliberately and cannot be changed afterwards</td></tr>
+    <tr><td>Mistral AI (French SAS)</td><td>Text recognition and understanding of a letter</td><td>Data centers in the EU</td><td>None</td></tr>
+    <tr><td>RevenueCat, Inc.</td><td>Checking and managing subscription status and purchases of letters</td><td>USA</td><td>Yes. Based on the European Commission’s <strong>Standard Contractual Clauses</strong> (Implementing Decision 2021/914)</td></tr>
+    <tr><td>TelemetryDeck GmbH</td><td>Anonymous usage statistics</td><td>Germany and Finland</td><td>None</td></tr>
+    <tr><td>GitHub, Inc.</td><td>Delivering <em>this website</em></td><td>USA</td><td>Yes, see section 8</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h3>Your letters are not used to train AI models</h3>
+<p>
+  For text recognition and sorting, the letter content and the names of your folders are transferred to
+  Mistral AI. For the account used, the use of API data for training models is <strong>turned
+  off</strong>, as are the so-called Labs models, for which this opt-out would not apply. This setting is
+  checked again before every release of the app.
+</p>
+<p>
+  For the account used, <strong>zero data retention</strong> is also turned on: Mistral holds page images,
+  texts and folder names only while processing lasts and keeps nothing afterwards, not even for abuse
+  monitoring.
+</p>
+<p>
+  Neither RevenueCat nor TelemetryDeck receives letter content in any form. Letter content passes through
+  the servers at Supabase only on its way to the AI service, without being stored; it is kept there only as
+  an encrypted emergency copy, if you have agreed to it.
+</p>
+
+<h3>Language of the analysis and translation</h3>
+<p>
+  If your iPhone is set to English, the app asks the AI service to write the analysis of a letter in
+  English. Only the language is sent for this, nothing else.
+</p>
+<p>
+  You can also have the summary of a letter translated into the other language (German or English).
+  <strong>No additional service is involved and no text is transferred</strong> for this: the translation
+  is done by Apple’s translation feature built into iOS, <strong>on your device</strong>. The letter text
+  goes to no one — not to Apple and not to me.
+</p>
+<p>
+  The first time, iOS downloads a language pack for this. The download asks <em>which language is
+  needed</em>, not what is to be translated; the text to be translated is not part of this request. After
+  that, translation also works without an internet connection.
+</p>
+
+<h2>5. Anonymous usage statistics</h2>
+<p>
+  To understand which features are used and where things get stuck, the app sends a <strong>fixed, closed
+  list of events</strong> to TelemetryDeck. Each event carries an identifier derived from a device
+  identifier: it is combined with a random value and hashed on your device, and hashed a second time on
+  the server — neither TelemetryDeck nor I can trace a person from it.
+</p>
+<p>
+  <strong>Never transmitted:</strong> letter content, recognized text, page images, sender names, folder
+  names, subject lines, amounts, IBANs, payment references, dates from a letter, deadlines, quotes from a
+  letter, letter or folder IDs or any text you have entered. What is transmitted are event names, yes/no
+  values and coarse classes, such as “1–3 pages” instead of an exact page count.
+</p>
+<p>
+  <strong>Three details are added, and two of them are not coarse classes.</strong> Every event carries
+  the <em>calendar week of installation</em>, the <em>number of days since installation</em> and the
+  <em>platform</em> (“ios”). Only with these can I tell whether a change to the app improved something or
+  whether different people simply installed it that month.
+</p>
+<p>
+  The number of days is capped at <strong>400</strong>: it says how long <em>this installation</em> has
+  existed, not who uses it. Neither your account nor a letter is ever sent, and none of this can be linked
+  to your PostSafe account.
+</p>
+<p>
+  <strong>Technical details the statistics software sends by itself:</strong> device model, iOS and app
+  version, language, region and time zone, screen size, whether accessibility features such as larger text
+  are turned on, the date of first use and how often and how long the app is used.
+</p>
+<p>
+  Because the data leaves the device already anonymized, in the provider’s view neither a consent banner
+  nor an opt-out is required. Statistics are on by default; <strong>you can turn them off in the app at any
+  time</strong>, under Settings → Privacy → Usage statistics. The app then sends no more events.
+</p>
+<p>
+  Google Analytics, Firebase and other Google services are deliberately not used, nor is a third-party
+  crash reporting service.
+</p>
+
+<h2>6. Sign in with Apple</h2>
+<p>
+  Sign-in uses <em>Sign in with Apple</em>. Stored are the identifier assigned by Apple and the email
+  address Apple provides. Only the app keeps your name, on your device and in your own iCloud. If you
+  choose “Hide My Email”, I only receive a relay address from Apple — this is the fully supported normal
+  case and leads to no restriction at all. Apple provides your name and email address only at the first
+  sign-in anyway, and only if you allow it; neither is required to use the app.
+</p>
+<p>
+  When an account is deleted, the link between your Apple account and PostSafe is actively revoked.
+</p>
+
+<h2>7. Your rights</h2>
+<p>You have the right at any time to</p>
+<ul>
+  <li><strong>access</strong> the data processed about you (Art. 15 GDPR),</li>
+  <li><strong>rectification</strong> of inaccurate data (Art. 16),</li>
+  <li><strong>erasure</strong> (Art. 17),</li>
+  <li><strong>restriction of processing</strong> (Art. 18),</li>
+  <li><strong>data portability</strong> in a common, machine-readable format (Art. 20),</li>
+  <li><strong>object</strong> to processing based on legitimate interests (Art. 21),</li>
+  <li><strong>withdraw consent</strong> with effect for the future (Art. 7(3)).</li>
+</ul>
+
+<h3>You exercise three of these rights directly in the app</h3>
+<ul>
+  <li><strong>Access and data portability:</strong> The export in Settings creates a ZIP file with your
+      <em>complete</em> archive — all metadata as JSON and every original page as an image file; for older
+      letters the app fetches the page images from your iCloud, and a page that cannot be loaded is marked
+      as missing in the archive. No ticket, no waiting. <strong>Export is never tied to a
+      subscription.</strong></li>
+  <li><strong>Rectification:</strong> Every extracted field can be edited; your correction permanently
+      takes precedence over machine recognition.</li>
+  <li><strong>Erasure:</strong> Account deletion in Settings removes in one step the local data, the
+      sign-in data in the keychain, your letters in iCloud, the calendar entries created by PostSafe,
+      reminders still scheduled, all server records and your record at RevenueCat, and revokes the Apple
+      sign-in. An emergency copy is deleted 30 days later. Remaining purchased letters expire with the
+      account; only Apple can refund them. The app states both before deleting. Afterwards you receive a
+      list of what was deleted.</li>
+</ul>
+<p>
+  <strong>What outlasts a deletion.</strong> A deletion record: your random user ID, the time of deletion
+  and two checkmarks confirming that the Apple sign-in was revoked and the record at RevenueCat was removed.
+  In addition, technical server log lines and the receipt stamp of a purchase notification remain, both
+  without reference to your person, and for up to 30 days an emergency copy together with the order to
+  delete it. The record proves that your deletion was actually carried out — I am obliged to keep it
+  under Art. 5(2) GDPR. It no longer leads back to a person: name, email address, Apple identifier,
+  letters, counters and consent records are already gone at that point. After three years this record is
+  also removed automatically.
+</p>
+<div class="note">
+  <strong>One thing account deletion cannot do:</strong> cancel a running subscription. Subscriptions are
+  managed by Apple and can only be canceled there. The app points this out before deleting and links
+  directly there.
+</div>
+<p>
+  For everything else — objection, restriction or requests the app does not handle itself — write to
+  <a href="mailto:kontakt@postsafe.eu">kontakt@postsafe.eu</a>. I reply within one month; for complex
+  requests this period can be extended by two months, in which case I will tell you why. Your identity is
+  verified via your app account — <strong>I do not ask for a copy of your ID</strong>. The only exception
+  is the return from the emergency copy (section 3a), because you may have just lost the account through
+  which I would otherwise recognize you.
+</p>
+
+<h3>Right to lodge a complaint</h3>
+<p>
+  You can lodge a complaint with a data protection supervisory authority, in particular in the member
+  state of your residence. The authority responsible for me is the
+  <a href="https://www.baden-wuerttemberg.datenschutz.de/">State Commissioner for Data Protection and
+  Freedom of Information Baden-Württemberg</a> (Landesbeauftragter für den Datenschutz und die
+  Informationsfreiheit Baden-Württemberg), Lautenschlagerstraße 20, 70173 Stuttgart, Germany.
+</p>
+
+<h2>8. This website</h2>
+<p>
+  This website sets <strong>no cookies</strong>, stores nothing in your browser, loads no fonts or scripts
+  from third-party servers and performs no analytics.
+</p>
+<p>
+  For the animated presentations — the iPhone, the letters and the preview of PostSafe Web — it uses
+  JavaScript. All scripts, images and sample data are on this server itself and run only in your browser;
+  nothing is sent to me or to third parties. The letters, names and amounts shown are made up.
+</p>
+<p>
+  If you enter the code from the app on the <a href="web.html">PostSafe Web</a> page, your browser itself
+  converts it into the address of your iPhone on your own Wi-Fi and opens it. The code is not transmitted
+  to this server.
+</p>
+<p>
+  If you open an <strong>invitation link</strong>, the invitation code is part of the address. GitHub
+  processes it as part of the connection data.
+</p>
+<p>
+  The website is hosted on GitHub Pages, a service of GitHub, Inc., 88 Colin P. Kelly Jr. Street, San
+  Francisco, CA 94107, USA. When a page is requested, GitHub processes technically necessary connection
+  data including your IP address. The legal basis is Art. 6(1)(f) GDPR — the legitimate interest in being
+  able to deliver these pages at all. The transfer to the USA is based on the European Commission’s
+  Standard Contractual Clauses.
+</p>
+
+<h2>9. Automated decisions</h2>
+<p>
+  PostSafe reads letters by machine and suggests deadlines and folders. These are
+  <strong>suggestions</strong> that you can change at any time. The app reminds you of a recognized
+  deadline only after you have confirmed the letter’s details. No automated decision with legal effect or
+  similarly significant impact within the meaning of Art. 22 GDPR takes place. No profiling for
+  advertising purposes takes place either.
+</p>
+
+<h2>10. Security</h2>
+<p>
+  Every connection the app makes to the internet is encrypted with TLS. <strong>There is one exception,
+  and it stays within your own Wi-Fi:</strong> with <em>PostSafe Web</em>, your iPhone delivers your
+  archive unencrypted (http) to the browser on your computer, and in the other direction files you put
+  from the computer onto the iPhone, as well as a signature you draw there — only after you have allowed
+  this browser on the iPhone with a tap, only while the app is running, and without anything reaching a
+  server of mine. No certificate authority issues a certificate for an address on a home network. Letter
+  content reaches the AI service only via my server, so that the access key is never stored on a device.
+  Access to the database is restricted row by row to the respective account holder. The emergency copy is
+  encrypted on your iPhone (HPKE according to RFC 9180) and cannot be opened by the server.
+</p>
+
+<h2>11. Changes to this policy</h2>
+<p>
+  If who processes your data or for what purpose changes, this policy is updated <strong>before</strong>
+  the release of the app version concerned. A material change to the service providers used or the
+  purposes of processing leads to <strong>renewed consent</strong>, not a silent update.
+</p>
+
+<h2>12. Additional information for users in the United States</h2>
+<p>
+  PostSafe is operated from Germany, and the GDPR applies to all processing described above, wherever you
+  live. Your data is stored and processed in the EU, with the exceptions named in section 4. This section
+  adds what US state laws ask a privacy policy to state.
+</p>
+<ul>
+  <li><strong>No sale, no sharing, no targeted advertising.</strong> I do not sell personal information,
+      do not share it for cross-context behavioral advertising and do not use it for targeted advertising
+      or profiling. No third party collects personal information about you through PostSafe or this
+      website over time or across other websites or apps.</li>
+  <li><strong>Do Not Track and Global Privacy Control.</strong> Neither the app nor this website tracks
+      you across websites or apps, so there is nothing for a Do Not Track or Global Privacy Control signal
+      to switch off. Such signals therefore do not change how PostSafe works.</li>
+  <li><strong>Consumer health data.</strong> Letters can contain health information. How PostSafe handles
+      it, and your rights under the consumer health data laws of Washington, Nevada and other states, are
+      set out in the separate <a href="health-data.html">Consumer Health Data Privacy Policy</a>.</li>
+  <li><strong>Categories of personal information.</strong> In the terms of US state laws, PostSafe
+      processes identifiers (user ID, Apple identifier, email address), commercial information
+      (subscription status, purchased letters) and the content of the documents you scan, which can
+      include sensitive personal information such as health, financial or government identification
+      details. Usage statistics are anonymous (section 5). The sources are you and your device, and Apple
+      for sign-in and purchases. The purposes are only those in sections 2 to 5, and the only recipients
+      are the service providers in section 4, which process data on my behalf.</li>
+  <li><strong>Your rights.</strong> Wherever you live in the US, you can use the rights in section 7:
+      to know and access your data, to correct it, to delete it, to receive a portable copy and to withdraw
+      consent. Most of this works directly in the app; for everything else, write to
+      <a href="mailto:kontakt@postsafe.eu">kontakt@postsafe.eu</a>. Exercising a right never leads to a
+      different price or level of service.</li>
+  <li><strong>Appeal.</strong> If I decline to act on a request, you can appeal by replying with “Appeal”
+      in the subject line. I decide on the appeal within 45 days and explain the decision. If you disagree
+      with it, you can contact the attorney general of your state.</li>
+  <li><strong>Children.</strong> PostSafe is meant for people aged 16 and older. It is not directed at
+      children, and I do not knowingly collect personal information from children under 13. If you believe
+      a child has used PostSafe, write to me and I will delete the data.</li>
+  <li><strong>Changes.</strong> Section 11 explains how changes are made; the effective date is at the top
+      of this English version.</li>
+</ul>
+
+</section>
 </div>
 </main>
 
@@ -553,6 +1078,7 @@
       <a href="web.html">PostSafe Web</a>
       <a href="datenschutz.html">Datenschutz</a>
       <a href="agb.html">Nutzungsbedingungen</a>
+      <a href="health-data.html" lang="en">Consumer Health Data (US)</a>
       <a href="impressum.html">Impressum</a>
       <a href="mailto:kontakt@postsafe.eu">kontakt@postsafe.eu</a>
     </nav>

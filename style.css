@@ -517,6 +517,15 @@ a {
   margin-bottom: 44px !important;
 }
 
+/* Die englische Fassung unter dem deutschen Rechtstext (2026-11-03): ein
+   kräftiger Strich darüber, damit sie als eigene Fassung beginnt und nicht wie
+   ein weiterer Abschnitt aussieht. */
+.lang-en {
+  margin-top: 96px;
+  padding-top: 56px;
+  border-top: 2px solid var(--ink);
+}
+
 .note {
   background: var(--card);
   border: 1px solid var(--line);
